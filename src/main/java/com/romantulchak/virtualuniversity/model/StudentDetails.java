@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 @Embeddable
 public class StudentDetails {
+
     private String passport;
 
     private String citizen;
@@ -42,4 +43,5 @@ public class StudentDetails {
     public void setBirthDay(LocalDateTime birthDay) {
         this.birthDay = birthDay;
     }
+
 }
