@@ -1,9 +1,12 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
-import com.romantulchak.virtualuniversity.model.enumes.Role;
+import com.romantulchak.virtualuniversity.model.enumes.ERole;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
+
 
 @MappedSuperclass
 public abstract class UserAbstract {
@@ -12,9 +15,9 @@ public abstract class UserAbstract {
     private long id;
 
     private String firstName;
-
     private String lastName;
 
+    @Column(unique = true)
     private String login;
 
     private String password;
@@ -26,12 +29,10 @@ public abstract class UserAbstract {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     public UserAbstract(){}
 
-    public UserAbstract(String firstName, String lastName, String login, String password, Gender gender, String privateEmail, String email, Role role) {
+    public UserAbstract(String firstName, String lastName, String login, String password, Gender gender, String privateEmail, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
@@ -39,7 +40,6 @@ public abstract class UserAbstract {
         this.gender = gender;
         this.privateEmail = privateEmail;
         this.email = email;
-        this.role = role;
     }
 
     public long getId() {

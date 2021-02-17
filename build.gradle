@@ -15,8 +15,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'// https://mvnrepository.com/artifact/org.postgresql/postgresql
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
 
 

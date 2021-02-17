@@ -1,11 +1,13 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
-import com.romantulchak.virtualuniversity.model.enumes.Role;
+import com.romantulchak.virtualuniversity.model.enumes.ERole;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Student extends UserAbstract{
@@ -24,11 +26,14 @@ public class Student extends UserAbstract{
     @JoinTable(name = "studets_specializations", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
     private Collection<Specialization> specializations;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    public Student(String firstName, String lastName, String login, String password, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email, Role role) {
-        super(firstName, lastName, login, password, gender, privateEmail, email,role);
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+    public Student(String firstName, String lastName, String login, String password, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
+        super(firstName, lastName, login, password, gender, privateEmail, email);
         this.studentDetails = studentDetails;
         this.studentStatus = studentStatus;
     }
@@ -84,5 +89,13 @@ public class Student extends UserAbstract{
 
     public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
         this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

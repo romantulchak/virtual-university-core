@@ -11,7 +11,7 @@ public class Course {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "course")
     private Collection<Specialization> specialization;
 
     public Course(){}
