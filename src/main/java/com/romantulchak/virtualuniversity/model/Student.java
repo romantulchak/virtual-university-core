@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.model.enumes.ERole;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,9 +30,11 @@ public class Student extends UserAbstract{
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+
     public Student(String firstName, String lastName, String login, String password, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
         super(firstName, lastName, login, password, gender, privateEmail, email);
         this.studentDetails = studentDetails;

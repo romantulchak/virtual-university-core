@@ -21,6 +21,6 @@ public class TeacherDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Teacher teacher = teacherRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Teacher with login not found"));
-        return UserDetailsImpl.build(teacher, teacher.getRoles(), ERole.TEACHER);
+        return UserDetailsImpl.build(teacher, teacher.getRoles(), ERole.ROLE_TEACHER);
     }
 }

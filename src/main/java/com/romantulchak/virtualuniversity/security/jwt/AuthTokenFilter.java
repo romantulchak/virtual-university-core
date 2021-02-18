@@ -19,19 +19,12 @@ import java.io.IOException;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    private  JwtUtils jwtUtils;
-    private TeacherDetailsServiceImpl teacherDetailsService;
-
-    private StudentDetailsServiceImpl studentDetailsService;
-
     @Autowired
-    public AuthTokenFilter(TeacherDetailsServiceImpl teacherDetailsService, StudentDetailsServiceImpl studentDetailsService, JwtUtils jwtUtils){
-        this.teacherDetailsService = teacherDetailsService;
-        this.studentDetailsService = studentDetailsService;
-        this.jwtUtils = jwtUtils;
-    }
-
-    public AuthTokenFilter(){}
+    private JwtUtils jwtUtils;
+    @Autowired
+    private TeacherDetailsServiceImpl teacherDetailsService;
+    @Autowired
+    private StudentDetailsServiceImpl studentDetailsService;
 
 
 
@@ -42,13 +35,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)){
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                ERole type = ERole.valueOf(request.getParameter("type"));
+                ERole type = ERole.valueOf(request.getHeader("type"));
                 UserDetails userDetails = null;
                 switch (type){
-                    case STUDENT:
+                    case ROLE_STUDENT:
                         userDetails = studentDetailsService.loadUserByUsername(username);
                         break;
-                    case TEACHER:
+                    case ROLE_TEACHER:
                         userDetails = teacherDetailsService.loadUserByUsername(username);
                         break;
                 }

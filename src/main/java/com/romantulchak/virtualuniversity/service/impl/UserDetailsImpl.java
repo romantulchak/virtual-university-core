@@ -48,6 +48,14 @@ public class UserDetailsImpl implements UserDetails {
                 type.name());
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

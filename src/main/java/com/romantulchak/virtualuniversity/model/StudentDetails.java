@@ -1,13 +1,18 @@
 package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Embeddable
 public class StudentDetails {
 
+
+    @NotBlank(message = "Passport is required")
     private String passport;
 
+
+    @NotBlank(message = "Citizen is required")
     private String citizen;
 
     private LocalDateTime birthDay;

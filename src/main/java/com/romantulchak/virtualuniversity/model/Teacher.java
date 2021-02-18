@@ -19,7 +19,7 @@ public class Teacher extends UserAbstract{
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "teachers_roles", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 

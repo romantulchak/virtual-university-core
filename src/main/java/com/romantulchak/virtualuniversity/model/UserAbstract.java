@@ -4,6 +4,8 @@ import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.ERole;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,16 +16,24 @@ public abstract class UserAbstract {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NotBlank(message = "First Name is required")
     private String firstName;
+
+    @NotBlank(message = "Last Name is required")
     private String lastName;
 
     @Column(unique = true)
+    @NotBlank(message = "Login is required")
     private String login;
 
+    @NotBlank(message = "Password is required")
     private String password;
 
+    @Email
     private String privateEmail;
 
+    @NotBlank(message = "Email is required")
+    @Email
     private String email;
 
     @Enumerated(EnumType.STRING)
