@@ -35,11 +35,12 @@ public class Student extends UserAbstract{
     private Set<Role> roles = new HashSet<>();
 
 
-    public Student(String firstName, String lastName, String login, String password, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
-        super(firstName, lastName, login, password, gender, privateEmail, email);
+    public Student(String firstName, String lastName, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
+        super(firstName, lastName, gender, privateEmail, email);
         this.studentDetails = studentDetails;
         this.studentStatus = studentStatus;
     }
+
 
     public Student() {
 

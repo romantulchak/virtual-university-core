@@ -1,7 +1,8 @@
 package com.romantulchak.virtualuniversity.contoller;
 
-import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExists;
-import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExists;
+import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
+import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
+import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,13 +16,18 @@ import java.util.Map;
 
 @ControllerAdvice
 public class AdvisorController extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(StudentWithSameLoginAlreadyExists.class)
-    public ResponseEntity<?> handleStudentWithSameLoginAlreadyExists(StudentWithSameLoginAlreadyExists ex, WebRequest webRequest){
+    @ExceptionHandler(StudentWithSameLoginAlreadyExistsException.class)
+    public ResponseEntity<?> handleStudentWithSameLoginAlreadyExists(StudentWithSameLoginAlreadyExistsException ex, WebRequest webRequest){
         Map<String, Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(TeacherWithSameLoginAlreadyExists.class)
-    public ResponseEntity<?> handleTeacherWithSameLoginAlreadyExists(TeacherWithSameLoginAlreadyExists ex, WebRequest webRequest){
+    @ExceptionHandler(TeacherWithSameLoginAlreadyExistsException.class)
+    public ResponseEntity<?> handleTeacherWithSameLoginAlreadyExists(TeacherWithSameLoginAlreadyExistsException ex, WebRequest webRequest){
+        Map<String, Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<?> handleStudentNotFoundException(StudentNotFoundException ex, WebRequest webRequest){
         Map<String, Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

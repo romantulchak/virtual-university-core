@@ -42,11 +42,9 @@ public abstract class UserAbstract {
 
     public UserAbstract(){}
 
-    public UserAbstract(String firstName, String lastName, String login, String password, Gender gender, String privateEmail, String email) {
+    public UserAbstract(String firstName, String lastName, Gender gender, String privateEmail, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.login = login;
-        this.password = password;
         this.gender = gender;
         this.privateEmail = privateEmail;
         this.email = email;

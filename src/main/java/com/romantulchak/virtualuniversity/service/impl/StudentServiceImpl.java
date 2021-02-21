@@ -1,10 +1,9 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
-import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExists;
-import com.romantulchak.virtualuniversity.model.Role;
+import com.romantulchak.virtualuniversity.dto.StudentDTO;
+import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
+import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.Student;
-import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
-import com.romantulchak.virtualuniversity.payload.request.RegistrationRequest;
 import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
@@ -12,9 +11,6 @@ import com.romantulchak.virtualuniversity.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -40,10 +36,19 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void createStudent(Student student) {
         if(studentRepository.existsByLogin(student.getLogin())) {
-            throw new StudentWithSameLoginAlreadyExists(student.getLogin());
+            throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }
         student.setPassword(passwordEncoder.encode(student.getPassword()));
            
         studentRepository.save(student);
+    }
+
+    @Override
+    public StudentDTO getStudentInformation(long id) {
+        return studentRepository.findStudentById(id).map(this::convertToDTO).orElseThrow(()-> new StudentNotFoundException(id));
+    }
+
+    private StudentDTO convertToDTO(Student student){
+        return new StudentDTO(student);
     }
 }

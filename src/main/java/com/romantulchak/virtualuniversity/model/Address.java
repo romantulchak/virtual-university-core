@@ -1,5 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 
@@ -7,12 +9,15 @@ import javax.validation.constraints.NotBlank;
 public class Address {
 
     @NotBlank(message = "Street is required")
-    private String  street;
+    @JsonView(Views.StudentView.class)
+    private String street;
 
     @NotBlank(message = "Postal Code is required")
+    @JsonView(Views.StudentView.class)
     private String postalCode;
 
     @NotBlank(message = "City is required")
+    @JsonView(Views.StudentView.class)
     private String city;
 
 

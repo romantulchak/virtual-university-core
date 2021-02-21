@@ -26,6 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final TeacherDetailsServiceImpl teacherDetailsService;
     private final StudentDetailsServiceImpl studentDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
+
     @Autowired
     public WebSecurityConfig(TeacherDetailsServiceImpl teacherDetailsService,StudentDetailsServiceImpl studentDetailsService, AuthEntryPointJwt unauthorizedHandler){
         this.teacherDetailsService = teacherDetailsService;
@@ -40,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(teacherDetailsService).passwordEncoder(passwordEncoder());
+            auth.userDetailsService(teacherDetailsService).passwordEncoder(passwordEncoder());
         auth.userDetailsService(studentDetailsService).passwordEncoder(passwordEncoder());
     }
 

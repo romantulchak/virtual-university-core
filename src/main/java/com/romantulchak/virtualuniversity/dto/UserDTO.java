@@ -1,42 +1,48 @@
 package com.romantulchak.virtualuniversity.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.model.StudentDetails;
+import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
-public class UserDTO {
+public abstract class UserDTO {
 
     private long id;
 
+    @JsonView(Views.StudentView.class)
     private String firstName;
 
+    @JsonView(Views.StudentView.class)
     private String lastName;
 
-    private String login;
+    @JsonView(Views.StudentView.class)
+    private String privateEmail;
 
-    private String password;
+    @JsonView(Views.StudentView.class)
+    private String email;
 
-    private StudentDetails studentDetails;
+    @JsonView(Views.StudentView.class)
+    private Gender gender;
 
-    private StudentStatus studentStatus;
-
-    private Collection<Specialization> specializations;
 
     public UserDTO() {
     }
 
-    public UserDTO(Student student) {
-        this.id = student.getId();
-        this.firstName = student.getFirstName();
-        this.lastName = student.getLastName();
-        this.login = student.getLogin();
-        this.password = student.getPassword();
-        this.studentDetails = student.getUserDetails();
-        this.studentStatus = student.getStudentStatus();
-        this.specializations = student.getSpecializations();
+    public UserDTO(long id, String firstName, String lastName, String privateEmail, String email, Gender gender) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.privateEmail = privateEmail;
+        this.email = email;
+        this.gender = gender;
     }
 
     public long getId() {
@@ -63,43 +69,28 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPrivateEmail() {
+        return privateEmail;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setPrivateEmail(String privateEmail) {
+        this.privateEmail = privateEmail;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public StudentDetails getUserDetails() {
-        return studentDetails;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setUserDetails(StudentDetails studentDetails) {
-        this.studentDetails = studentDetails;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
-    public StudentStatus getStudentStatus() {
-        return studentStatus;
-    }
-
-    public void setStudentStatus(StudentStatus studentStatus) {
-        this.studentStatus = studentStatus;
-    }
-
-    public Collection<Specialization> getSpecializations() {
-        return specializations;
-    }
-
-    public void setSpecializations(Collection<Specialization> specializations) {
-        this.specializations = specializations;
-    }
 }

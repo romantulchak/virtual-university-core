@@ -26,8 +26,8 @@ public class Teacher extends UserAbstract{
     public Teacher() {
     }
 
-    public Teacher(String firstName, String lastName, String login, String password, Gender gender, String privateEmail, String email) {
-        super(firstName, lastName, login, password, gender, privateEmail, email);
+    public Teacher(String firstName, String lastName, Gender gender, String privateEmail, String email) {
+        super(firstName, lastName, gender, privateEmail, email);
     }
 
     public Collection<Specialization> getSpecializations() {

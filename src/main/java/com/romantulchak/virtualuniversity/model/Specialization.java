@@ -1,5 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -9,6 +11,7 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @JsonView(Views.StudentView.class)
     private String name;
 
     @ManyToOne
