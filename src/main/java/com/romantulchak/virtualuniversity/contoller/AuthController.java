@@ -1,9 +1,11 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.payload.request.LoginRequest;
+import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.payload.response.JwtResponse;
 import com.romantulchak.virtualuniversity.service.impl.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,5 +24,6 @@ public class AuthController {
     public JwtResponse login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
+
 
 }

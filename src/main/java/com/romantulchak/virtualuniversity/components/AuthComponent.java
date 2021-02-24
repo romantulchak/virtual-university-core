@@ -8,7 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthComponent {
     public boolean hasPermission(Authentication authentication, long id){
-        UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
-        return currentUser.getId() == id;
+        System.out.println(id);
+        if(!authentication.getPrincipal().equals("anonymousUser")) {
+            UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
+            return currentUser.getId() == id;
+        }
+        return false;
     }
 }

@@ -23,7 +23,7 @@ public class Student extends UserAbstract{
     @Embedded
     public Address address;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "studets_specializations", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
     private Collection<Specialization> specializations;
 

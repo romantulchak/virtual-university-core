@@ -6,10 +6,12 @@ import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.payload.request.RegistrationRequest;
+import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.service.StudentService;
 import com.romantulchak.virtualuniversity.service.impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +44,10 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMIN') OR @authComponent.hasPermission(authentication, #id)")
     public StudentDTO getStudentInformation(@PathVariable("userId") long id){
         return studentService.getStudentInformation(id);
+    }
+    @PutMapping("/resetPassword")
+    @PreAuthorize("hasRole('STUDENT') AND @authComponent.hasPermission(authentication, #resetPasswordRequest.userId)")
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        studentService.resetStudentPassword(resetPasswordRequest);
     }
 }

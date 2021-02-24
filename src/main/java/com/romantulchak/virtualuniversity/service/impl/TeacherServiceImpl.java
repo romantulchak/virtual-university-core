@@ -1,7 +1,10 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
+import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +30,16 @@ public class TeacherServiceImpl implements TeacherService {
         }
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacherRepository.save(teacher);
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Teacher teacher = teacherRepository.findById(resetPasswordRequest.getUserId()).orElseThrow(()-> new TeacherNotFoundException(resetPasswordRequest.getUserId()));
+        if (passwordEncoder.matches(teacher.getPassword(), resetPasswordRequest.getOldPassword())) {
+            teacher.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+            teacherRepository.save(teacher);
+        }else {
+            throw new PasswordNotMatchesException();
+        }
     }
 }

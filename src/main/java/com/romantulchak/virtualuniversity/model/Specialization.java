@@ -26,6 +26,9 @@ public class Specialization {
     @OneToMany(mappedBy = "student")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
+    @ManyToMany
+    @JoinTable(name = "specialization_subject", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
+    private Collection<Semester> semesters;
 
     public Specialization(){
 
@@ -81,5 +84,13 @@ public class Specialization {
 
     public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
         this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
+    }
+
+    public Collection<Semester> getSemesters() {
+        return semesters;
+    }
+
+    public void setSemesters(Collection<Semester> semesters) {
+        this.semesters = semesters;
     }
 }

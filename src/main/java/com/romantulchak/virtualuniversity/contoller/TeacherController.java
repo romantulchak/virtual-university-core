@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.service.TeacherService;
 import com.romantulchak.virtualuniversity.service.impl.TeacherServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,5 +24,10 @@ public class TeacherController {
         teacherService.createTeacher(teacher);
     }
 
+    @PutMapping("/restPassword")
+    @PreAuthorize("hasRole('TEACHER') and @authComponent.hasPermission(authentication, #resetPasswordRequest.userId)")
+    public void ResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        teacherService.resetPassword(resetPasswordRequest);
+    }
 
 }

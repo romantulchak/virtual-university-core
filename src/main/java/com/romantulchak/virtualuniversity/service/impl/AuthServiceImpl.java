@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.payload.request.LoginRequest;
+import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.payload.response.JwtResponse;
 import com.romantulchak.virtualuniversity.security.jwt.JwtUtils;
 import com.romantulchak.virtualuniversity.service.AuthService;

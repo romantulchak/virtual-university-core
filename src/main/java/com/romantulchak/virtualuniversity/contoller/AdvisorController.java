@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.contoller;
 
+import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
@@ -28,6 +29,11 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<?> handleStudentNotFoundException(StudentNotFoundException ex, WebRequest webRequest){
+        Map<String, Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(PasswordNotMatchesException.class)
+    public ResponseEntity<?> handlePasswordNotMatchesException(PasswordNotMatchesException ex, WebRequest webRequest){
         Map<String, Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

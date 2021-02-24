@@ -1,5 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -12,8 +14,16 @@ public class Subject {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private SubjectType type;
+
     @OneToMany(mappedBy = "student")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
+
+    @ManyToMany
+    @JoinTable(name = "subject_semester", joinColumns = @JoinColumn(name = "subject_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
+    private Collection<Semester> semesters;
+
 
     public long getId() {
         return id;
@@ -37,5 +47,21 @@ public class Subject {
 
     public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
         this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
+    }
+
+    public Collection<Semester> getSemesters() {
+        return semesters;
+    }
+
+    public void setSemesters(Collection<Semester> semesters) {
+        this.semesters = semesters;
+    }
+
+    public SubjectType getType() {
+        return type;
+    }
+
+    public void setType(SubjectType type) {
+        this.type = type;
     }
 }
