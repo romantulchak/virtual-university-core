@@ -10,6 +10,7 @@ import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
+import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +43,8 @@ public class StudentServiceImpl implements StudentService {
         if(studentRepository.existsByLogin(student.getLogin())) {
             throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }
-        student.setPassword(passwordEncoder.encode(student.getPassword()));
+        String password = PasswordGeneratorUtil.generate();
+        student.setPassword(passwordEncoder.encode(password));
         studentRepository.save(student);
     }
 

@@ -38,7 +38,6 @@ public class StudentController {
     }
 
 
-    //TOOD:
     @GetMapping("/getStudentInformation/{userId}")
     @JsonView(Views.StudentView.class)
     @PreAuthorize("hasRole('ADMIN') OR @authComponent.hasPermission(authentication, #id)")
