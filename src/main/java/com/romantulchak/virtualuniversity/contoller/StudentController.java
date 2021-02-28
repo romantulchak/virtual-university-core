@@ -3,16 +3,11 @@ package com.romantulchak.virtualuniversity.contoller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
 import com.romantulchak.virtualuniversity.model.Student;
-import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
 import com.romantulchak.virtualuniversity.model.Views;
-import com.romantulchak.virtualuniversity.payload.request.RegistrationRequest;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
-import com.romantulchak.virtualuniversity.service.StudentService;
 import com.romantulchak.virtualuniversity.service.impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +29,7 @@ public class StudentController {
     @PostMapping("/createStudent")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public void createUser(@RequestBody Student student){
-        studentService.createStudent(student);
+        studentService.create(student);
     }
 
 

@@ -6,6 +6,7 @@ import com.romantulchak.virtualuniversity.model.Views;
 
 public class SpecializationDTO {
 
+    private long id;
     @JsonView(Views.StudentView.class)
     private String name;
 
@@ -14,14 +15,23 @@ public class SpecializationDTO {
 
     }
     public SpecializationDTO(Specialization specialization){
+        this.id = specialization.getId();
         this.name = specialization.getName();
     }
 
-    public String getSpecializationName() {
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
         return name;
     }
 
-    public void setSpecializationName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 }

@@ -24,7 +24,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 
     @Override
-    public void createTeacher(Teacher teacher) {
+    public void create(Teacher teacher) {
         if (teacherRepository.existsByLogin(teacher.getLogin())){
             throw new TeacherWithSameLoginAlreadyExistsException(teacher.getLogin());
         }

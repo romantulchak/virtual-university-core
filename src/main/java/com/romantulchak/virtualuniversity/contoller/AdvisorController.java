@@ -1,9 +1,6 @@
 package com.romantulchak.virtualuniversity.contoller;
 
-import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
-import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
-import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
-import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
+import com.romantulchak.virtualuniversity.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +31,16 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(PasswordNotMatchesException.class)
     public ResponseEntity<?> handlePasswordNotMatchesException(PasswordNotMatchesException ex, WebRequest webRequest){
+        Map<String, Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(SpecializationIsNullException.class)
+    public ResponseEntity<?> handlePSpecializationIsNullException(SpecializationIsNullException ex, WebRequest webRequest){
+        Map<String, Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(SemesterIsNullException.class)
+    public ResponseEntity<?> handleSemesterIsNullException(SemesterIsNullException ex, WebRequest webRequest){
         Map<String, Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

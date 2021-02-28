@@ -9,6 +9,8 @@ public class Semester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String name;
+
     @ManyToMany(mappedBy = "semesters")
     private Collection<Subject> subjects;
 
@@ -38,5 +40,13 @@ public class Semester {
 
     public void setSubjects(Collection<Subject> subjects) {
         this.subjects = subjects;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

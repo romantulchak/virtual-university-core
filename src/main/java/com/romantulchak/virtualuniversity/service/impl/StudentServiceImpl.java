@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void createStudent(Student student) {
+    public void create(Student student) {
         if(studentRepository.existsByLogin(student.getLogin())) {
             throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }

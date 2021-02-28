@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 @Entity
@@ -9,9 +10,11 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NotBlank
+    @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
     private Collection<Specialization> specialization;
 
     public Course(){}

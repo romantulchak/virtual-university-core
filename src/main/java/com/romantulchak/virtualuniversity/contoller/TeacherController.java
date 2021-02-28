@@ -2,7 +2,6 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
-import com.romantulchak.virtualuniversity.service.TeacherService;
 import com.romantulchak.virtualuniversity.service.impl.TeacherServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class TeacherController {
     @PostMapping("/createTeacher")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public void createTeacher(@RequestBody Teacher teacher){
-        teacherService.createTeacher(teacher);
+        teacherService.create(teacher);
     }
 
     @PutMapping("/restPassword")
