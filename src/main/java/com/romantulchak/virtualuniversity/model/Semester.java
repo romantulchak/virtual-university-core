@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 @Entity
@@ -11,19 +12,23 @@ public class Semester {
 
     private String name;
 
-    @ManyToMany(mappedBy = "semesters")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "semester_subject", joinColumns = @JoinColumn(name = "semester_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private Collection<Subject> subjects;
 
-    @ManyToMany(mappedBy = "semesters")
-    private Collection<Specialization> specializations;
+    private int semesterNumber;
 
 
-    public Collection<Specialization> getSpecializations() {
-        return specializations;
+    @ManyToOne
+    private Specialization specialization;
+
+
+    public Specialization getSpecialization() {
+        return specialization;
     }
 
-    public void setSpecializations(Collection<Specialization> specializations) {
-        this.specializations = specializations;
+    public void setSpecialization(Specialization specialization) {
+        this.specialization = specialization;
     }
 
     public long getId() {
@@ -48,5 +53,13 @@ public class Semester {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getSemesterNumber() {
+        return semesterNumber;
+    }
+
+    public void setSemesterNumber(int semesterNumber) {
+        this.semesterNumber = semesterNumber;
     }
 }

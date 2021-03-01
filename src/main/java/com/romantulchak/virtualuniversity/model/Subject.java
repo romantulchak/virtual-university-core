@@ -20,8 +20,7 @@ public class Subject {
     @OneToMany(mappedBy = "student")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    @ManyToMany
-    @JoinTable(name = "subject_semester", joinColumns = @JoinColumn(name = "subject_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
+    @ManyToMany(mappedBy = "subjects")
     private Collection<Semester> semesters;
 
 

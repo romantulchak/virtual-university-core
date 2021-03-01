@@ -9,10 +9,10 @@ public class SubjectDTO {
     @JsonView(Views.SubjectView.class)
     private long id;
 
-    @JsonView(Views.SubjectView.class)
+    @JsonView({Views.SubjectView.class, Views.SemesterView.class})
     private String name;
 
-    @JsonView(Views.SubjectView.class)
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class})
     private SubjectType type;
     public SubjectDTO() {
     }
