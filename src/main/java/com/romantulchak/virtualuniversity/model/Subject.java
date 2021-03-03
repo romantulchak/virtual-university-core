@@ -17,6 +17,10 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     private SubjectType type;
 
+    @ManyToMany
+    @JoinTable(name = "subject_teacher", joinColumns = @JoinColumn(name = "subject_id"), inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+    private Collection<Teacher> teachers;
+
     @OneToMany(mappedBy = "student")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
@@ -62,5 +66,13 @@ public class Subject {
 
     public void setType(SubjectType type) {
         this.type = type;
+    }
+
+    public Collection<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(Collection<Teacher> teachers) {
+        this.teachers = teachers;
     }
 }

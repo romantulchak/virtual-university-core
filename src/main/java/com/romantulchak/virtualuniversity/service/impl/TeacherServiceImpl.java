@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.romantulchak.virtualuniversity.dto.TeacherDTO;
 import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
@@ -10,6 +11,9 @@ import com.romantulchak.virtualuniversity.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -42,4 +46,13 @@ public class TeacherServiceImpl implements TeacherService {
             throw new PasswordNotMatchesException();
         }
     }
+
+    @Override
+    public Collection<TeacherDTO> findAllTeachers() {
+        return teacherRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+    private TeacherDTO convertToDTO(Teacher teacher){
+        return new TeacherDTO(teacher);
+    }
+
 }

@@ -5,4 +5,5 @@ public class Views {
     public interface CourseView{}
     public interface SubjectView{}
     public interface SemesterView{}
+    public interface SpecializationView{}
 }

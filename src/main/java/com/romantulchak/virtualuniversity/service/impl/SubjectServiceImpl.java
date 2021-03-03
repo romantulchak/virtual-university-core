@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
@@ -19,6 +20,15 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Collection<SubjectDTO> findAllSubjects() {
         return subjectRepository.findAll().stream().map(this::convertDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public void createSubject(Subject subject) {
+        if (subject != null){
+            subjectRepository.save(subject);
+        }else {
+            throw new SubjectIsNullException();
+        }
     }
 
     private SubjectDTO convertDTO(Subject subject){

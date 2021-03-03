@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,7 +13,6 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @JsonView(Views.StudentView.class)
     private String name;
 
     @ManyToOne
@@ -26,7 +27,10 @@ public class Specialization {
     @OneToMany(mappedBy = "student")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    @OneToMany(mappedBy = "specialization")
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "specialization_semester", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
+    @OrderBy("semesterNumber DESC ")
     private Collection<Semester> semesters;
 
     public Specialization(){

@@ -19,15 +19,15 @@ public class Semester {
     private int semesterNumber;
 
 
-    @ManyToOne
-    private Specialization specialization;
+    @ManyToMany(mappedBy = "semesters")
+    private Collection<Specialization> specialization;
 
 
-    public Specialization getSpecialization() {
+    public Collection<Specialization> getSpecialization() {
         return specialization;
     }
 
-    public void setSpecialization(Specialization specialization) {
+    public void setSpecialization(Collection<Specialization> specialization) {
         this.specialization = specialization;
     }
 
