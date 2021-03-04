@@ -28,8 +28,9 @@ public class StudentController {
 
     @PostMapping("/createStudent")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
-    public void createUser(@RequestBody Student student){
-        studentService.create(student);
+    @JsonView(Views.StudentView.class)
+    public StudentDTO createUser(@RequestBody Student student){
+       return studentService.create(student);
     }
 
 

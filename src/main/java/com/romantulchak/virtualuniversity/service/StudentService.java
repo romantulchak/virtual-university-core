@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 
 public interface StudentService {
     Student studentGrade();
-    void create(Student student);
+    StudentDTO create(Student student);
     StudentDTO getStudentInformation(long id);
     void resetStudentPassword(ResetPasswordRequest resetPasswordRequest);
 }

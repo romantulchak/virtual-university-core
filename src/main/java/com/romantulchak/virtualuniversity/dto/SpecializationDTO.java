@@ -12,7 +12,7 @@ public class SpecializationDTO {
     @JsonView({Views.StudentView.class, Views.SpecializationView.class})
     private long id;
 
-    @JsonView({Views.StudentView.class,Views.SpecializationView.class})
+    @JsonView({Views.StudentView.class,Views.SpecializationView.class, Views.StudentGrades.class})
     private String name;
 
     @JsonView(Views.SpecializationView.class)

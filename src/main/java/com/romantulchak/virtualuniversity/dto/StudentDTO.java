@@ -27,8 +27,11 @@ public class StudentDTO extends UserDTO{
     private Collection<SpecializationDTO> specializations;
 
     private Collection<TeacherSubjectStudentGradeLinkDTO> teacherSubjectStudentGradeLinks;
+    @JsonView(Views.StudentView.class)
+    private int currentSemester;
 
     private Set<Role> roles = new HashSet<>();
+
 
 
     public StudentDTO(){
@@ -40,6 +43,7 @@ public class StudentDTO extends UserDTO{
         this.studentStatus = student.getStudentStatus();
         this.address = student.address;
         this.specializations = student.getSpecializations().stream().map(SpecializationDTO::new).collect(Collectors.toList());
+        this.currentSemester = student.getCurrentSemester();
     }
 
     public StudentDetails getStudentDetails() {
@@ -88,5 +92,13 @@ public class StudentDTO extends UserDTO{
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public int getCurrentSemester() {
+        return currentSemester;
+    }
+
+    public void setCurrentSemester(int currentSemester) {
+        this.currentSemester = currentSemester;
     }
 }

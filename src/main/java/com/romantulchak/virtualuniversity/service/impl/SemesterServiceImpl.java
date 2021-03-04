@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 import com.romantulchak.virtualuniversity.dto.SemesterDTO;
 import com.romantulchak.virtualuniversity.exception.SemesterAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.SemesterIsNullException;
+import com.romantulchak.virtualuniversity.exception.SemesterNotFoundException;
 import com.romantulchak.virtualuniversity.model.Semester;
 import com.romantulchak.virtualuniversity.repository.SemesterRepository;
 import com.romantulchak.virtualuniversity.service.SemesterService;
@@ -37,7 +38,16 @@ public class SemesterServiceImpl implements SemesterService {
         return semesterRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public SemesterDTO findSemester(long specializationId, int currentSemesterId) {
+        return semesterRepository.findFirstBySpecialization_IdAndSemesterNumber(specializationId, currentSemesterId)
+                .map(this::convertToDTO)
+                .orElseThrow(SemesterNotFoundException::new);
+    }
+
     private SemesterDTO convertToDTO(Semester semester){
         return new SemesterDTO(semester);
     }
+
+
 }

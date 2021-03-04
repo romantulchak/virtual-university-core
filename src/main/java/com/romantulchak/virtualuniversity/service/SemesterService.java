@@ -9,4 +9,5 @@ public interface SemesterService {
     void create(Semester semester);
     Collection<SemesterDTO> findAllSemesters();
 
+    SemesterDTO findSemester(long specializationId, int currentSemesterId);
 }

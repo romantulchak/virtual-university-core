@@ -14,13 +14,13 @@ import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 public abstract class UserDTO {
-
+    @JsonView({Views.SemesterView.class, Views.StudentView.class})
     private long id;
 
-    @JsonView(Views.StudentView.class)
+    @JsonView({Views.StudentView.class,Views.SemesterView.class,Views.StudentGrades.class})
     private String firstName;
 
-    @JsonView(Views.StudentView.class)
+    @JsonView({Views.StudentView.class, Views.SemesterView.class,Views.StudentGrades.class})
     private String lastName;
 
     @JsonView(Views.StudentView.class)

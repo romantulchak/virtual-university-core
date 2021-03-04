@@ -39,13 +39,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void create(Student student) {
+    public StudentDTO create(Student student) {
         if(studentRepository.existsByLogin(student.getLogin())) {
             throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }
         String password = PasswordGeneratorUtil.generate();
         student.setPassword(passwordEncoder.encode(password));
-        studentRepository.save(student);
+        Student studentAfterSave = studentRepository.save(student);
+        System.out.println(password);
+        return convertToDTO(studentAfterSave);
     }
 
 

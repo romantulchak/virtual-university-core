@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.GradeRating;
+import com.romantulchak.virtualuniversity.utils.GradeConverter;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,7 +12,7 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Enumerated
+    @Convert(converter = GradeConverter.class)
     private GradeRating grade;
 
     @OneToMany(mappedBy = "student")

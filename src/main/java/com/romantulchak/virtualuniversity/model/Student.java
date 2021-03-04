@@ -22,6 +22,8 @@ public class Student extends UserAbstract{
 
     @Embedded
     public Address address;
+    @Column(columnDefinition = "integer default 1")
+    public int currentSemester = 1;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "studets_specializations", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
@@ -101,5 +103,13 @@ public class Student extends UserAbstract{
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public int getCurrentSemester() {
+        return currentSemester;
+    }
+
+    public void setCurrentSemester(int currentSemester) {
+        this.currentSemester = currentSemester;
     }
 }
