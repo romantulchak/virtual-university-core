@@ -5,7 +5,7 @@ import com.romantulchak.virtualuniversity.model.Grade;
 import com.romantulchak.virtualuniversity.model.Views;
 
 public class GradeDTO {
-    @JsonView(Views.StudentGrades.class)
+    @JsonView({Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private double grade;
 
     public GradeDTO(double grade) {

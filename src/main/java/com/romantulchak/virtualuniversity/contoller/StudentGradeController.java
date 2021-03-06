@@ -36,5 +36,18 @@ public class StudentGradeController {
     public void create(@RequestBody Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks){
         studentGradesService.createStudentGrades(teacherSubjectStudentGradeLinks);
     }
+    @GetMapping("/findStudentGradesForTeacher/{teacherId}/{specId}/{semesterId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #teacherId)")
+    @JsonView(Views.TeacherStudentGrades.class)
+    public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesForTeacher(@PathVariable("teacherId") long teacherId,
+                                                                                     @PathVariable("specId") long specializationId,
+                                                                                     @PathVariable("semesterId") long semesterId){
+        return studentGradesService.findStudentGradesForTeacher(teacherId, specializationId, semesterId);
+    }
 
+    @PutMapping("/setGradeForStudent")
+    @PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #teacherSubjectStudentGradeLink.teacher.id)")
+    public void setGrade(@RequestBody TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink){
+        studentGradesService.setGrade(teacherSubjectStudentGradeLink);
+    }
 }

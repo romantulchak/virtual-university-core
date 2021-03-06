@@ -7,4 +7,5 @@ public class Views {
     public interface SemesterView{}
     public interface SpecializationView{}
     public interface StudentGrades{}
+    public interface TeacherStudentGrades{}
 }

@@ -28,6 +28,13 @@ public class SpecializationController {
     public Collection<SpecializationDTO> findAllSpecializationForStudent(@PathVariable("id") long id){
         return specializationService.findAllSpecializationsForStudent(id);
     }
+    
+    @GetMapping("/teacherSpecializations/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
+    @JsonView(Views.SpecializationView.class)
+    public Collection<SpecializationDTO> findAllSpecializationsForTeacher(@PathVariable("id") long id){
+        return specializationService.findALlSpecializationsForTeacher(id);
+    }
 
     @PostMapping("/createSpecialization")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,12 +12,12 @@ import java.time.LocalDateTime;
 public class StudentDetails {
 
 
-    @NotBlank(message = "Passport is required")
+    @NotNull(message = "Passport is required")
     @JsonView(Views.StudentView.class)
     private String passport;
 
 
-    @NotBlank(message = "Citizen is required")
+    @NotNull(message = "Citizen is required")
     @JsonView(Views.StudentView.class)
     private String citizen;
     @JsonView(Views.StudentView.class)

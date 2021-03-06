@@ -18,7 +18,7 @@ public class Teacher extends UserAbstract{
     @JoinTable(name = "teacher_specialization", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
     private Collection<Specialization> specializations;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "teacher")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
 

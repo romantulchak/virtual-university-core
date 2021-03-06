@@ -1,8 +1,12 @@
 package com.romantulchak.virtualuniversity.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 public class Semester {
@@ -14,7 +18,7 @@ public class Semester {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "semester_subject", joinColumns = @JoinColumn(name = "semester_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Collection<Subject> subjects;
+    private Set<Subject> subjects;
 
     private int semesterNumber;
 
@@ -22,6 +26,8 @@ public class Semester {
     @ManyToMany(mappedBy = "semesters")
     private Collection<Specialization> specialization;
 
+    @OneToMany(mappedBy = "semester")
+    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
     public Collection<Specialization> getSpecialization() {
         return specialization;
@@ -43,7 +49,7 @@ public class Semester {
         return subjects;
     }
 
-    public void setSubjects(Collection<Subject> subjects) {
+    public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
     }
 

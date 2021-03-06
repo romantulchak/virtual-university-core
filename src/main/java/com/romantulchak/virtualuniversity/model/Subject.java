@@ -24,7 +24,7 @@ public class Subject {
     @JoinTable(name = "subject_teacher", joinColumns = @JoinColumn(name = "subject_id"), inverseJoinColumns = @JoinColumn(name = "teacher_id"))
     private Collection<Teacher> teachers;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "subject")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
     @ManyToMany(mappedBy = "subjects")

@@ -10,4 +10,5 @@ public interface TeacherService{
     void create(Teacher teacher);
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
     Collection<TeacherDTO> findAllTeachers();
+    TeacherDTO findTeacherById(long id);
 }

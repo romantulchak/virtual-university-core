@@ -10,13 +10,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class SubjectDTO {
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private long id;
 
-    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class})
+    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private String name;
 
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private SubjectType type;
    
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class})

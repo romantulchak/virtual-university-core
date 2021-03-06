@@ -1,5 +1,9 @@
 package com.romantulchak.virtualuniversity.model;
 
+
+
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,9 +20,8 @@ public class TeacherSubjectStudentGradeLink {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "grade_id")
-    private Grade grade;
+    @JoinColumn(name = "grade")
+    private double grade;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "specialization_id")
@@ -27,6 +30,10 @@ public class TeacherSubjectStudentGradeLink {
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 
     public long getId() {
         return id;
@@ -52,11 +59,11 @@ public class TeacherSubjectStudentGradeLink {
         this.subject = subject;
     }
 
-    public Grade getGrade() {
+    public double getGrade() {
         return grade;
     }
 
-    public void setGrade(Grade grade) {
+    public void setGrade(double grade) {
         this.grade = grade;
     }
 
@@ -74,5 +81,13 @@ public class TeacherSubjectStudentGradeLink {
 
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }

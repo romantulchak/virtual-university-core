@@ -24,7 +24,7 @@ public class Specialization {
     @ManyToMany(mappedBy = "specializations")
     private Collection<Teacher> teachers;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "specialization")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
     @ManyToMany

@@ -11,6 +11,6 @@ import java.util.Collection;
 @Repository
 public interface SpecializationRepository extends JpaRepository<Specialization, Long> {
 
-
     Collection<Specialization> findAllByStudents_id(@Param("studentId") long studentId);
+    Collection<Specialization> findAllByTeachers_Id(@Param("teacherId") long teacherId);
 }

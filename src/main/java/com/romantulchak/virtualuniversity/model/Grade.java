@@ -2,9 +2,11 @@ package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.GradeRating;
 import com.romantulchak.virtualuniversity.utils.GradeConverter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Collection;
+
 
 @Entity
 public class Grade {
@@ -12,11 +14,12 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Convert(converter = GradeConverter.class)
-    private GradeRating grade;
+//    @Convert(converter = GradeConverter.class)
+//    private GradeRating grade;
 
-    @OneToMany(mappedBy = "student")
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
+    private double grade = -1.0;
+//    @OneToMany(mappedBy = "grade")
+//    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
 
     public long getId() {
@@ -26,20 +29,23 @@ public class Grade {
     public void setId(long id) {
         this.id = id;
     }
+//
+//    public GradeRating getGrade() {
+//        return grade;
+//    }
+//
+//    public void setGrade(GradeRating grade) {
+//        this.grade = grade;
+//    }
 
-    public GradeRating getGrade() {
+
+    public double getGrade() {
         return grade;
     }
 
-    public void setGrade(GradeRating grade) {
+    public void setGrade(double grade) {
         this.grade = grade;
     }
 
-    public Collection<TeacherSubjectStudentGradeLink> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
 
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
-    }
 }

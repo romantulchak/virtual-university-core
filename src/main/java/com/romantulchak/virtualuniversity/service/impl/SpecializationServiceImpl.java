@@ -37,6 +37,14 @@ public class SpecializationServiceImpl implements SpecializationService {
         return specializationRepository.findAllByStudents_id(studentId).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<SpecializationDTO> findALlSpecializationsForTeacher(long teacherId) {
+        return specializationRepository.findAllByTeachers_Id(teacherId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private SpecializationDTO convertToDTO(Specialization specialization){
         return new SpecializationDTO(specialization, specialization.getSemesters());

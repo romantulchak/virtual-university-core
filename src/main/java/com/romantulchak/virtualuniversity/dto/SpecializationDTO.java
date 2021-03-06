@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class SpecializationDTO {
-    @JsonView({Views.StudentView.class, Views.SpecializationView.class})
+    @JsonView({Views.StudentView.class, Views.SpecializationView.class,Views.TeacherStudentGrades.class})
     private long id;
 
-    @JsonView({Views.StudentView.class,Views.SpecializationView.class, Views.StudentGrades.class})
+    @JsonView({Views.StudentView.class,Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private String name;
 
     @JsonView(Views.SpecializationView.class)

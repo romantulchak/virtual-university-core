@@ -31,10 +31,17 @@ public class TeacherController {
     public void ResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
         teacherService.resetPassword(resetPasswordRequest);
     }
+    @GetMapping("/findTeacherById/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
+    public TeacherDTO findTeacherById(@PathVariable("id") long id){
+        return teacherService.findTeacherById(id);
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public Collection<TeacherDTO> findAllTeachers(){
         return teacherService.findAllTeachers();
     }
+
+
 }
