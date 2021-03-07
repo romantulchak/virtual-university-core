@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
 @RequestMapping("/api/student")
@@ -20,10 +22,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/test")
-    public Student getStudentGrade(){
-        return studentService.studentGrade();
-    }
 
 
     @PostMapping("/createStudent")

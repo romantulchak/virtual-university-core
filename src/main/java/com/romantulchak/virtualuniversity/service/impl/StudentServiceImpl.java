@@ -12,10 +12,12 @@ import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -32,11 +34,6 @@ public class StudentServiceImpl implements StudentService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public Student studentGrade() {
-
-        return studentRepository.findById(7L).orElse(null);
-    }
 
     @Override
     public StudentDTO create(Student student) {
@@ -49,8 +46,6 @@ public class StudentServiceImpl implements StudentService {
         System.out.println(password);
         return convertToDTO(studentAfterSave);
     }
-
-
 
     @Override
     public StudentDTO getStudentInformation(long id) {

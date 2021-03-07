@@ -4,8 +4,10 @@ import com.romantulchak.virtualuniversity.dto.TeacherDTO;
 import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
+import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
+import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
@@ -19,12 +21,13 @@ import java.util.stream.Collectors;
 @Service
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
-
+    private final SubjectRepository subjectRepository;
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    public TeacherServiceImpl(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder) {
+    public TeacherServiceImpl(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, SubjectRepository subjectRepository) {
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
+        this.subjectRepository = subjectRepository;
     }
 
 
@@ -63,6 +66,13 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository
                 .findById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new TeacherNotFoundException(id));
+    }
+
+    @Override
+    public void addSubjectsToTeacher(long id, Collection<Subject> subjects) {
+        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException(id));
+        subjects.forEach(subject -> subject.getTeachers().add(teacher));
+        subjectRepository.saveAll(subjects);
     }
 
     private TeacherDTO convertToDTO(Teacher teacher){

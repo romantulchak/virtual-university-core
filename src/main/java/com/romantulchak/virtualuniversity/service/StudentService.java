@@ -7,7 +7,6 @@ import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import org.springframework.security.core.Authentication;
 
 public interface StudentService {
-    Student studentGrade();
     StudentDTO create(Student student);
     StudentDTO getStudentInformation(long id);
     void resetStudentPassword(ResetPasswordRequest resetPasswordRequest);

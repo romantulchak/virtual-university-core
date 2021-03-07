@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.dto.TeacherDTO;
+import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.service.impl.TeacherServiceImpl;
@@ -44,4 +45,9 @@ public class TeacherController {
     }
 
 
+    @PutMapping("/addSubjectsToTeacher/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void addSubjectsToTeacher(@RequestBody Collection<Subject> subjects, @PathVariable("id") long id){
+        teacherService.addSubjectsToTeacher(id, subjects);
+    }
 }

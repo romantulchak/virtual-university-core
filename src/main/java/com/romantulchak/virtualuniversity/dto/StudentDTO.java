@@ -5,11 +5,12 @@ import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class StudentDTO extends UserDTO{
+public class StudentDTO extends UserDTO {
 
     @JsonView(Views.StudentView.class)
     private StudentDetails studentDetails;

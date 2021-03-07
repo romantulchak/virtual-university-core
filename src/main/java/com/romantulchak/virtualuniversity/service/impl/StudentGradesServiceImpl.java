@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.*;
+import com.romantulchak.virtualuniversity.exception.StudentGradeNotFoundException;
+import com.romantulchak.virtualuniversity.exception.StudentSubjectGradeAlreadyExists;
 import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
 import com.romantulchak.virtualuniversity.model.enumes.GradeRating;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
@@ -21,7 +23,9 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentSubjectsGrades(long id) {
-        return studentGradeRepository.findAllByStudent_Id(id).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return studentGradeRepository.findAllByStudent_Id(id)
+                .stream()
+                .map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -33,6 +37,12 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public void setGrade(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink) {
+        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink1 = studentGradeRepository.findById(teacherSubjectStudentGradeLink
+                                                                                                .getId())
+                                                                                                .orElseThrow(StudentGradeNotFoundException::new);
+        if (teacherSubjectStudentGradeLink.getGrade() >= 2){
+            throw new StudentSubjectGradeAlreadyExists(teacherSubjectStudentGradeLink.getSubject().getId());
+        }
         studentGradeRepository.setGrade(teacherSubjectStudentGradeLink.getId(), teacherSubjectStudentGradeLink.getGrade());
     }
 
@@ -46,11 +56,10 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     private TeacherSubjectStudentGradeLinkDTO convertToDTO(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink){
         SubjectDTO subject = new SubjectDTO(teacherSubjectStudentGradeLink.getSubject());
-        GradeDTO grade = new GradeDTO(teacherSubjectStudentGradeLink.getGrade());
         SpecializationDTO specialization = new SpecializationDTO(teacherSubjectStudentGradeLink.getSpecialization());
         TeacherDTO teacher = new TeacherDTO(teacherSubjectStudentGradeLink.getTeacher());
         StudentDTO student = new StudentDTO(teacherSubjectStudentGradeLink.getStudent());
         SemesterDTO semester = new SemesterDTO(teacherSubjectStudentGradeLink.getSemester());
-        return new TeacherSubjectStudentGradeLinkDTO(teacherSubjectStudentGradeLink.getId(),subject,grade,specialization, teacher, student, semester);
+        return new TeacherSubjectStudentGradeLinkDTO(teacherSubjectStudentGradeLink,subject,specialization, teacher, student, semester);
     }
 }

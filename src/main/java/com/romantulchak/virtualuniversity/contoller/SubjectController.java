@@ -23,15 +23,23 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     @JsonView(Views.SubjectView.class)
     public Collection<SubjectDTO> findAllSubjects(){
         return subjectService.findAllSubjects();
     }
 
     @PostMapping("/createSubject")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void createSubject(@RequestBody Subject subject){
         subjectService.createSubject(subject);
     }
+    
+    @GetMapping("/availableSubjects/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findSubjectsAvailableForTeacher(@PathVariable("id") long id){
+        return subjectService.findSubjectAvailableForTeacher(id);
+    }
+
 }

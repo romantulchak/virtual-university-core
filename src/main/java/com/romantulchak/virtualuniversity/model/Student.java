@@ -7,6 +7,7 @@ import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -112,4 +113,5 @@ public class Student extends UserAbstract{
     public void setCurrentSemester(int currentSemester) {
         this.currentSemester = currentSemester;
     }
+
 }

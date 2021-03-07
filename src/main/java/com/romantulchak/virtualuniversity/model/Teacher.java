@@ -3,6 +3,8 @@ package com.romantulchak.virtualuniversity.model;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -27,6 +29,7 @@ public class Teacher extends UserAbstract{
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(mappedBy = "teachers")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Subject> subjects;
 
     public Teacher() {

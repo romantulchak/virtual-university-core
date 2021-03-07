@@ -8,4 +8,6 @@ import java.util.Collection;
 public interface SubjectService {
     Collection<SubjectDTO> findAllSubjects();
     void createSubject(Subject subject);
+
+    Collection<SubjectDTO> findSubjectAvailableForTeacher(long id);
 }

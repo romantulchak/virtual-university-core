@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service;
 
 import com.romantulchak.virtualuniversity.dto.TeacherDTO;
+import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 
@@ -11,4 +12,6 @@ public interface TeacherService{
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
     Collection<TeacherDTO> findAllTeachers();
     TeacherDTO findTeacherById(long id);
+
+    void addSubjectsToTeacher(long id, Collection<Subject> subjects);
 }
