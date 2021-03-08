@@ -70,6 +70,7 @@ public class Teacher extends UserAbstract{
     public void setSubjects(Collection<Subject> subjects) {
         this.subjects = subjects;
     }
+
 }
 
 

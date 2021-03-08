@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.TeacherSubjectStudentGradeLinkDTO;
+import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.StudentGradesService;
@@ -49,5 +50,10 @@ public class StudentGradeController {
     @PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #teacherSubjectStudentGradeLink.teacher.id)")
     public void setGrade(@RequestBody TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink){
         studentGradesService.setGrade(teacherSubjectStudentGradeLink);
+    }
+    @PutMapping("/addStudentGradeTeacher/{studentGradeId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void addStudentGradeTeacher(@RequestBody Teacher teacher, @PathVariable("studentGradeId") long id){
+        studentGradesService.addStudentGradeTeacher(teacher, id);
     }
 }

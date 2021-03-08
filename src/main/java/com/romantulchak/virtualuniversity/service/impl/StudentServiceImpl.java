@@ -10,8 +10,11 @@ import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
+import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +29,18 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailSender emailSender;
     @Autowired
-    public StudentServiceImpl(StudentGradeRepository studentGradeRepository, StudentRepository studentRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+    public StudentServiceImpl(StudentGradeRepository studentGradeRepository,
+                              StudentRepository studentRepository,
+                              RoleRepository roleRepository,
+                              PasswordEncoder passwordEncoder,
+                              EmailSender emailSender){
         this.studentGradeRepository = studentGradeRepository;
         this.studentRepository = studentRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailSender = emailSender;
     }
 
 
@@ -41,9 +50,9 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }
         String password = PasswordGeneratorUtil.generate();
-        student.setPassword(passwordEncoder.encode(password));
+        student.setPassword(passwordEncoder.encode(password));;
         Student studentAfterSave = studentRepository.save(student);
-        System.out.println(password);
+        emailSender.sendMail(student.getEmail(), "Your data", String.format("Your login: %s Your password: %s", student.getLogin(), password));
         return convertToDTO(studentAfterSave);
     }
 

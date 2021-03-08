@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 import com.romantulchak.virtualuniversity.dto.*;
 import com.romantulchak.virtualuniversity.exception.StudentGradeNotFoundException;
 import com.romantulchak.virtualuniversity.exception.StudentSubjectGradeAlreadyExists;
+import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.TeacherSubjectStudentGradeLink;
 import com.romantulchak.virtualuniversity.model.enumes.GradeRating;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
@@ -44,6 +45,11 @@ public class StudentGradesServiceImpl implements StudentGradesService {
             throw new StudentSubjectGradeAlreadyExists(teacherSubjectStudentGradeLink.getSubject().getId());
         }
         studentGradeRepository.setGrade(teacherSubjectStudentGradeLink.getId(), teacherSubjectStudentGradeLink.getGrade());
+    }
+
+    @Override
+    public void addStudentGradeTeacher(Teacher teacher, long id) {
+
     }
 
     @Override
