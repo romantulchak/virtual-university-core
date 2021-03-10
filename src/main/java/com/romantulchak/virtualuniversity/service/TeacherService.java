@@ -12,6 +12,6 @@ public interface TeacherService{
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
     Collection<TeacherDTO> findAllTeachers();
     TeacherDTO findTeacherById(long id);
-
+    Collection<TeacherDTO> findTeachersBySubject(long subjectId);
     void addSubjectsToTeacher(long id, Collection<Subject> subjects);
 }

@@ -6,8 +6,12 @@ import com.romantulchak.virtualuniversity.payload.request.RegistrationRequest;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import org.springframework.security.core.Authentication;
 
+import java.util.Collection;
+
 public interface StudentService {
     StudentDTO create(Student student);
     StudentDTO getStudentInformation(long id);
     void resetStudentPassword(ResetPasswordRequest resetPasswordRequest);
+
+    Collection<StudentDTO> findStudentByName(String firstName, String lastName);
 }

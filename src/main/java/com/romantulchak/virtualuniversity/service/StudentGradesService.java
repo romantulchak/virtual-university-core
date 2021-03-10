@@ -14,4 +14,6 @@ public interface StudentGradesService {
     void setGrade(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink);
 
     void addStudentGradeTeacher(Teacher teacher, long id);
+
+    Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesBySemester(long studentId, int semesterId);
 }

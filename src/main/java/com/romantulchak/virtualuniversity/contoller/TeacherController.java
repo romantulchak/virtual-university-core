@@ -50,4 +50,10 @@ public class TeacherController {
     public void addSubjectsToTeacher(@RequestBody Collection<Subject> subjects, @PathVariable("id") long id){
         teacherService.addSubjectsToTeacher(id, subjects);
     }
+
+    @GetMapping("/findTeachersForSubject/{subjectId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<TeacherDTO> findTeachersForSubject(@PathVariable("subjectId") long id){
+       return teacherService.findTeachersBySubject(id);
+    }
 }

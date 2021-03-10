@@ -20,4 +20,6 @@ public interface StudentGradeRepository extends JpaRepository<TeacherSubjectStud
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE TeacherSubjectStudentGradeLink t SET t.grade = :grade WHERE t.id = :id")
     void setGrade(@Param("id") long id, @Param("grade") double grade);
+
+    Collection<TeacherSubjectStudentGradeLink> findAllByStudent_IdAndSemester_SemesterNumber(long studentId, int semesterNumber);
 }

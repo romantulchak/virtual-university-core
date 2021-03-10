@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,15 @@ public class StudentServiceImpl implements StudentService {
         }else {
             throw new PasswordNotMatchesException();
         }
+    }
+
+    @Override
+    public Collection<StudentDTO> findStudentByName(String firstName, String lastName) {
+        return studentRepository.findStudentByFirstNameAndLastName(firstName, lastName)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
     }
 
     private StudentDTO convertToDTO(Student student){

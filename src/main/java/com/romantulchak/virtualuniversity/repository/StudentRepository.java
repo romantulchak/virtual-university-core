@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Repository
@@ -18,6 +19,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByLogin(String login);
 
     Optional<Student> findStudentById(long id);
-
+    Collection<Student> findStudentByFirstNameAndLastName(String firstName, String lastName);
 
   }

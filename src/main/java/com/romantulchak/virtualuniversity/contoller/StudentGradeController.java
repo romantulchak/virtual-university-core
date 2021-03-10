@@ -56,4 +56,10 @@ public class StudentGradeController {
     public void addStudentGradeTeacher(@RequestBody Teacher teacher, @PathVariable("studentGradeId") long id){
         studentGradesService.addStudentGradeTeacher(teacher, id);
     }
+
+    @GetMapping("/getStudentGrades")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesBySemester(@RequestParam(name = "studentId") long studentId, @RequestParam(name = "semesterId") int semesterNumber){
+        return studentGradesService.findStudentGradesBySemester(studentId, semesterNumber);
+    }
 }

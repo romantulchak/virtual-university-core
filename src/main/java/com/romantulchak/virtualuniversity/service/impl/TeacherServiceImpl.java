@@ -75,6 +75,14 @@ public class TeacherServiceImpl implements TeacherService {
         subjectRepository.saveAll(subjects);
     }
 
+    @Override
+    public Collection<TeacherDTO> findTeachersBySubject(long subjectId) {
+        return teacherRepository.findAllBySubjects_Id(subjectId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private TeacherDTO convertToDTO(Teacher teacher){
         return new TeacherDTO(teacher);
     }

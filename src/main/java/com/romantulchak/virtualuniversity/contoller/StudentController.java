@@ -43,4 +43,11 @@ public class StudentController {
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
         studentService.resetStudentPassword(resetPasswordRequest);
     }
+
+    @GetMapping("/getStudentByName")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<StudentDTO> getStudentByName(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName){
+        return studentService.findStudentByName(firstName, lastName);
+
+    }
 }

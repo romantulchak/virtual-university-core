@@ -49,12 +49,22 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public void addStudentGradeTeacher(Teacher teacher, long id) {
-
+        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink = studentGradeRepository.findById(id).orElseThrow(StudentGradeNotFoundException::new);
+        teacherSubjectStudentGradeLink.setTeacher(teacher);
+        studentGradeRepository.save(teacherSubjectStudentGradeLink);
     }
 
     @Override
     public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesForTeacher(long teacherId, long specializationId, long semesterId) {
         return studentGradeRepository.findAllByTeacher_IdAndSpecialization_IdAndSemester_Id(teacherId, specializationId, semesterId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesBySemester(long studentId, int semesterNumber) {
+        return studentGradeRepository.findAllByStudent_IdAndSemester_SemesterNumber(studentId, semesterNumber)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
