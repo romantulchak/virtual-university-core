@@ -2,7 +2,10 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.SemesterDTO;
 import com.romantulchak.virtualuniversity.dto.SpecializationDTO;
+import com.romantulchak.virtualuniversity.exception.SemesterNotFoundException;
 import com.romantulchak.virtualuniversity.exception.SpecializationIsNullException;
+import com.romantulchak.virtualuniversity.exception.SpecializationNotFoundException;
+import com.romantulchak.virtualuniversity.exception.SpecializationSemesterAlreadyExists;
 import com.romantulchak.virtualuniversity.model.Semester;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.repository.SemesterRepository;
@@ -18,9 +21,11 @@ import java.util.stream.Collectors;
 public class SpecializationServiceImpl implements SpecializationService {
 
     private final SpecializationRepository specializationRepository;
+    private final SemesterRepository semesterRepository;
     @Autowired
-    public SpecializationServiceImpl(SpecializationRepository specializationRepository){
+    public SpecializationServiceImpl(SpecializationRepository specializationRepository,  SemesterRepository semesterRepository){
         this.specializationRepository = specializationRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     @Override
@@ -48,6 +53,24 @@ public class SpecializationServiceImpl implements SpecializationService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void addSemesterToSpecialization(long specializationId, long semesterId) {
+        Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
+        Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
+        if (specialization.getSemesters().contains(semester)){
+            throw new SpecializationSemesterAlreadyExists(semester.getName(), specialization.getName());
+        }
+        specialization.getSemesters().add(semester);
+        specializationRepository.save(specialization);
+    }
+
+    @Override
+    public Collection<SpecializationDTO> findAllSpecializations() {
+        return specializationRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     private SpecializationDTO convertToDTO(Specialization specialization){
         return new SpecializationDTO(specialization, specialization.getSemesters());

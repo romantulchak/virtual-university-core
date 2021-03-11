@@ -41,4 +41,10 @@ public class SemesterController {
     public SemesterDTO findSemester(@PathVariable("specializationId") long specializationId, @PathVariable("currentSemester") int currentSemesterId){
         return semesterService.findSemester(specializationId, currentSemesterId);
     }
+
+    @GetMapping("/findAvailableSemestersForSpecialization/{specializationId}")
+    @JsonView(Views.SemesterView.class)
+    public Collection<SemesterDTO> findAvailableSemestersForSpecializations(@PathVariable("specializationId") long specializationId){
+        return semesterService.findAvailableSemesters(specializationId);
+    }
 }

@@ -39,6 +39,18 @@ public class SpecializationController {
     @PostMapping("/createSpecialization")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public void createSpecialization(@RequestBody Specialization specialization){
-        this.specializationService.create(specialization);
+        specializationService.create(specialization);
+    }
+
+    @PutMapping("/addSemesterToSpecialization/{semesterId}/{specializationId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    public void addSemesterToSpecialization(@PathVariable("semesterId") long semesterId, @PathVariable("specializationId") long specializationId){
+        specializationService.addSemesterToSpecialization(specializationId, semesterId);
+    }
+
+    @GetMapping("/findAllSpecializations")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    public Collection<SpecializationDTO> findAllSpecializations(){
+        return specializationService.findAllSpecializations();
     }
 }

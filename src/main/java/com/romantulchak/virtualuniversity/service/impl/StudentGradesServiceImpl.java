@@ -54,6 +54,10 @@ public class StudentGradesServiceImpl implements StudentGradesService {
         studentGradeRepository.save(teacherSubjectStudentGradeLink);
     }
 
+
+    //TODO:
+    //Add ability to change teacher for semester subjects
+
     @Override
     public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesForTeacher(long teacherId, long specializationId, long semesterId) {
         return studentGradeRepository.findAllByTeacher_IdAndSpecialization_IdAndSemester_Id(teacherId, specializationId, semesterId)

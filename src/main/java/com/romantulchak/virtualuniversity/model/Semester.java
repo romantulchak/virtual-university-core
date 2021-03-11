@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -67,5 +68,18 @@ public class Semester {
 
     public void setSemesterNumber(int semesterNumber) {
         this.semesterNumber = semesterNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Semester)) return false;
+        Semester semester = (Semester) o;
+        return id == semester.id && semesterNumber == semester.semesterNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, semesterNumber);
     }
 }

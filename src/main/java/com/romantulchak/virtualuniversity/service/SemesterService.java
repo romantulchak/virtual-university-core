@@ -10,4 +10,6 @@ public interface SemesterService {
     Collection<SemesterDTO> findAllSemesters();
 
     SemesterDTO findSemester(long specializationId, int currentSemesterId);
+
+    Collection<SemesterDTO> findAvailableSemesters(long specializationId);
 }

@@ -45,6 +45,14 @@ public class SemesterServiceImpl implements SemesterService {
                 .orElseThrow(SemesterNotFoundException::new);
     }
 
+    @Override
+    public Collection<SemesterDTO> findAvailableSemesters(long specializationId) {
+        Collection<Semester> allForSpecializations = semesterRepository.findAllBySpecialization_Id(specializationId);
+        Collection<Semester> semesters = semesterRepository.findAll();
+        semesters.removeAll(allForSpecializations);
+        return semesters.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     private SemesterDTO convertToDTO(Semester semester){
         return new SemesterDTO(semester);
     }
