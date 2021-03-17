@@ -43,6 +43,14 @@ public class SubjectServiceImpl implements SubjectService {
         return subjects.stream().map(this::convertDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<SubjectDTO> findTeacherSubjects(long id) {
+        return subjectRepository.findAllByTeachers_Id(id)
+                .stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
+    }
+
     private SubjectDTO convertDTO(Subject subject){
         return new SubjectDTO(subject);
     }

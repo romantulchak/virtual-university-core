@@ -13,4 +13,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject LEFT OUTER JOIN subject_teacher st on subject.id = st.subject_id WHERE st.teacher_id <> :teacherId", nativeQuery = true)
     Collection<Subject> findAvailableSubjects(@Param("teacherId") long id);
+
+    Collection<Subject> findAllByTeachers_Id(long teachers_id);
 }

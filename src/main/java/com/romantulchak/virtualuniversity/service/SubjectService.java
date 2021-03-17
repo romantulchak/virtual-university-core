@@ -10,4 +10,6 @@ public interface SubjectService {
     void createSubject(Subject subject);
 
     Collection<SubjectDTO> findSubjectAvailableForTeacher(long id);
+
+    Collection<SubjectDTO> findTeacherSubjects(long id);
 }
