@@ -45,7 +45,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         Teacher teacher = teacherRepository.findById(resetPasswordRequest.getUserId()).orElseThrow(()-> new TeacherNotFoundException(resetPasswordRequest.getUserId()));
-        if (passwordEncoder.matches(teacher.getPassword(), resetPasswordRequest.getOldPassword())) {
+        if (passwordEncoder.matches(resetPasswordRequest.getOldPassword(), teacher.getPassword())){
             teacher.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
             teacherRepository.save(teacher);
         }else {

@@ -27,7 +27,7 @@ public class TeacherController {
         teacherService.create(teacher);
     }
 
-    @PutMapping("/restPassword")
+    @PutMapping("/resetPassword")
     @PreAuthorize("hasRole('TEACHER') and @authComponent.hasPermission(authentication, #resetPasswordRequest.userId)")
     public void ResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
         teacherService.resetPassword(resetPasswordRequest);
