@@ -7,4 +7,6 @@ import java.util.Collection;
 
 public interface CourseService {
     Collection<CourseDTO> findAllCourses();
+
+    void createCourse(Course course);
 }

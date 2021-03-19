@@ -25,20 +25,17 @@ public class TeacherSubjectStudentGradeLinkDTO {
     @JsonView({Views.StudentGrades.class,Views.TeacherStudentGrades.class})
     private TeacherDTO teacher;
 
-    @JsonView({Views.StudentGrades.class,Views.TeacherStudentGrades.class})
-    private SemesterDTO semester;
 
     public TeacherSubjectStudentGradeLinkDTO() {
     }
 
-    public TeacherSubjectStudentGradeLinkDTO(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink, SubjectDTO subject, SpecializationDTO specialization, TeacherDTO teacher, StudentDTO student, SemesterDTO semester) {
+    public TeacherSubjectStudentGradeLinkDTO(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink, SubjectDTO subject, SpecializationDTO specialization, TeacherDTO teacher, StudentDTO student) {
         this.id = teacherSubjectStudentGradeLink.getId();
         this.subject = subject;
         this.grade = teacherSubjectStudentGradeLink.getGrade();
         this.specialization = specialization;
         this.teacher = teacher;
         this.student = student;
-        this.semester = semester;
     }
 
     public long getId() {
@@ -79,14 +76,6 @@ public class TeacherSubjectStudentGradeLinkDTO {
 
     public void setTeacher(TeacherDTO teacher) {
         this.teacher = teacher;
-    }
-
-    public SemesterDTO getSemester() {
-        return semester;
-    }
-
-    public void setSemester(SemesterDTO semester) {
-        this.semester = semester;
     }
 
     public double getGrade() {

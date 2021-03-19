@@ -44,7 +44,7 @@ public class SubjectController {
 
     @GetMapping("/findTeacherSubjects/{teacherId}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
-    @JsonView(Views.SubjectView.class)
+    @JsonView(Views.TeacherSubjectView.class)
     public Collection<SubjectDTO> subjectsForTeacher(@PathVariable("teacherId") long id){
          return subjectService.findTeacherSubjects(id);
     }

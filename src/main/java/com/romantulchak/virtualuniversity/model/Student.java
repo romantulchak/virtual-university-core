@@ -1,13 +1,10 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,6 +34,9 @@ public class Student extends UserAbstract{
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+
+    @ManyToMany(mappedBy = "students")
+    private Collection<StudentGroup> studentGroups;
 
     public Student(String firstName, String lastName, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
         super(firstName, lastName, gender, privateEmail, email);
@@ -114,4 +114,11 @@ public class Student extends UserAbstract{
         this.currentSemester = currentSemester;
     }
 
+    public Collection<StudentGroup> getGroups() {
+        return studentGroups;
+    }
+
+    public void setGroups(Collection<StudentGroup> studentGroups) {
+        this.studentGroups = studentGroups;
+    }
 }

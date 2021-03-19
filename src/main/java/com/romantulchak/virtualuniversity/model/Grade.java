@@ -14,13 +14,7 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-//    @Convert(converter = GradeConverter.class)
-//    private GradeRating grade;
-
     private double grade = -1.0;
-//    @OneToMany(mappedBy = "grade")
-//    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
-
 
     public long getId() {
         return id;
@@ -29,15 +23,6 @@ public class Grade {
     public void setId(long id) {
         this.id = id;
     }
-//
-//    public GradeRating getGrade() {
-//        return grade;
-//    }
-//
-//    public void setGrade(GradeRating grade) {
-//        this.grade = grade;
-//    }
-
 
     public double getGrade() {
         return grade;

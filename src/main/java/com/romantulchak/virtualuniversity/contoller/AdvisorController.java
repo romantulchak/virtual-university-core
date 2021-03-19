@@ -64,6 +64,16 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CourseWithNameAlreadyExists.class)
+    public ResponseEntity<?> handleCourseWithNameAlreadyExists(CourseWithNameAlreadyExists ex, WebRequest webRequest){
+        Map<String ,Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(CourseIsNullException.class)
+    public ResponseEntity<?> handleCourseIsNullException(CourseIsNullException ex, WebRequest webRequest){
+        Map<String ,Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
     private Map<String, Object> getBody(RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

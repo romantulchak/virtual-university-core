@@ -28,8 +28,8 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    @ManyToMany(mappedBy = "subjects")
-    private Collection<Semester> semesters;
+    @OneToMany(mappedBy = "subject")
+    private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
 
     public long getId() {
@@ -56,14 +56,6 @@ public class Subject {
         this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
-    public Collection<Semester> getSemesters() {
-        return semesters;
-    }
-
-    public void setSemesters(Collection<Semester> semesters) {
-        this.semesters = semesters;
-    }
-
     public SubjectType getType() {
         return type;
     }
@@ -78,6 +70,14 @@ public class Subject {
 
     public void setTeachers(Collection<Teacher> teachers) {
         this.teachers = teachers;
+    }
+
+    public Collection<SubjectTeacherGroup> getSubjectTeacherGroups() {
+        return subjectTeacherGroups;
+    }
+
+    public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
+        this.subjectTeacherGroups = subjectTeacherGroups;
     }
 
     @Override

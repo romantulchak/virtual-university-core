@@ -8,4 +8,5 @@ public class Views {
     public interface SpecializationView{}
     public interface StudentGrades{}
     public interface TeacherStudentGrades{}
+    public interface TeacherSubjectView{}
 }

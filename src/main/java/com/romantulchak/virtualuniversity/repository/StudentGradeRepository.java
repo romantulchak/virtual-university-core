@@ -15,11 +15,10 @@ import java.util.Collection;
 @Repository
 public interface StudentGradeRepository extends JpaRepository<TeacherSubjectStudentGradeLink, Long> {
     Collection<TeacherSubjectStudentGradeLink> findAllByStudent_Id(long id);
-    Collection<TeacherSubjectStudentGradeLink> findAllByTeacher_IdAndSpecialization_IdAndSemester_Id(long teacherId, long specializationId, long semesterId);
+    Collection<TeacherSubjectStudentGradeLink> findAllByTeacher_IdAndSpecialization_Id(long teacherId, long specializationId);
 
     @Modifying(flushAutomatically = true)
     @Query(value = "UPDATE TeacherSubjectStudentGradeLink t SET t.grade = :grade WHERE t.id = :id")
     void setGrade(@Param("id") long id, @Param("grade") double grade);
 
-    Collection<TeacherSubjectStudentGradeLink> findAllByStudent_IdAndSemester_SemesterNumber(long studentId, int semesterNumber);
 }

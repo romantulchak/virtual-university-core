@@ -17,18 +17,14 @@ public class Semester {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "semester_subject", joinColumns = @JoinColumn(name = "semester_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Set<Subject> subjects;
+    @OneToMany(mappedBy = "semester")
+    private Collection<StudentGroup> groups;
 
     private int semesterNumber;
-
 
     @ManyToMany(mappedBy = "semesters")
     private Collection<Specialization> specialization;
 
-    @OneToMany(mappedBy = "semester")
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
     public Collection<Specialization> getSpecialization() {
         return specialization;
@@ -46,14 +42,6 @@ public class Semester {
         this.id = id;
     }
 
-    public Collection<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
     public String getName() {
         return name;
     }
@@ -69,6 +57,15 @@ public class Semester {
     public void setSemesterNumber(int semesterNumber) {
         this.semesterNumber = semesterNumber;
     }
+
+    public Collection<StudentGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Collection<StudentGroup> groups) {
+        this.groups = groups;
+    }
+
 
     @Override
     public boolean equals(Object o) {

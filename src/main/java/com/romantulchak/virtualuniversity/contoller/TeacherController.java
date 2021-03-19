@@ -44,6 +44,7 @@ public class TeacherController {
         return teacherService.findAllTeachers();
     }
 
+    //TODO: add teacher to specialization
 
     @PutMapping("/addSubjectsToTeacher/{id}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")

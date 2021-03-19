@@ -38,10 +38,11 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public void setGrade(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink) {
-        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink1 = studentGradeRepository.findById(teacherSubjectStudentGradeLink
+        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLinkFromDatabase= studentGradeRepository.findById(teacherSubjectStudentGradeLink
                                                                                                 .getId())
                                                                                                 .orElseThrow(StudentGradeNotFoundException::new);
-        if (teacherSubjectStudentGradeLink.getGrade() >= 2){
+
+        if (teacherSubjectStudentGradeLinkFromDatabase.getGrade() >= 2){
             throw new StudentSubjectGradeAlreadyExists(teacherSubjectStudentGradeLink.getSubject().getId());
         }
         studentGradeRepository.setGrade(teacherSubjectStudentGradeLink.getId(), teacherSubjectStudentGradeLink.getGrade());
@@ -60,15 +61,16 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesForTeacher(long teacherId, long specializationId, long semesterId) {
-        return studentGradeRepository.findAllByTeacher_IdAndSpecialization_IdAndSemester_Id(teacherId, specializationId, semesterId)
+        return studentGradeRepository.findAllByTeacher_IdAndSpecialization_Id(teacherId, specializationId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    //TODO: fix it
     @Override
     public Collection<TeacherSubjectStudentGradeLinkDTO> findStudentGradesBySemester(long studentId, int semesterNumber) {
-        return studentGradeRepository.findAllByStudent_IdAndSemester_SemesterNumber(studentId, semesterNumber)
+        return studentGradeRepository.findAllByStudent_Id(studentId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -79,7 +81,6 @@ public class StudentGradesServiceImpl implements StudentGradesService {
         SpecializationDTO specialization = new SpecializationDTO(teacherSubjectStudentGradeLink.getSpecialization());
         TeacherDTO teacher = new TeacherDTO(teacherSubjectStudentGradeLink.getTeacher());
         StudentDTO student = new StudentDTO(teacherSubjectStudentGradeLink.getStudent());
-        SemesterDTO semester = new SemesterDTO(teacherSubjectStudentGradeLink.getSemester());
-        return new TeacherSubjectStudentGradeLinkDTO(teacherSubjectStudentGradeLink,subject,specialization, teacher, student, semester);
+        return new TeacherSubjectStudentGradeLinkDTO(teacherSubjectStudentGradeLink,subject,specialization, teacher, student);
     }
 }

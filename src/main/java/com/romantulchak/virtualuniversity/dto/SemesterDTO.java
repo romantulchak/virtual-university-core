@@ -16,8 +16,6 @@ public class SemesterDTO {
     @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class})
     private String name;
 
-    @JsonView({Views.SemesterView.class,Views.SpecializationView.class})
-    private Collection<SubjectDTO> subjects;
 
     @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class})
     private int semesterNumber;
@@ -25,7 +23,6 @@ public class SemesterDTO {
     public SemesterDTO(Semester semester) {
         this.id = semester.getId();
         this.name = semester.getName();
-        this.subjects = semester.getSubjects().stream().map(SubjectDTO::new).collect(Collectors.toList());
         this.semesterNumber = semester.getSemesterNumber();
     }
 
@@ -43,14 +40,6 @@ public class SemesterDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Collection<SubjectDTO> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Collection<SubjectDTO> subjects) {
-        this.subjects = subjects;
     }
 
     public int getSemesterNumber() {

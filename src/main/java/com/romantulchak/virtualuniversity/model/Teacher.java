@@ -28,6 +28,10 @@ public class Teacher extends UserAbstract{
     @JoinTable(name = "teachers_roles", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "teacher")
+    private Collection<SubjectTeacherGroup> subjectTeacherGroups;
+
     @ManyToMany(mappedBy = "teachers")
     @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Subject> subjects;
@@ -71,6 +75,13 @@ public class Teacher extends UserAbstract{
         this.subjects = subjects;
     }
 
+    public Collection<SubjectTeacherGroup> getSubjectTeacherGroups() {
+        return subjectTeacherGroups;
+    }
+
+    public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
+        this.subjectTeacherGroups = subjectTeacherGroups;
+    }
 }
 
 

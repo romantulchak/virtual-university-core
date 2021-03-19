@@ -31,10 +31,6 @@ public class TeacherSubjectStudentGradeLink {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "semester_id")
-    private Semester semester;
-
     public long getId() {
         return id;
     }
@@ -81,13 +77,5 @@ public class TeacherSubjectStudentGradeLink {
 
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
-    }
-
-    public Semester getSemester() {
-        return semester;
-    }
-
-    public void setSemester(Semester semester) {
-        this.semester = semester;
     }
 }

@@ -47,7 +47,7 @@ public class StudentGradeController {
     }
 
     @PutMapping("/setGradeForStudent")
-    @PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #teacherSubjectStudentGradeLink.teacher.id)")
+    //@PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #teacherSubjectStudentGradeLink.teacher.id)")
     public void setGrade(@RequestBody TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink){
         studentGradesService.setGrade(teacherSubjectStudentGradeLink);
     }
