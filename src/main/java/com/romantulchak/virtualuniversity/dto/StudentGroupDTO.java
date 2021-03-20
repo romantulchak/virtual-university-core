@@ -1,10 +1,8 @@
 package com.romantulchak.virtualuniversity.dto;
 
-import com.romantulchak.virtualuniversity.model.StudentGroup;
-import com.romantulchak.virtualuniversity.model.Schedule;
-import com.romantulchak.virtualuniversity.model.Semester;
-import com.romantulchak.virtualuniversity.model.Student;
+import com.romantulchak.virtualuniversity.model.*;
 
+import javax.persistence.OneToMany;
 import java.util.Collection;
 
 public class StudentGroupDTO {
@@ -19,6 +17,9 @@ public class StudentGroupDTO {
 
     private Collection<Student> students;
 
+    private Collection<Specialization> specializations;
+
+    private Collection<SubjectTeacherGroup> subjects;
 
     public StudentGroupDTO(){
 
@@ -70,5 +71,21 @@ public class StudentGroupDTO {
 
     public void setStudents(Collection<Student> students) {
         this.students = students;
+    }
+
+    public Collection<Specialization> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(Collection<Specialization> specializations) {
+        this.specializations = specializations;
+    }
+
+    public Collection<SubjectTeacherGroup> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Collection<SubjectTeacherGroup> subjects) {
+        this.subjects = subjects;
     }
 }

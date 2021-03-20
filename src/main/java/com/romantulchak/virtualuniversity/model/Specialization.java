@@ -33,6 +33,14 @@ public class Specialization {
     @OrderBy("semesterNumber DESC ")
     private Collection<Semester> semesters;
 
+
+    @ManyToMany
+    @JoinTable(name = "specialization_subject", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private Collection<Subject> subjects;
+
+    @OneToMany(mappedBy = "specialization")
+    private Collection<StudentGroup> studentGroups;
+
     public Specialization(){
 
     }
@@ -95,5 +103,21 @@ public class Specialization {
 
     public void setSemesters(Collection<Semester> semesters) {
         this.semesters = semesters;
+    }
+
+    public Collection<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Collection<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public Collection<StudentGroup> getStudentGroups() {
+        return studentGroups;
+    }
+
+    public void setStudentGroups(Collection<StudentGroup> studentGroups) {
+        this.studentGroups = studentGroups;
     }
 }

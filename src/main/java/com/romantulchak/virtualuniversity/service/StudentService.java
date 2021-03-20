@@ -14,4 +14,6 @@ public interface StudentService {
     void resetStudentPassword(ResetPasswordRequest resetPasswordRequest);
 
     Collection<StudentDTO> findStudentByName(String firstName, String lastName);
+
+    Collection<StudentDTO> findStudentsWithoutGroup();
 }

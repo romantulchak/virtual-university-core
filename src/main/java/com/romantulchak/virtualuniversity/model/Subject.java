@@ -31,6 +31,9 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
+    @ManyToMany(mappedBy = "subjects")
+    private Collection<Specialization> specializations;
+
 
     public long getId() {
         return id;
@@ -78,6 +81,14 @@ public class Subject {
 
     public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
         this.subjectTeacherGroups = subjectTeacherGroups;
+    }
+
+    public Collection<Specialization> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(Collection<Specialization> specializations) {
+        this.specializations = specializations;
     }
 
     @Override

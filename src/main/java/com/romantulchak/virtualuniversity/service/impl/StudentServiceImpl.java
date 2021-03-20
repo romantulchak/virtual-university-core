@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
+import com.romantulchak.virtualuniversity.dto.UserDTO;
 import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +82,16 @@ public class StudentServiceImpl implements StudentService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public Collection<StudentDTO> findStudentsWithoutGroup() {
+        return this.studentRepository.findStudentWithoutGroup()
+                .stream()
+                .map(this::convertToDTO)
+                .sorted(Comparator.comparing(UserDTO::getFirstName)
+                                  .thenComparing(UserDTO::getLastName))
+                .collect(Collectors.toList());
     }
 
     private StudentDTO convertToDTO(Student student){

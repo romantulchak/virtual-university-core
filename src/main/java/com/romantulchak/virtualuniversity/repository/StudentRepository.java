@@ -21,4 +21,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findStudentById(long id);
     Collection<Student> findStudentByFirstNameAndLastName(String firstName, String lastName);
 
+    @Query(value = "SELECT new Student(s.id, s.firstName, s.lastName) FROM Student s LEFT OUTER JOIN s.studentGroups sg WHERE sg.id IS NULL ")
+    Collection<Student> findStudentWithoutGroup();
   }

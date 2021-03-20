@@ -38,11 +38,11 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public void setGrade(TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink) {
-        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLinkFromDatabase= studentGradeRepository.findById(teacherSubjectStudentGradeLink
+        TeacherSubjectStudentGradeLink studentGrade = studentGradeRepository.findById(teacherSubjectStudentGradeLink
                                                                                                 .getId())
                                                                                                 .orElseThrow(StudentGradeNotFoundException::new);
 
-        if (teacherSubjectStudentGradeLinkFromDatabase.getGrade() >= 2){
+        if (studentGrade.getGrade() >= 2){
             throw new StudentSubjectGradeAlreadyExists(teacherSubjectStudentGradeLink.getSubject().getId());
         }
         studentGradeRepository.setGrade(teacherSubjectStudentGradeLink.getId(), teacherSubjectStudentGradeLink.getGrade());
@@ -50,7 +50,9 @@ public class StudentGradesServiceImpl implements StudentGradesService {
 
     @Override
     public void addStudentGradeTeacher(Teacher teacher, long id) {
-        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink = studentGradeRepository.findById(id).orElseThrow(StudentGradeNotFoundException::new);
+        TeacherSubjectStudentGradeLink teacherSubjectStudentGradeLink = studentGradeRepository
+                                                                            .findById(id)
+                                                                            .orElseThrow(StudentGradeNotFoundException::new);
         teacherSubjectStudentGradeLink.setTeacher(teacher);
         studentGradeRepository.save(teacherSubjectStudentGradeLink);
     }

@@ -9,8 +9,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class StudentDTO extends UserDTO {
+public class StudentDTO extends UserDTO implements Comparator<StudentDTO>{
 
     @JsonView(Views.StudentView.class)
     private StudentDetails studentDetails;
@@ -43,7 +44,7 @@ public class StudentDTO extends UserDTO {
         this.studentDetails = student.getStudentDetails();
         this.studentStatus = student.getStudentStatus();
         this.address = student.address;
-        this.specializations = student.getSpecializations().stream().map(SpecializationDTO::new).collect(Collectors.toList());
+        this.specializations = student.getSpecializations() != null ? student.getSpecializations().stream().map(SpecializationDTO::new).collect(Collectors.toList()) : null;
         this.currentSemester = student.getCurrentSemester();
     }
 
@@ -101,5 +102,10 @@ public class StudentDTO extends UserDTO {
 
     public void setCurrentSemester(int currentSemester) {
         this.currentSemester = currentSemester;
+    }
+
+    @Override
+    public int compare(StudentDTO o1, StudentDTO o2) {
+        return o1.getFirstName().compareTo(o2.getFirstName());
     }
 }

@@ -48,6 +48,11 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public Collection<StudentDTO> getStudentByName(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName){
         return studentService.findStudentByName(firstName, lastName);
+    }
 
+    @GetMapping("/studentWithoutGroup")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<StudentDTO> getStudentsWithoutGroup(){
+        return studentService.findStudentsWithoutGroup();
     }
 }

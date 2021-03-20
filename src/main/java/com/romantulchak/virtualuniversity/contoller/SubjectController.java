@@ -49,4 +49,10 @@ public class SubjectController {
          return subjectService.findTeacherSubjects(id);
     }
 
+    @GetMapping("/findAllForSpecialization/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findAllForSpecialization(@PathVariable("id") long id){
+        return subjectService.findAllForSpecialization(id);
+    }
 }

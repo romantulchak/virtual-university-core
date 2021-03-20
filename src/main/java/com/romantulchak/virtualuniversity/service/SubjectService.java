@@ -12,4 +12,6 @@ public interface SubjectService {
     Collection<SubjectDTO> findSubjectAvailableForTeacher(long id);
 
     Collection<SubjectDTO> findTeacherSubjects(long id);
+
+    Collection<SubjectDTO> findAllForSpecialization(long id);
 }

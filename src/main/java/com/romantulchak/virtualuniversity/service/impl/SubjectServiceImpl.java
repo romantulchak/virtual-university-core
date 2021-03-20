@@ -51,6 +51,14 @@ public class SubjectServiceImpl implements SubjectService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<SubjectDTO> findAllForSpecialization(long id) {
+        return subjectRepository.findAllForSpecialization(id)
+                .stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
+    }
+
     private SubjectDTO convertDTO(Subject subject){
         return new SubjectDTO(subject);
     }

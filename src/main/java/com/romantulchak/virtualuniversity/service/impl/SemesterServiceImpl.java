@@ -53,6 +53,14 @@ public class SemesterServiceImpl implements SemesterService {
         return semesters.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<SemesterDTO> findSemestersForSpecialization(long id) {
+        return semesterRepository.findSemestersForSpecialization(id)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private SemesterDTO convertToDTO(Semester semester){
         return new SemesterDTO(semester);
     }

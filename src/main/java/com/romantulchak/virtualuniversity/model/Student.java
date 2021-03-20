@@ -38,6 +38,12 @@ public class Student extends UserAbstract{
     @ManyToMany(mappedBy = "students")
     private Collection<StudentGroup> studentGroups;
 
+    public Student(long id, String firstName, String lastName){
+        setId(id);
+        setFirstName(firstName);
+        setLastName(lastName);
+    }
+
     public Student(String firstName, String lastName, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
         super(firstName, lastName, gender, privateEmail, email);
         this.studentDetails = studentDetails;

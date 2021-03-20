@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Semester;
 import com.romantulchak.virtualuniversity.model.Specialization;
+import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.model.Views;
 
 import java.util.Collection;
@@ -17,6 +18,8 @@ public class SpecializationDTO {
 
     @JsonView(Views.SpecializationView.class)
     private Collection<SemesterDTO> semesters;
+
+    private Collection<StudentGroup> studentGroups;
 
     public SpecializationDTO(){
 
@@ -53,5 +56,13 @@ public class SpecializationDTO {
 
     public void setSemesters(Collection<SemesterDTO> semesters) {
         this.semesters = semesters;
+    }
+
+    public Collection<StudentGroup> getStudentGroups() {
+        return studentGroups;
+    }
+
+    public void setStudentGroups(Collection<StudentGroup> studentGroups) {
+        this.studentGroups = studentGroups;
     }
 }

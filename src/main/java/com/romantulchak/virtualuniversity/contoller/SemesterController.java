@@ -38,13 +38,22 @@ public class SemesterController {
 
     @GetMapping("/findSemester/{specializationId}/{currentSemester}")
     @JsonView(Views.SemesterView.class)
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public SemesterDTO findSemester(@PathVariable("specializationId") long specializationId, @PathVariable("currentSemester") int currentSemesterId){
         return semesterService.findSemester(specializationId, currentSemesterId);
     }
 
     @GetMapping("/findAvailableSemestersForSpecialization/{specializationId}")
     @JsonView(Views.SemesterView.class)
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public Collection<SemesterDTO> findAvailableSemestersForSpecializations(@PathVariable("specializationId") long specializationId){
         return semesterService.findAvailableSemesters(specializationId);
+    }
+
+    @GetMapping("/findSemestersForSpecialization/{id}")
+    @JsonView(Views.SemesterView.class)
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<SemesterDTO> findSemestersForSpecialization(@PathVariable("id") long id){
+        return semesterService.findSemestersForSpecialization(id);
     }
 }

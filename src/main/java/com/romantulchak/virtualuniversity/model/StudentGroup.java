@@ -24,11 +24,11 @@ public class StudentGroup {
     @JoinTable(name = "group_student", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Collection<Student> students;
 
-    //TODO: SubjectTeacherGroup
+    @ManyToOne
+    private Specialization specialization;
 
-    @ManyToMany
-    @JoinTable(name = "group_subject", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private Collection<Subject> subjects;
+    @OneToMany(mappedBy = "studentGroup")
+    private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
 
     public long getId() {
@@ -71,11 +71,19 @@ public class StudentGroup {
         this.students = students;
     }
 
-    public Collection<Subject> getSubjects() {
-        return subjects;
+    public Collection<SubjectTeacherGroup> getSubjectTeacherGroups() {
+        return subjectTeacherGroups;
     }
 
-    public void setSubjects(Collection<Subject> subjects) {
-        this.subjects = subjects;
+    public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
+        this.subjectTeacherGroups = subjectTeacherGroups;
+    }
+
+    public Specialization getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(Specialization specialization) {
+        this.specialization = specialization;
     }
 }
