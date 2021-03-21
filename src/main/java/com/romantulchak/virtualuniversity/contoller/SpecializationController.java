@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.contoller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.SpecializationDTO;
 import com.romantulchak.virtualuniversity.model.Specialization;
+import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SpecializationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class SpecializationController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public void addSemesterToSpecialization(@PathVariable("semesterId") long semesterId, @PathVariable("specializationId") long specializationId){
         specializationService.addSemesterToSpecialization(specializationId, semesterId);
+    }
+    @PutMapping("/addSubjects/{specializationId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void addSubjects(@RequestBody Collection<Subject> subjects, @PathVariable("specializationId") long specializationId){
+        specializationService.addSubjectsToSpecialization(subjects, specializationId);
     }
 
     @GetMapping("/findAllSpecializations")

@@ -1,16 +1,20 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.exception.SpecializationNotFoundException;
 import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
+import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +61,15 @@ public class SubjectServiceImpl implements SubjectService {
                 .stream()
                 .map(this::convertDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<SubjectDTO> findAvailableSubjectsForSpecialization(long id) {
+            List<Subject> allSubjects = subjectRepository.findAll();
+            allSubjects.removeAll(subjectRepository.findAllForSpecialization(id));
+            return allSubjects.stream()
+                    .map(this::convertDTO)
+                    .collect(Collectors.toList());
     }
 
     private SubjectDTO convertDTO(Subject subject){

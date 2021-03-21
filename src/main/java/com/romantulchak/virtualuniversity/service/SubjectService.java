@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service;
 
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 
 import java.util.Collection;
@@ -14,4 +15,6 @@ public interface SubjectService {
     Collection<SubjectDTO> findTeacherSubjects(long id);
 
     Collection<SubjectDTO> findAllForSpecialization(long id);
+
+    Collection<SubjectDTO> findAvailableSubjectsForSpecialization(long id);
 }

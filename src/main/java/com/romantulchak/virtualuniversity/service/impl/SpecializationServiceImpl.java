@@ -1,6 +1,5 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
-import com.romantulchak.virtualuniversity.dto.SemesterDTO;
 import com.romantulchak.virtualuniversity.dto.SpecializationDTO;
 import com.romantulchak.virtualuniversity.exception.SemesterNotFoundException;
 import com.romantulchak.virtualuniversity.exception.SpecializationIsNullException;
@@ -8,6 +7,7 @@ import com.romantulchak.virtualuniversity.exception.SpecializationNotFoundExcept
 import com.romantulchak.virtualuniversity.exception.SpecializationSemesterAlreadyExists;
 import com.romantulchak.virtualuniversity.model.Semester;
 import com.romantulchak.virtualuniversity.model.Specialization;
+import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.repository.SemesterRepository;
 import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.service.SpecializationService;
@@ -22,17 +22,18 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     private final SpecializationRepository specializationRepository;
     private final SemesterRepository semesterRepository;
+
     @Autowired
-    public SpecializationServiceImpl(SpecializationRepository specializationRepository,  SemesterRepository semesterRepository){
+    public SpecializationServiceImpl(SpecializationRepository specializationRepository, SemesterRepository semesterRepository) {
         this.specializationRepository = specializationRepository;
         this.semesterRepository = semesterRepository;
     }
 
     @Override
     public void create(Specialization specialization) {
-        if (specialization != null){
+        if (specialization != null) {
             specializationRepository.save(specialization);
-        }else {
+        } else {
             throw new SpecializationIsNullException();
         }
     }
@@ -57,7 +58,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     public void addSemesterToSpecialization(long specializationId, long semesterId) {
         Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
         Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
-        if (specialization.getSemesters().contains(semester)){
+        if (specialization.getSemesters().contains(semester)) {
             throw new SpecializationSemesterAlreadyExists(semester.getName(), specialization.getName());
         }
         specialization.getSemesters().add(semester);
@@ -72,7 +73,16 @@ public class SpecializationServiceImpl implements SpecializationService {
                 .collect(Collectors.toList());
     }
 
-    private SpecializationDTO convertToDTO(Specialization specialization){
+    @Override
+    public void addSubjectsToSpecialization(Collection<Subject> subjects, long specializationId) {
+        if (subjects.size() != 0) {
+            Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
+            specialization.getSubjects().addAll(subjects);
+            specializationRepository.save(specialization);
+        }
+    }
+
+    private SpecializationDTO convertToDTO(Specialization specialization) {
         return new SpecializationDTO(specialization, specialization.getSemesters());
     }
 }

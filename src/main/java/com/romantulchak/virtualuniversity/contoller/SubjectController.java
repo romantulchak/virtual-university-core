@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
@@ -54,5 +55,12 @@ public class SubjectController {
     @JsonView(Views.SubjectView.class)
     public Collection<SubjectDTO> findAllForSpecialization(@PathVariable("id") long id){
         return subjectService.findAllForSpecialization(id);
+    }
+
+    @GetMapping("/availableSubject/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findAvailableSubjectsForSpecialization(@PathVariable("id") long id){
+        return subjectService.findAvailableSubjectsForSpecialization(id);
     }
 }

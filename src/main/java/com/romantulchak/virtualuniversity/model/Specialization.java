@@ -35,6 +35,7 @@ public class Specialization {
 
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "specialization_subject", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private Collection<Subject> subjects;
 
