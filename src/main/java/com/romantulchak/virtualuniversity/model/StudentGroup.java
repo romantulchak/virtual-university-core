@@ -3,6 +3,9 @@ package com.romantulchak.virtualuniversity.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class StudentGroup {
@@ -22,13 +25,13 @@ public class StudentGroup {
 
     @ManyToMany
     @JoinTable(name = "group_student", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
-    private Collection<Student> students;
+    private Set<Student> students = new LinkedHashSet<>();
 
     @ManyToOne
     private Specialization specialization;
 
     @OneToMany(mappedBy = "studentGroup")
-    private Collection<SubjectTeacherGroup> subjectTeacherGroups;
+    private Set<SubjectTeacherGroup> subjectTeacherGroups = new LinkedHashSet<>();
 
 
     public long getId() {
@@ -67,15 +70,15 @@ public class StudentGroup {
         return students;
     }
 
-    public void setStudents(Collection<Student> students) {
+    public void setStudents(Set<Student> students) {
         this.students = students;
     }
 
-    public Collection<SubjectTeacherGroup> getSubjectTeacherGroups() {
+    public Set<SubjectTeacherGroup> getSubjectTeacherGroups() {
         return subjectTeacherGroups;
     }
 
-    public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
+    public void setSubjectTeacherGroups(Set<SubjectTeacherGroup> subjectTeacherGroups) {
         this.subjectTeacherGroups = subjectTeacherGroups;
     }
 

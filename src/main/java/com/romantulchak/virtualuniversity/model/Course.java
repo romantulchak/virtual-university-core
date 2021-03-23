@@ -19,7 +19,9 @@ public class Course {
 
     public Course(){}
 
-    public Course(String name){}
+    public Course(String name){
+        this.name = name;
+    }
 
 
     public long getId() {

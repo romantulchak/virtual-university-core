@@ -1,13 +1,20 @@
 package com.romantulchak.virtualuniversity.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.SubjectTeacherGroup;
+import com.romantulchak.virtualuniversity.model.Views;
+
+import java.util.stream.Collectors;
 
 public class SubjectTeacherGroupDTO {
 
+    @JsonView(Views.StudentGroupView.class)
     private long id;
 
+    @JsonView(Views.StudentGroupView.class)
     private SubjectDTO subject;
 
+    @JsonView(Views.StudentGroupView.class)
     private TeacherDTO teacher;
 
     private StudentGroupDTO studentGroup;
@@ -16,11 +23,10 @@ public class SubjectTeacherGroupDTO {
 
     }
 
-    public SubjectTeacherGroupDTO(SubjectTeacherGroup subjectTeacherGroup, SubjectDTO subject, TeacherDTO teacher, StudentGroupDTO studentGroup){
+    public SubjectTeacherGroupDTO(SubjectTeacherGroup subjectTeacherGroup){
         this.id = subjectTeacherGroup.getId();
-        this.subject = subject;
-        this.teacher = teacher;
-        this.studentGroup = studentGroup;
+        this.subject = new SubjectDTO(subjectTeacherGroup.getSubject());
+        this.teacher = new TeacherDTO(subjectTeacherGroup.getTeacher());
     }
 
 

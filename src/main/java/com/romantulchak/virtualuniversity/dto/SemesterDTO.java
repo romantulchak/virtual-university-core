@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 
 public class SemesterDTO {
 
-    @JsonView({Views.SemesterView.class, Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class})
+    @JsonView({Views.SemesterView.class, Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
     private long id;
 
-    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class})
+    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
     private String name;
 
 
-    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class})
+    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
     private int semesterNumber;
 
     public SemesterDTO(Semester semester) {

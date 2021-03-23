@@ -127,4 +127,5 @@ public class Student extends UserAbstract{
     public void setGroups(Collection<StudentGroup> studentGroups) {
         this.studentGroups = studentGroups;
     }
+
 }

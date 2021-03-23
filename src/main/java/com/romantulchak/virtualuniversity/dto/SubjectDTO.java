@@ -11,13 +11,13 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class SubjectDTO implements Comparator<SubjectDTO> {
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class})
     private long id;
 
-    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class})
+    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class})
     private String name;
 
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class})
     private SubjectType type;
    
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class})
