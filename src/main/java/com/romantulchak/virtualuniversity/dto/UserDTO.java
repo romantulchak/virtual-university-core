@@ -12,8 +12,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Comparator;
 
-public abstract class UserDTO {
+public abstract class UserDTO implements Comparable<UserDTO>{
     @JsonView({Views.SemesterView.class, Views.StudentView.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
     private long id;
 
@@ -93,4 +94,10 @@ public abstract class UserDTO {
         this.gender = gender;
     }
 
+    @Override
+    public int compareTo(UserDTO o) {
+        return Comparator.comparing(UserDTO::getFirstName)
+                .thenComparing(UserDTO::getLastName)
+                .compare(this, o);
+    }
 }

@@ -10,6 +10,7 @@ import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
+import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +24,13 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final SubjectRepository subjectRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailSender emailSender;
     @Autowired
-    public TeacherServiceImpl(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, SubjectRepository subjectRepository) {
+    public TeacherServiceImpl(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder, SubjectRepository subjectRepository, EmailSender emailSender) {
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
         this.subjectRepository = subjectRepository;
+        this.emailSender = emailSender;
     }
 
 
@@ -38,7 +41,7 @@ public class TeacherServiceImpl implements TeacherService {
         }
         String password = PasswordGeneratorUtil.generate();
         teacher.setPassword(passwordEncoder.encode(password));
-        System.out.println(password);
+        emailSender.sendMail(teacher.getEmail(), "Your data", String.format("Your login: %s Your password: %s", teacher.getLogin(), password));
         teacherRepository.save(teacher);
     }
 

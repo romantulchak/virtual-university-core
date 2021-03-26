@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.SubjectTeacherGroup;
 import com.romantulchak.virtualuniversity.model.Views;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class SubjectTeacherGroupDTO {
+public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO>{
 
     @JsonView(Views.StudentGroupView.class)
     private long id;
@@ -60,5 +61,13 @@ public class SubjectTeacherGroupDTO {
 
     public void setStudentGroup(StudentGroupDTO studentGroup) {
         this.studentGroup = studentGroup;
+    }
+
+
+    @Override
+    public int compareTo(SubjectTeacherGroupDTO o) {
+        return Comparator
+                .comparing(o1 -> getSubject().getName()).compare(this, o);
+
     }
 }

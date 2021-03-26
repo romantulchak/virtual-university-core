@@ -5,8 +5,9 @@ import com.romantulchak.virtualuniversity.model.*;
 
 import javax.persistence.OneToMany;
 import java.util.Collection;
+import java.util.Comparator;
 
-public class StudentGroupDTO {
+public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
 
     @JsonView(Views.StudentGroupView.class)
     private long id;
@@ -21,7 +22,7 @@ public class StudentGroupDTO {
     @JsonView(Views.StudentGroupView.class)
     private Collection<StudentDTO> students;
     @JsonView(Views.StudentGroupView.class)
-    private Collection<SpecializationDTO> specializations;
+    private SpecializationDTO specialization;
     @JsonView(Views.StudentGroupView.class)
     private Collection<SubjectTeacherGroupDTO> subjects;
 
@@ -44,10 +45,11 @@ public class StudentGroupDTO {
      * @param students - Students in Group
      * @param subjects - Subjects in Group
      */
-    public StudentGroupDTO(String name, Collection<StudentDTO> students, Collection<SubjectTeacherGroupDTO> subjects) {
+    public StudentGroupDTO(String name, Collection<StudentDTO> students, Collection<SubjectTeacherGroupDTO> subjects, SpecializationDTO specializationDTO) {
         this.name = name;
         this.students = students;
         this.subjects = subjects;
+        this.specialization = specializationDTO;
     }
 
     /**
@@ -96,12 +98,12 @@ public class StudentGroupDTO {
         this.students = students;
     }
 
-    public Collection<SpecializationDTO> getSpecializations() {
-        return specializations;
+    public SpecializationDTO getSpecialization() {
+        return specialization;
     }
 
-    public void setSpecializations(Collection<SpecializationDTO> specializations) {
-        this.specializations = specializations;
+    public void setSpecialization(SpecializationDTO specialization) {
+        this.specialization = specialization;
     }
 
     public Collection<SubjectTeacherGroupDTO> getSubjects() {
@@ -110,5 +112,10 @@ public class StudentGroupDTO {
 
     public void setSubjects(Collection<SubjectTeacherGroupDTO> subjects) {
         this.subjects = subjects;
+    }
+
+    @Override
+    public int compareTo(StudentGroupDTO o) {
+        return Comparator.comparing(StudentGroupDTO::getName).compare(this, o);
     }
 }

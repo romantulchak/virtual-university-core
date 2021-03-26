@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StudentDTO extends UserDTO implements Comparator<StudentDTO>{
+public class StudentDTO extends UserDTO{
 
     @JsonView(Views.StudentView.class)
     private StudentDetails studentDetails;
@@ -104,8 +104,5 @@ public class StudentDTO extends UserDTO implements Comparator<StudentDTO>{
         this.currentSemester = currentSemester;
     }
 
-    @Override
-    public int compare(StudentDTO o1, StudentDTO o2) {
-        return o1.getFirstName().compareTo(o2.getFirstName());
-    }
+
 }

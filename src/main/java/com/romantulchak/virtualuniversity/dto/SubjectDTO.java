@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class SubjectDTO implements Comparator<SubjectDTO> {
+public class SubjectDTO implements Comparable<SubjectDTO> {
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class})
     private long id;
 
@@ -66,7 +66,7 @@ public class SubjectDTO implements Comparator<SubjectDTO> {
     }
 
     @Override
-    public int compare(SubjectDTO o1, SubjectDTO o2) {
-        return o1.getName().compareTo(o2.getName());
+    public int compareTo(SubjectDTO o) {
+        return Comparator.comparing(SubjectDTO::getName).compare(this, o);
     }
 }

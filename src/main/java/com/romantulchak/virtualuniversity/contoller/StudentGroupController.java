@@ -2,9 +2,7 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
-import com.romantulchak.virtualuniversity.model.Student;
-import com.romantulchak.virtualuniversity.model.StudentGroup;
-import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.service.impl.StudentGroupServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,8 +26,9 @@ public class StudentGroupController {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void create(@RequestBody StudentGroup studentGroup){
-        studentGroupService.createGroup(studentGroup);
+        studentGroupService.create(studentGroup);
     }
+
     @PutMapping("/addStudents/{groupId}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void addStudentsToGroup(@RequestBody List<Student> students, @PathVariable("groupId") long groupId){
@@ -53,5 +52,17 @@ public class StudentGroupController {
     @JsonView(Views.StudentGroupView.class)
     public StudentGroupDTO findGroupById(@PathVariable("id") long id){
         return studentGroupService.findGroupDetailsById(id);
+    }
+
+    @PutMapping("/addSubjects/{groupId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void addSubjects(@RequestBody Collection<SubjectTeacherGroup> subjects, @PathVariable("groupId") long groupId){
+        studentGroupService.addSubjectsToGroup(subjects, groupId);
+    }
+
+    @DeleteMapping("/deleteGroup/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteGroup(@PathVariable("id") long id){
+        studentGroupService.delete(id);
     }
 }

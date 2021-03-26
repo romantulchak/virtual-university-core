@@ -89,8 +89,7 @@ public class StudentServiceImpl implements StudentService {
         return this.studentRepository.findStudentWithoutGroup()
                 .stream()
                 .map(this::convertToDTO)
-                .sorted(Comparator.comparing(UserDTO::getFirstName)
-                                  .thenComparing(UserDTO::getLastName))
+                .sorted()
                 .collect(Collectors.toList());
     }
 

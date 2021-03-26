@@ -63,4 +63,12 @@ public class SubjectController {
     public Collection<SubjectDTO> findAvailableSubjectsForSpecialization(@PathVariable("id") long id){
         return subjectService.findAvailableSubjectsForSpecialization(id);
     }
+    @GetMapping("/availableSubjectForGroup/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findAvailableSubjectsForGroup(@PathVariable("id") long id){
+        return subjectService.findAvailableSubjectsForGroup(id);
+    }
+
+
 }

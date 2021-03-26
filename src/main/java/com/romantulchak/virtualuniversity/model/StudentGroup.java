@@ -30,7 +30,7 @@ public class StudentGroup {
     @ManyToOne
     private Specialization specialization;
 
-    @OneToMany(mappedBy = "studentGroup")
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
     private Set<SubjectTeacherGroup> subjectTeacherGroups = new LinkedHashSet<>();
 
 

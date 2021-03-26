@@ -2,6 +2,8 @@ package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;

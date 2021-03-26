@@ -72,6 +72,11 @@ public class SubjectServiceImpl implements SubjectService {
                     .collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<SubjectDTO> findAvailableSubjectsForGroup(long groupId) {
+        return subjectRepository.findAvailableSubjectsForGroup(groupId).stream().map(this::convertDTO).sorted().collect(Collectors.toList());
+    }
+
     private SubjectDTO convertDTO(Subject subject){
         return new SubjectDTO(subject);
     }

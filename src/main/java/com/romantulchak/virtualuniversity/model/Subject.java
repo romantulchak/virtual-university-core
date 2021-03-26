@@ -6,10 +6,11 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 
 @Entity
-public class Subject {
+public class Subject implements Comparator<Subject> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -89,6 +90,11 @@ public class Subject {
 
     public void setSpecializations(Collection<Specialization> specializations) {
         this.specializations = specializations;
+    }
+
+    @Override
+    public int compare(Subject o1, Subject o2) {
+        return o1.getName().compareTo(o2.getName());
     }
 
     @Override
