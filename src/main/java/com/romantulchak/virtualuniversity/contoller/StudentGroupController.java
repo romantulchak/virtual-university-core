@@ -65,4 +65,11 @@ public class StudentGroupController {
     public void deleteGroup(@PathVariable("id") long id){
         studentGroupService.delete(id);
     }
+
+    @GetMapping("/groupsForTeacher/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
+    @JsonView(Views.StudentGroupView.class)
+    public Collection<StudentGroupDTO> findGroupsForTeacher(@PathVariable("id") long id){
+        return studentGroupService.findGroupsForTeacher(id);
+    }
 }

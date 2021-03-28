@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public class SubjectTeacherGroup {
@@ -21,6 +22,9 @@ public class SubjectTeacherGroup {
     @JoinColumn(name = "studentGroup_id")
     private StudentGroup studentGroup;
 
+
+    @OneToMany(mappedBy = "subjectTeacherGroup")
+    private Collection<StudentGrade> studentGrades;
 
 
 
@@ -54,5 +58,13 @@ public class SubjectTeacherGroup {
 
     public void setStudentGroup(StudentGroup studentGroup) {
         this.studentGroup = studentGroup;
+    }
+
+    public Collection<StudentGrade> getStudentGrades() {
+        return studentGrades;
+    }
+
+    public void setStudentGrades(Collection<StudentGrade> studentGrades) {
+        this.studentGrades = studentGrades;
     }
 }

@@ -36,9 +36,12 @@ public class Student extends UserAbstract{
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-
     @ManyToMany(mappedBy = "students")
     private Collection<StudentGroup> studentGroups;
+
+    @OneToMany(mappedBy = "student")
+    private Collection<StudentGrade> studentGrades;
+
 
     public Student(long id, String firstName, String lastName){
         setId(id);
@@ -130,4 +133,19 @@ public class Student extends UserAbstract{
         this.studentGroups = studentGroups;
     }
 
+    public Collection<StudentGroup> getStudentGroups() {
+        return studentGroups;
+    }
+
+    public void setStudentGroups(Collection<StudentGroup> studentGroups) {
+        this.studentGroups = studentGroups;
+    }
+
+    public Collection<StudentGrade> getStudentGrades() {
+        return studentGrades;
+    }
+
+    public void setStudentGrades(Collection<StudentGrade> studentGrades) {
+        this.studentGrades = studentGrades;
+    }
 }

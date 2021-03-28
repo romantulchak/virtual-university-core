@@ -22,4 +22,5 @@ public interface StudentGroupService {
     void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId);
 
     void delete(long groupId);
+    Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId);
 }

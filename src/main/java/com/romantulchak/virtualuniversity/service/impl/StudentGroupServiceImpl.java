@@ -6,6 +6,8 @@ import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
 import com.romantulchak.virtualuniversity.exception.GroupWithNameAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.StudentAlreadyHasGroupException;
 import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.projection.GroupLimited;
+import com.romantulchak.virtualuniversity.projection.GroupStudentsLimited;
 import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupService;
@@ -38,20 +40,19 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
-        return studentGroupRepository.findByStudents_Id(id)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new GroupForStudentNotFoundException(id));
+        long groupId = studentGroupRepository.findGroupIdByStudentId(id);
+        GroupStudentsLimited group = studentGroupRepository.findByStudents_Id(groupId).orElseThrow(()-> new GroupNotFoundException(id));
+        return new StudentGroupDTO.Builder(group.getId(), group.getName())
+                                                             .withCounter(group.getCount())
+                                                             .withSpecialization(group.getSpecialization())
+                                                             .build();
+
     }
 
     @Override
     public void addStudentToGroup(List<Student> students, long groupId) {
         StudentGroup group = studentGroupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
-        List<Student> studentsWithGroup = new ArrayList<>();
-        group.getStudents().forEach(student -> {
-            if (students.contains(student)) {
-                studentsWithGroup.add(student);
-            }
-        });
+        List<Student> studentsWithGroup = getStudentsWithGroup(students, group);
         students.removeAll(studentsWithGroup);
         group.getStudents().addAll(students);
         studentGroupRepository.save(group);
@@ -60,32 +61,33 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         }
     }
 
+    private List<Student> getStudentsWithGroup(List<Student> students, StudentGroup group) {
+        List<Student> studentsWithGroup = new ArrayList<>();
+        group.getStudents().forEach(student -> {
+            if (students.contains(student)) {
+                studentsWithGroup.add(student);
+            }
+        });
+        return studentsWithGroup;
+    }
+
     @Override
     public Collection<StudentGroupDTO> findAllGroups() {
-        return studentGroupRepository.allGroups().stream().
-                map(studentGroup -> convertToDTO(studentGroup.getId(), studentGroup.getName(), studentGroup.getSemester()))
-                .sorted()
-                .collect(Collectors.toList());
+       return studentGroupRepository.allGroups()
+                                    .stream()
+                                    .map(group -> convertToDTO(group.getId(), group.getName(), group.getSemester()))
+                                    .collect(Collectors.toList());
     }
 
     @Override
     public StudentGroupDTO findGroupDetailsById(long id) {
         StudentGroup studentGroup = studentGroupRepository.groupByIdWithSubjectsAndStudents(id).orElseThrow(() -> new GroupNotFoundException(id));
-        Collection<StudentDTO> students = studentGroup.getStudents()
-                .stream()
-                .map(StudentDTO::new)
-                .sorted()
-                .collect(Collectors.toList());
-        Collection<SubjectTeacherGroupDTO> subjects = studentGroup.getSubjectTeacherGroups()
-                .stream().map(SubjectTeacherGroupDTO::new)
-                .sorted(Comparator
-                        .comparing(subjectTeacherGroupDTO -> subjectTeacherGroupDTO.getSubject().getName()))
-                .collect(Collectors.toList());
-        return new StudentGroupDTO(studentGroup.getName(), students, subjects, new SpecializationDTO(studentGroup.getSpecialization()));
-    }
-
-    private StudentGroupDTO convertToDTO(long id, String name, Semester semester) {
-        return new StudentGroupDTO(id, name, new SemesterDTO(semester));
+        return new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName())
+                                                             .withStudents(studentGroup.getStudents())
+                                                             .withSubjects(studentGroup.getSubjectTeacherGroups())
+                                                             .withSpecialization(studentGroup.getSpecialization())
+                                                             .withCounter(studentGroup.getStudents().size())
+                                                             .build();
     }
 
     @Override
@@ -101,9 +103,20 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         studentGroupRepository.deleteById(groupId);
     }
 
-    private StudentGroupDTO convertToDTO(StudentGroup studentGroup) {
-        List<SubjectTeacherGroupDTO> subjects = studentGroup.getSubjectTeacherGroups() != null ? studentGroup.getSubjectTeacherGroups().stream().map(SubjectTeacherGroupDTO::new).collect(Collectors.toList()) : new ArrayList<>();
-        return new StudentGroupDTO(studentGroup, subjects);
+    @Override
+    public Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId) {
+        return studentGroupRepository.findGroupsForTeacher(teacherId).stream()
+                                .map(studentGroup -> convertToDTO(studentGroup.getId(), studentGroup.getName(), studentGroup.getSemester()))
+                                .collect(Collectors.toList());
+
     }
+
+    private StudentGroupDTO convertToDTO(long id, String name, Semester semester) {
+        return new StudentGroupDTO.Builder(id, name)
+                                  .withSemester(semester)
+                                  .build();
+    }
+
+
 
 }
