@@ -73,9 +73,10 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void addSubjectsToTeacher(long id, Collection<Subject> subjects) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException(id));
-        subjects.forEach(subject -> subject.getTeachers().add(teacher));
-        subjectRepository.saveAll(subjects);
+        if (!teacherRepository.existsById(id)){
+            throw new TeacherNotFoundException(id);
+        }
+        subjects.forEach(subject -> subjectRepository.saveSubjectTeacher(id, subject.getId()));
     }
 
     @Override

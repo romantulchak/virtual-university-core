@@ -50,8 +50,14 @@ public class StudentGroupController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     @JsonView(Views.StudentGroupView.class)
-    public StudentGroupDTO findGroupById(@PathVariable("id") long id){
+    public StudentGroupDTO findGroupDetailsById(@PathVariable("id") long id){
         return studentGroupService.findGroupDetailsById(id);
+    }
+    @GetMapping("/{id}/{teacherId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR @accessToStudentGroup.checkAccess(#teacherId)")
+    @JsonView(Views.StudentGroupView.class)
+    public StudentGroupDTO findGroupSubjectsForTeacher(@PathVariable("id") long id, @PathVariable("teacherId") long teacherId){
+        return studentGroupService.findGroupSubjectsForTeacher(id, teacherId);
     }
 
     @PutMapping("/addSubjects/{groupId}")

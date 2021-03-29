@@ -43,53 +43,6 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
         this.studentsCount = builder.studentsCount;
     }
 
-    private StudentGroupDTO(long id, String name){
-        this.id = id;
-        this.name = name;
-    }
-
-    public StudentGroupDTO(StudentGroup studentGroup, Collection<SubjectTeacherGroupDTO> subjects) {
-        this(studentGroup.getId(), studentGroup.getName());
-        this.subjects = subjects;
-    }
-
-    /**
-     * Constructor when you want to get
-     * details about group with
-     * subjects and students
-     * @param name - Student Group Name
-     * @param students - Students in Group
-     * @param subjects - Subjects in Group
-     */
-    public StudentGroupDTO(long id, String name, Collection<StudentDTO> students, Collection<SubjectTeacherGroupDTO> subjects, SpecializationDTO specializationDTO) {
-        this(id, name);
-        this.students = students;
-        this.subjects = subjects;
-        this.specialization = specializationDTO;
-        this.studentsCount = students.size();
-    }
-    /**
-     * Constructor when you want to get
-     * all Groups to show
-     * @param id - Student Group Id
-     * @param name Student Group Name
-     * @param semester Student Group Semester
-     */
-    public StudentGroupDTO(long id, String name, SemesterDTO semester){
-        this(id, name);
-        this.semester = semester;
-    }
-    /**
-     * Constructor when you want to get
-     * Group id, name and count of students
-     * @param id - Student Group Id
-     * @param name - Student Group Name
-     * @param studentsCount - Student Group number of Students in group
-     */
-    public StudentGroupDTO(long id, String name, int studentsCount){
-        this(id, name);
-        this.studentsCount = studentsCount;
-    }
 
     public long getId() {
         return id;
@@ -149,6 +102,7 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
 
     public static class Builder {
         private final long id;
+
         private final String name;
 
         public Builder(long id, String name){

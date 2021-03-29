@@ -25,13 +25,17 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
     
     public SubjectDTO() {
     }
-
+    public SubjectDTO(long id, String name, SubjectType type){
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
     public SubjectDTO(Subject subject) {
-        this.id = subject.getId();
-        this.name = subject.getName();
-        this.type = subject.getType();
+        this(subject.getId(), subject.getName(), subject.getType());
         this.teachers = subject.getTeachers().stream().map(TeacherDTO::new).collect(Collectors.toList());
     }
+
+
 
     public long getId() {
         return id;

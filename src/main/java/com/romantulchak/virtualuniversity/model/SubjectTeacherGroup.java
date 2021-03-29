@@ -22,7 +22,6 @@ public class SubjectTeacherGroup {
     @JoinColumn(name = "studentGroup_id")
     private StudentGroup studentGroup;
 
-
     @OneToMany(mappedBy = "subjectTeacherGroup")
     private Collection<StudentGrade> studentGrades;
 

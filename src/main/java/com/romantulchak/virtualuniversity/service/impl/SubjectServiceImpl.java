@@ -21,30 +21,42 @@ import java.util.stream.Collectors;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final TeacherRepository teacherRepository;
-    public SubjectServiceImpl(SubjectRepository subjectRepository, TeacherRepository teacherRepository){
+
+    public SubjectServiceImpl(SubjectRepository subjectRepository, TeacherRepository teacherRepository) {
         this.subjectRepository = subjectRepository;
         this.teacherRepository = teacherRepository;
     }
+
     @Override
     public Collection<SubjectDTO> findAllSubjects() {
-        return subjectRepository.findAll().stream().map(this::convertDTO).collect(Collectors.toList());
+        return subjectRepository.findAllWithoutTeachers()
+                .stream()
+                .map(subjectLimited ->
+                        new SubjectDTO(subjectLimited.getId(),
+                                subjectLimited.getName(),
+                                subjectLimited.getType()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void createSubject(Subject subject) {
-        if (subject != null){
+        if (subject != null) {
             subjectRepository.save(subject);
-        }else {
+        } else {
             throw new SubjectIsNullException();
         }
     }
 
     @Override
     public Collection<SubjectDTO> findSubjectAvailableForTeacher(long id) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException(id));
-        Collection<Subject> subjects = subjectRepository.findAll();
-        subjects.removeAll(teacher.getSubjects());
-        return subjects.stream().map(this::convertDTO).collect(Collectors.toList());
+        return subjectRepository.findAvailableSubjectsForTeacher(id)
+                .stream()
+                .map(subjectLimited ->
+                        new SubjectDTO(subjectLimited.getId(),
+                                subjectLimited.getName(),
+                                subjectLimited.getType()))
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -65,11 +77,11 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDTO> findAvailableSubjectsForSpecialization(long id) {
-            List<Subject> allSubjects = subjectRepository.findAll();
-            allSubjects.removeAll(subjectRepository.findAllForSpecialization(id));
-            return allSubjects.stream()
-                    .map(this::convertDTO)
-                    .collect(Collectors.toList());
+        List<Subject> allSubjects = subjectRepository.findAll();
+        allSubjects.removeAll(subjectRepository.findAllForSpecialization(id));
+        return allSubjects.stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -77,7 +89,7 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectRepository.findAvailableSubjectsForGroup(groupId).stream().map(this::convertDTO).sorted().collect(Collectors.toList());
     }
 
-    private SubjectDTO convertDTO(Subject subject){
+    private SubjectDTO convertDTO(Subject subject) {
         return new SubjectDTO(subject);
     }
 }

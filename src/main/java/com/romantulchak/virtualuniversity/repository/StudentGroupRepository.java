@@ -44,6 +44,8 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     
     @Query(value = "SELECT id FROM student_group LEFT JOIN group_student gs on student_group.id = gs.group_id WHERE gs.student_id = :studentId", nativeQuery = true)
     long findGroupIdByStudentId(@Param("studentId") long id);
-    
-    
+
+
+    @Query(value = "SELECT EXISTS( SELECT id FROM subject_teacher_group WHERE subject_teacher_group.teacher_id = :teacherId)", nativeQuery = true)
+    boolean hasAccess(@Param("teacherId") long id);
 }

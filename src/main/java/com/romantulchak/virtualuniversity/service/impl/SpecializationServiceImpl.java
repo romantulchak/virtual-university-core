@@ -14,7 +14,9 @@ import com.romantulchak.virtualuniversity.service.SpecializationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,8 +79,11 @@ public class SpecializationServiceImpl implements SpecializationService {
     public void addSubjectsToSpecialization(Collection<Subject> subjects, long specializationId) {
         if (subjects.size() != 0) {
             Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
-            specialization.getSubjects().addAll(subjects);
-            specializationRepository.save(specialization);
+            subjects.removeAll(specialization.getSubjects());
+            if (subjects.size() != 0){
+                specialization.getSubjects().addAll(subjects);
+                specializationRepository.save(specialization);
+            }
         }
     }
 

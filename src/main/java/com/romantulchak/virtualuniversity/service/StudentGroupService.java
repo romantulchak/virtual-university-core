@@ -23,4 +23,6 @@ public interface StudentGroupService {
 
     void delete(long groupId);
     Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId);
+
+    StudentGroupDTO findGroupSubjectsForTeacher(long id, long teacherId);
 }

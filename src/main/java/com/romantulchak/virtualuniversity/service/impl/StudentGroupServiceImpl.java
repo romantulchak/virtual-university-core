@@ -93,9 +93,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Override
     public void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId) {
         StudentGroup studentGroup = studentGroupRepository.groupByIdWithSubjectsAndStudents(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
-        subjects.forEach(x-> {
-            subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId());
-        });
+        subjects.forEach(x-> subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId()));
     }
 
     @Override
@@ -107,8 +105,14 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     public Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId) {
         return studentGroupRepository.findGroupsForTeacher(teacherId).stream()
                                 .map(studentGroup -> convertToDTO(studentGroup.getId(), studentGroup.getName(), studentGroup.getSemester()))
+                                .sorted()
                                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public StudentGroupDTO findGroupSubjectsForTeacher(long id, long teacherId) {
+        return null;
     }
 
     private StudentGroupDTO convertToDTO(long id, String name, Semester semester) {
