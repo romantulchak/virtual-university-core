@@ -1,5 +1,8 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
+import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -25,6 +28,9 @@ public class SubjectTeacherGroup {
     @OneToMany(mappedBy = "subjectTeacherGroup")
     private Collection<StudentGrade> studentGrades;
 
+    public SubjectTeacherGroup(){
+
+    }
 
 
     public long getId() {

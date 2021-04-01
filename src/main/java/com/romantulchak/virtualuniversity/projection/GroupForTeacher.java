@@ -1,13 +1,11 @@
 package com.romantulchak.virtualuniversity.projection;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.romantulchak.virtualuniversity.model.Specialization;
-import com.romantulchak.virtualuniversity.model.Student;
-import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.model.*;
 
 import java.util.Collection;
 
-public interface GroupStudentsLimited {
+public interface GroupForTeacher {
     @JsonView(Views.StudentGroupView.class)
     long getId();
 
@@ -21,6 +19,8 @@ public interface GroupStudentsLimited {
     Specialization getSpecialization();
 
     @JsonView(Views.StudentGroupView.class)
-    Collection<Student> getStudents();
+    Collection<Subject> getSubjects();
 
+    @JsonView(Views.StudentGroupView.class)
+    Collection<Student> getStudents();
 }

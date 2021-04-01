@@ -14,7 +14,7 @@ public class Course {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "course")
     private Collection<Specialization> specialization;
 
     public Course(){}

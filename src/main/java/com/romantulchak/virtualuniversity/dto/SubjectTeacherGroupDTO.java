@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.SubjectTeacherGroup;
 import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -23,6 +24,11 @@ public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO
     public SubjectTeacherGroupDTO(){
 
     }
+
+    public SubjectTeacherGroupDTO(long id, String name, SubjectType type){
+        this.subject = new SubjectDTO(id, name, type);
+    }
+
 
     public SubjectTeacherGroupDTO(SubjectTeacherGroup subjectTeacherGroup){
         this.id = subjectTeacherGroup.getId();

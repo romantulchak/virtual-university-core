@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.projection.GroupDetailsLimited;
+import com.romantulchak.virtualuniversity.projection.GroupForTeacher;
 import com.romantulchak.virtualuniversity.projection.GroupLimited;
 import com.romantulchak.virtualuniversity.projection.GroupStudentsLimited;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,4 +49,7 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
 
     @Query(value = "SELECT EXISTS( SELECT id FROM subject_teacher_group WHERE subject_teacher_group.teacher_id = :teacherId)", nativeQuery = true)
     boolean hasAccess(@Param("teacherId") long id);
+
+    @Query(value = "SELECT s.id as id, s.name as name, s.specialization as specialization FROM StudentGroup s LEFT JOIN s.specialization ss WHERE s.id = :groupId")
+    GroupStudentsLimited groupDetailsForTeacher(@Param("groupId") long groupId);
 }

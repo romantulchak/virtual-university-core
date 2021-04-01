@@ -134,8 +134,8 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
             this.specialization = new SpecializationDTO(specialization);
             return this;
         }
-        public Builder withSubjects(Collection<SubjectTeacherGroup> subjects){
-            this.subjects = subjects.stream().map(SubjectTeacherGroupDTO::new).sorted().collect(Collectors.toList());
+        public Builder withSubjects(Collection<SubjectTeacherGroupDTO> subjects){
+            this.subjects = subjects;
             return this;
         }
         public Builder withCounter(int studentsCount){
