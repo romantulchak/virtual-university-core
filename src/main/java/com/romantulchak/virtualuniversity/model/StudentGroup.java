@@ -33,6 +33,9 @@ public class StudentGroup {
     @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
     private Set<SubjectTeacherGroup> subjectTeacherGroups = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
+    private Collection<StudentGroupGrade> studentGroupGrades;
+
 
     public long getId() {
         return id;
@@ -88,5 +91,13 @@ public class StudentGroup {
 
     public void setSpecialization(Specialization specialization) {
         this.specialization = specialization;
+    }
+
+    public Collection<StudentGroupGrade> getStudentGroupGrades() {
+        return studentGroupGrades;
+    }
+
+    public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
+        this.studentGroupGrades = studentGroupGrades;
     }
 }

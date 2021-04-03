@@ -33,7 +33,6 @@ public class Teacher extends UserAbstract{
     private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
     @ManyToMany(mappedBy = "teachers")
-    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Subject> subjects;
 
     public Teacher() {

@@ -57,19 +57,8 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public void addSemesterToSpecialization(long specializationId, long semesterId) {
-        Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
-        Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
-        if (specialization.getSemesters().contains(semester)) {
-            throw new SpecializationSemesterAlreadyExists(semester.getName(), specialization.getName());
-        }
-        specialization.getSemesters().add(semester);
-        specializationRepository.save(specialization);
-    }
-
-    @Override
     public Collection<SpecializationDTO> findAllSpecializations() {
-        return specializationRepository.findAll()
+        return specializationRepository.findSpecializationsWithCourse()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -88,6 +77,6 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     private SpecializationDTO convertToDTO(Specialization specialization) {
-        return new SpecializationDTO(specialization, specialization.getSemesters());
+        return new SpecializationDTO(specialization);
     }
 }

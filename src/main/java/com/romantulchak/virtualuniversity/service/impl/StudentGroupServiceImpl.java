@@ -7,12 +7,14 @@ import com.romantulchak.virtualuniversity.exception.GroupWithNameAlreadyExistsEx
 import com.romantulchak.virtualuniversity.exception.StudentAlreadyHasGroupException;
 import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.projection.*;
+import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupService;
 import com.zaxxer.hikari.util.ClockSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,22 +24,32 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     private final StudentGroupRepository studentGroupRepository;
     private final SubjectTeacherRepository subjectTeacherRepository;
-    private final StudentRepository studentRepository;
+    private final StudentGroupGradeRepository studentGroupGradeRepository;
 
-    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository, SubjectTeacherRepository subjectTeacherRepository, StudentRepository studentRepository) {
+    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository, SubjectTeacherRepository subjectTeacherRepository, StudentGroupGradeRepository studentGroupGradeRepository) {
         this.studentGroupRepository = studentGroupRepository;
         this.subjectTeacherRepository = subjectTeacherRepository;
-        this.studentRepository = studentRepository;
+        this.studentGroupGradeRepository = studentGroupGradeRepository;
     }
 
+    @Transactional
     @Override
     public void create(StudentGroup studentGroup) {
         if (!studentGroupRepository.isExistsByName(studentGroup.getName())) {
             StudentGroup studentGroupAfterSave = studentGroupRepository.save(studentGroup);
             studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> subjectTeacherGroup.setStudentGroup(studentGroupAfterSave));
             subjectTeacherRepository.saveAll(studentGroup.getSubjectTeacherGroups());
+            createStudentGrades(studentGroup.getStudents(), studentGroupAfterSave.getSubjectTeacherGroups(), studentGroupAfterSave.getId());
         } else {
             throw new GroupWithNameAlreadyExistsException(studentGroup.getName());
+        }
+    }
+
+    private void createStudentGrades(Collection<Student> students, Collection<SubjectTeacherGroup> subjectTeacherGroups, long studentGroupId) {
+        for (Student student : students) {
+            for (SubjectTeacherGroup subjectTeacherGroup : subjectTeacherGroups) {
+                studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId());
+            }
         }
     }
 
@@ -52,6 +64,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     }
 
+    @Transactional
     @Override
     public void addStudentToGroup(List<Student> students, long groupId) {
         StudentGroup group = studentGroupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
@@ -59,6 +72,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         students.removeAll(studentsWithGroup);
         group.getStudents().addAll(students);
         studentGroupRepository.save(group);
+
+
+
+        createStudentGrades(students, group.getSubjectTeacherGroups(), group.getId());
         if (studentsWithGroup.size() != 0) {
             throw new StudentAlreadyHasGroupException(students);
         }
@@ -120,21 +137,11 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     public StudentGroupDTO findGroupSubjectsForTeacher(long groupId, long teacherId) {
         GroupStudentsLimited groupForTeacher = studentGroupRepository.groupDetailsForTeacher(groupId);
         Collection<SubjectTeacherGroupDTO> subjectTeacherGroups = getSubjectTeacherGroupDTOS(groupId, teacherId);
-        Collection<Student> students = getStudents(groupId);
 
         return new StudentGroupDTO.Builder(groupForTeacher.getId(), groupForTeacher.getName())
                 .withSubjects(subjectTeacherGroups)
-                .withStudents(students)
                 .withSpecialization(groupForTeacher.getSpecialization())
-                .withCounter(students.size())
                 .build();
-    }
-
-    private Collection<Student> getStudents(long id) {
-        return studentRepository.findStudentByGroupId(id).stream().map(student -> new Student(student.getId(),
-                student.getFirstName(),
-                student.getLastName()))
-                .collect(Collectors.toList());
     }
 
     private Collection<SubjectTeacherGroupDTO> getSubjectTeacherGroupDTOS(long id, long teacherId) {

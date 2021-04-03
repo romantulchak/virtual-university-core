@@ -29,7 +29,8 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query(value = "SELECT DISTINCT s FROM StudentGroup s JOIN FETCH s.subjectTeacherGroups as sb LEFT JOIN FETCH s.students as ss WHERE s.id = :id")
     Optional<StudentGroup> groupByIdWithSubjectsAndStudents(@Param("id") long id);
 
-    @Query(value = "SELECT s FROM StudentGroup  s JOIN FETCH s.students WHERE s.id = :id")
+//    @Query(value = "SELECT s FROM StudentGroup  s JOIN FETCH s.students WHERE s.id = :id")
+    @Query(value = "SELECT s FROM StudentGroup s JOIN FETCH s.students ss JOIN FETCH s.subjectTeacherGroups sst WHERE s.id = :id")
     Optional<StudentGroup> findGroupById(@Param("id") long id);
 
 //    @Query(value = "SELECT id, name, count(gs) as count FROM student_group LEFT JOIN group_student gs on student_group.id = gs.group_id WHERE id = :id GROUP BY id, name", nativeQuery = true)
@@ -52,4 +53,5 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
 
     @Query(value = "SELECT s.id as id, s.name as name, s.specialization as specialization FROM StudentGroup s LEFT JOIN s.specialization ss WHERE s.id = :groupId")
     GroupStudentsLimited groupDetailsForTeacher(@Param("groupId") long groupId);
+
 }

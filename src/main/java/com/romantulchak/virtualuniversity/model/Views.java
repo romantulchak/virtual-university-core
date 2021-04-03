@@ -10,4 +10,5 @@ public class Views {
     public interface TeacherStudentGrades{}
     public interface TeacherSubjectView{}
     public interface StudentGroupView{}
+    public interface StudentGradeView{};
 }

@@ -35,7 +35,6 @@ public class Subject implements Comparator<Subject> {
     @ManyToMany(mappedBy = "subjects")
     private Collection<Specialization> specializations;
 
-
     public long getId() {
         return id;
     }
@@ -91,6 +90,7 @@ public class Subject implements Comparator<Subject> {
     public void setSpecializations(Collection<Specialization> specializations) {
         this.specializations = specializations;
     }
+
 
     @Override
     public int compare(Subject o1, Subject o2) {

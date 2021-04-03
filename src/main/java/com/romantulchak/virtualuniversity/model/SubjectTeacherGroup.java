@@ -26,12 +26,12 @@ public class SubjectTeacherGroup {
     private StudentGroup studentGroup;
 
     @OneToMany(mappedBy = "subjectTeacherGroup")
-    private Collection<StudentGrade> studentGrades;
+    private Collection<StudentGroupGrade> studentGrades;
+
 
     public SubjectTeacherGroup(){
 
     }
-
 
     public long getId() {
         return id;
@@ -65,11 +65,11 @@ public class SubjectTeacherGroup {
         this.studentGroup = studentGroup;
     }
 
-    public Collection<StudentGrade> getStudentGrades() {
+    public Collection<StudentGroupGrade> getStudentGrades() {
         return studentGrades;
     }
 
-    public void setStudentGrades(Collection<StudentGrade> studentGrades) {
+    public void setStudentGrades(Collection<StudentGroupGrade> studentGrades) {
         this.studentGrades = studentGrades;
     }
 }

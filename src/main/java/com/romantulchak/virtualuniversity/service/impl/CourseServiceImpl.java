@@ -18,29 +18,33 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
 
     @Autowired
-    private CourseServiceImpl(CourseRepository courseRepository){
+    private CourseServiceImpl(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
     @Override
     public Collection<CourseDTO> findAllCourses() {
-       return courseRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        Collection<Course> coursesWithSemesters = courseRepository.findCoursesWithSemesters();
+        System.out.println(coursesWithSemesters);
+        return courseRepository.findCoursesWithSemesters()
+                .stream()
+                .map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-        public void createCourse(Course course) {
-            if (course != null){
-                if (!courseRepository.existsCourseByName(course.getName())){
-                    courseRepository.save(course);
-                }else {
-                    throw new CourseWithNameAlreadyExists(course.getName());
-                }
-            }else{
-                throw new CourseIsNullException();
+    public void createCourse(Course course) {
+        if (course != null) {
+            if (!courseRepository.existsCourseByName(course.getName())) {
+                courseRepository.save(course);
+            } else {
+                throw new CourseWithNameAlreadyExists(course.getName());
             }
+        } else {
+            throw new CourseIsNullException();
         }
+    }
 
-    private CourseDTO convertToDTO(Course course){
+    private CourseDTO convertToDTO(Course course) {
         return new CourseDTO(course);
     }
 }

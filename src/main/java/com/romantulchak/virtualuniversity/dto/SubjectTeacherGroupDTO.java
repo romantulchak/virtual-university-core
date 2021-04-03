@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO>{
 
-    @JsonView(Views.StudentGroupView.class)
+    @JsonView({Views.StudentGroupView.class, Views.TeacherStudentGrades.class})
     private long id;
 
-    @JsonView(Views.StudentGroupView.class)
+    @JsonView({Views.StudentGroupView.class})
     private SubjectDTO subject;
 
     @JsonView(Views.StudentGroupView.class)

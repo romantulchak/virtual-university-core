@@ -16,19 +16,21 @@ import java.util.stream.Collectors;
 @Service
 public class SemesterServiceImpl implements SemesterService {
     private final SemesterRepository semesterRepository;
+
     @Autowired
-    public SemesterServiceImpl(SemesterRepository semesterRepository){
+    public SemesterServiceImpl(SemesterRepository semesterRepository) {
         this.semesterRepository = semesterRepository;
     }
+
     @Override
     public void create(Semester semester) {
-        if (semester != null){
+        if (semester != null) {
             if (!semesterRepository.existsByName(semester.getName())) {
                 semesterRepository.save(semester);
-            }else{
+            } else {
                 throw new SemesterAlreadyExistsException(semester.getName());
             }
-        }else {
+        } else {
             throw new SemesterIsNullException();
         }
     }
@@ -46,14 +48,6 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
-    public Collection<SemesterDTO> findAvailableSemesters(long specializationId) {
-        Collection<Semester> allForSpecializations = semesterRepository.findAllBySpecialization_Id(specializationId);
-        Collection<Semester> semesters = semesterRepository.findAll();
-        semesters.removeAll(allForSpecializations);
-        return semesters.stream().map(this::convertToDTO).collect(Collectors.toList());
-    }
-
-    @Override
     public Collection<SemesterDTO> findSemestersForSpecialization(long id) {
         return semesterRepository.findSemestersForSpecialization(id)
                 .stream()
@@ -61,7 +55,7 @@ public class SemesterServiceImpl implements SemesterService {
                 .collect(Collectors.toList());
     }
 
-    private SemesterDTO convertToDTO(Semester semester){
+    private SemesterDTO convertToDTO(Semester semester) {
         return new SemesterDTO(semester);
     }
 

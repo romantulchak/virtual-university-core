@@ -40,8 +40,7 @@ public class Student extends UserAbstract{
     private Collection<StudentGroup> studentGroups;
 
     @OneToMany(mappedBy = "student")
-    private Collection<StudentGrade> studentGrades;
-
+    private Collection<StudentGroupGrade> studentGroupGrades;
 
     public Student(long id, String firstName, String lastName){
         setId(id);
@@ -141,11 +140,11 @@ public class Student extends UserAbstract{
         this.studentGroups = studentGroups;
     }
 
-    public Collection<StudentGrade> getStudentGrades() {
-        return studentGrades;
+    public Collection<StudentGroupGrade> getStudentGroupGrades() {
+        return studentGroupGrades;
     }
 
-    public void setStudentGrades(Collection<StudentGrade> studentGrades) {
-        this.studentGrades = studentGrades;
+    public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
+        this.studentGroupGrades = studentGroupGrades;
     }
 }

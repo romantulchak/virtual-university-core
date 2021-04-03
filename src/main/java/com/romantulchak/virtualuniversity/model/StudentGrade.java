@@ -14,8 +14,6 @@ public class StudentGrade {
     @ManyToOne
     private SubjectTeacherGroup subjectTeacherGroup;
 
-    @ManyToOne
-    private Student student;
 
 
     public StudentGrade(){}
@@ -44,11 +42,4 @@ public class StudentGrade {
         this.subjectTeacherGroup = subjectTeacherGroup;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
 }

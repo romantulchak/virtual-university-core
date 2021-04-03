@@ -17,6 +17,6 @@ public interface SemesterRepository extends JpaRepository<Semester, Long> {
     Optional<Semester> findFirstBySpecialization_IdAndSemesterNumber(long specialization_id, int semesterNumber);
     Collection<Semester> findAllBySpecialization_Id(long specializationId);
 
-    @Query(value = "SELECT * FROM semester LEFT OUTER JOIN specialization_semester ss on semester.id = ss.semester_id WHERE specialization_id = :id",nativeQuery = true)
+    @Query(value = "SELECT * FROM semester WHERE semester.specialization_id = :id",nativeQuery = true)
     Collection<Semester> findSemestersForSpecialization(@Param("id") long id);
 }

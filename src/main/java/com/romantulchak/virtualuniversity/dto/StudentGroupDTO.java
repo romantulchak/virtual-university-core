@@ -28,6 +28,8 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
 
     @JsonView(Views.StudentGroupView.class)
     private int studentsCount;
+    @JsonView(Views.StudentGroupView.class)
+    private Collection<StudentGroupGradeDTO> studentGroupGrades;
 
     public StudentGroupDTO(){
 
@@ -37,10 +39,11 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
         this.id = builder.id;
         this.name = builder.name;
         this.semester = builder.semester;
-        this.students = builder.students;
+        this.studentGroupGrades = builder.studentGroupGrades;
         this.specialization = builder.specialization;
         this.subjects = builder.subjects;
         this.studentsCount = builder.studentsCount;
+        this.students = builder.students;
     }
 
 
@@ -100,27 +103,36 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
         this.studentsCount = studentsCount;
     }
 
+    public Collection<StudentGroupGradeDTO> getStudentGroupGrades() {
+        return studentGroupGrades;
+    }
+
+    public void setStudentGroupGrades(Collection<StudentGroupGradeDTO> studentGroupGrades) {
+        this.studentGroupGrades = studentGroupGrades;
+    }
+
     public static class Builder {
         private final long id;
 
         private final String name;
 
-        public Builder(long id, String name){
-            this.id = id;
-            this.name = name;
-        }
-
         private SemesterDTO semester;
 
         //    private Schedule schedule;
-        private Collection<StudentDTO> students;
 
+        private Collection<StudentDTO> students;
         private SpecializationDTO specialization;
 
         private Collection<SubjectTeacherGroupDTO> subjects;
 
         private int studentsCount;
 
+        private Collection<StudentGroupGradeDTO> studentGroupGrades;
+
+        public Builder(long id, String name){
+            this.id = id;
+            this.name = name;
+        }
 
         public Builder withSemester(Semester semester){
             this.semester = new SemesterDTO(semester);
@@ -140,6 +152,10 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
         }
         public Builder withCounter(int studentsCount){
             this.studentsCount = studentsCount;
+            return this;
+        }
+        public Builder withStudentsGrade(Collection<StudentGroupGradeDTO> studentGroupGrades){
+            this.studentGroupGrades = studentGroupGrades;
             return this;
         }
         public StudentGroupDTO build(){

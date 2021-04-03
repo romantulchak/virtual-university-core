@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -22,15 +23,20 @@ public class Semester {
 
     private int semesterNumber;
 
-    @ManyToMany(mappedBy = "semesters")
-    private Collection<Specialization> specialization;
+
+    @ManyToOne
+    private Specialization specialization;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
 
-    public Collection<Specialization> getSpecialization() {
+    public Specialization getSpecialization() {
         return specialization;
     }
 
-    public void setSpecialization(Collection<Specialization> specialization) {
+    public void setSpecialization(Specialization specialization) {
         this.specialization = specialization;
     }
 
@@ -66,6 +72,21 @@ public class Semester {
         this.groups = groups;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 
     @Override
     public boolean equals(Object o) {

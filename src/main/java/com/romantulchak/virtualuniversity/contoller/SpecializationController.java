@@ -43,11 +43,6 @@ public class SpecializationController {
         specializationService.create(specialization);
     }
 
-    @PutMapping("/addSemesterToSpecialization/{semesterId}/{specializationId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
-    public void addSemesterToSpecialization(@PathVariable("semesterId") long semesterId, @PathVariable("specializationId") long specializationId){
-        specializationService.addSemesterToSpecialization(specializationId, semesterId);
-    }
     @PutMapping("/addSubjects/{specializationId}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void addSubjects(@RequestBody Collection<Subject> subjects, @PathVariable("specializationId") long specializationId){

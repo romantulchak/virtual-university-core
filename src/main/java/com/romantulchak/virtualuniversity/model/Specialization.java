@@ -27,11 +27,8 @@ public class Specialization {
     @OneToMany(mappedBy = "specialization")
     private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
 
-    @ManyToMany
-    @JoinTable(name = "specialization_semester", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
-    @OrderBy("semesterNumber DESC ")
+    @OneToMany(mappedBy = "specialization")
     private Collection<Semester> semesters;
-
 
     @ManyToMany
     @JoinTable(name = "specialization_subject", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
