@@ -1,7 +1,6 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.*;
-import com.romantulchak.virtualuniversity.exception.GroupForStudentNotFoundException;
 import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
 import com.romantulchak.virtualuniversity.exception.GroupWithNameAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.StudentAlreadyHasGroupException;
@@ -9,10 +8,8 @@ import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.projection.*;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
-import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupService;
-import com.zaxxer.hikari.util.ClockSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,13 +52,16 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
-        long groupId = studentGroupRepository.findGroupIdByStudentId(id);
-        GroupStudentsLimited group = studentGroupRepository.findByStudents_Id(groupId).orElseThrow(() -> new GroupNotFoundException(id));
+        StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(() -> new GroupNotFoundException(id));
         return new StudentGroupDTO.Builder(group.getId(), group.getName())
-                .withCounter(group.getCount())
                 .withSpecialization(group.getSpecialization())
+                .withSubjects(getSubjects(group))
                 .build();
 
+    }
+
+    private List<SubjectTeacherGroupDTO> getSubjects(StudentGroup group) {
+        return group.getSubjectTeacherGroups().stream().map(SubjectTeacherGroupDTO::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -104,10 +104,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         StudentGroup studentGroup = studentGroupRepository.groupByIdWithSubjectsAndStudents(id).orElseThrow(() -> new GroupNotFoundException(id));
         return new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName())
                 .withStudents(studentGroup.getStudents())
-                .withSubjects(studentGroup.getSubjectTeacherGroups()
-                        .stream()
-                        .map(SubjectTeacherGroupDTO::new)
-                        .collect(Collectors.toList()))
+                .withSubjects(getSubjects(studentGroup))
                 .withSpecialization(studentGroup.getSpecialization())
                 .withCounter(studentGroup.getStudents().size())
                 .build();

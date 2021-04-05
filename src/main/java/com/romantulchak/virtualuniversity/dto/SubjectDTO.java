@@ -5,7 +5,11 @@ import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
+import org.hibernate.Hibernate;
+import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceUnitUtil;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -30,6 +34,7 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
         this.name = name;
         this.type = type;
     }
+    //TODO: remove if
     public SubjectDTO(Subject subject) {
         this(subject.getId(), subject.getName(), subject.getType());
         this.teachers = subject.getTeachers().stream().map(TeacherDTO::new).collect(Collectors.toList());

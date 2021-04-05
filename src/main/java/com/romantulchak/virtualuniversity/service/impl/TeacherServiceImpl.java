@@ -10,6 +10,7 @@ import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
+import com.romantulchak.virtualuniversity.utils.AlbumNumberGenerator;
 import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class TeacherServiceImpl implements TeacherService {
         }
         String password = PasswordGeneratorUtil.generate();
         teacher.setPassword(passwordEncoder.encode(password));
+        teacher.setNumberIdentifier("WT" + AlbumNumberGenerator.generateAlbumNumber());
         emailSender.sendMail(teacher.getEmail(), "Your data", String.format("Your login: %s Your password: %s", teacher.getLogin(), password));
         teacherRepository.save(teacher);
     }

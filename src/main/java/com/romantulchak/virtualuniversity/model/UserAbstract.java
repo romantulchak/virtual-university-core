@@ -39,6 +39,8 @@ public abstract class UserAbstract {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private String numberIdentifier;
+
 
     public UserAbstract(){}
 
@@ -112,6 +114,14 @@ public abstract class UserAbstract {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNumberIdentifier() {
+        return numberIdentifier;
+    }
+
+    public void setNumberIdentifier(String numberIdentifier) {
+        this.numberIdentifier = numberIdentifier;
     }
 
     @Override

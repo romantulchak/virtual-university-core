@@ -2,10 +2,8 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
-import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
-import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
-import com.romantulchak.virtualuniversity.projection.StudentGradeLimited;
+import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedTeacher;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupGradeService;
 import org.springframework.stereotype.Service;
@@ -34,13 +32,13 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
 
     @Override
     public Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId) {
-        Collection<StudentGradeLimited> gradesProjection = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId);
+        Collection<StudentGradeLimitedTeacher> gradesProjection = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId);
         return getStudentGroupGradeDTOS(gradesProjection);
     }
 
-    private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimited> gradesProjection) {
+    private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimitedTeacher> gradesProjection) {
         Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
-        for (StudentGradeLimited grade : gradesProjection) {
+        for (StudentGradeLimitedTeacher grade : gradesProjection) {
             StudentGroupGradeDTO studentGrade = new StudentGroupGradeDTO.Builder(grade.getId())
                     .withStudent(new StudentDTO(grade.getStudent()))
                     .withGrade(grade.getGrade())

@@ -1,7 +1,8 @@
 package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
-import com.romantulchak.virtualuniversity.projection.StudentGradeLimited;
+import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
+import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedTeacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,15 +25,15 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
     @Query(value ="UPDATE StudentGroupGrade sgg SET sgg.grade = :grade WHERE sgg.id = :studentGroupGradeId")
     void setGrade(@Param("studentGroupGradeId") long studentGroupGradeId, @Param("grade") double grade);
 
-//
-//
-//    @Query(value = "SELECT DISTINCT * FROM student_group_grade LEFT OUTER JOIN student_group sg on student_group_grade.student_group_id = sg.id " +
-//                    "LEFT JOIN subject_teacher_group stg on sg.id = stg.student_group_id " +
-//                    "WHERE teacher_id = :teacherId AND stg.student_group_id = :groupId AND student_group_grade.subject_id = :subjectId", nativeQuery = true)
     @Query(value = "SELECT DISTINCT sgg.id as id, sgg.student as student, sgg.grade as grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.studentGroup sg" +
                     " LEFT JOIN sgg.subjectTeacherGroup sst LEFT JOIN sst.subject" +
                     " WHERE sg.id = :groupId AND sst.subject.id = :subjectId")
-    Collection<StudentGradeLimited> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId);
+    Collection<StudentGradeLimitedTeacher> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId);
+
+
+    @Query(value = "SELECT * FROM student_group_grade WHERE student_id = :studentId AND student_group_id = :groupId", nativeQuery = true)
+    Collection<StudentGradeLimitedStudent> findStudentGradesForStudent(@Param("studentId") long studentId, @Param("groupId") long groupId);
+
 
 
 }

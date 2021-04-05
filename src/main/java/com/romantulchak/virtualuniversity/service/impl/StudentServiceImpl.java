@@ -11,6 +11,7 @@ import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
+import com.romantulchak.virtualuniversity.utils.AlbumNumberGenerator;
 import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class StudentServiceImpl implements StudentService {
         }
         String password = PasswordGeneratorUtil.generate();
         student.setPassword(passwordEncoder.encode(password));;
+        student.setNumberIdentifier(AlbumNumberGenerator.generateAlbumNumber());
         Student studentAfterSave = studentRepository.save(student);
         emailSender.sendMail(student.getEmail(), "Your data", String.format("Your login: %s Your password: %s", student.getLogin(), password));
         return convertToDTO(studentAfterSave);

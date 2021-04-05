@@ -2,6 +2,8 @@ package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -20,6 +22,7 @@ public class SubjectTeacherGroup {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "studentGroup_id")
