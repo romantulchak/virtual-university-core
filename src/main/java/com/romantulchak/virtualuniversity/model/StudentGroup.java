@@ -36,6 +36,9 @@ public class StudentGroup {
     @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
     private Collection<StudentGroupGrade> studentGroupGrades;
 
+    @OneToMany(mappedBy = "currentGroup", cascade = CascadeType.REMOVE)
+    private Collection<Student> studentsInCurrentGroup;
+
 
     public long getId() {
         return id;
@@ -99,5 +102,13 @@ public class StudentGroup {
 
     public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
         this.studentGroupGrades = studentGroupGrades;
+    }
+
+    public Collection<Student> getStudentsInCurrentGroup() {
+        return studentsInCurrentGroup;
+    }
+
+    public void setStudentsInCurrentGroup(Collection<Student> studentsInCurrentGroup) {
+        this.studentsInCurrentGroup = studentsInCurrentGroup;
     }
 }

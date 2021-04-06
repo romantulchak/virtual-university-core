@@ -34,4 +34,11 @@ public class StudentGroupGradeController {
         return studentGroupGradeService.findStudentGradesBySubjectAndGroupForTeacher(teacherId, groupId, subjectId);
     }
 
+    @GetMapping("/studentGrades")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('STUDENT') AND @authComponent.hasPermission(authentication,#studentId)")
+    @JsonView(Views.SubjectGrade.class)
+    public Collection<StudentGroupGradeDTO> findStudentGrades(@RequestParam(value = "studentId") long studentId){
+        return studentGroupGradeService.findStudentGrades(studentId);
+    }
+
 }

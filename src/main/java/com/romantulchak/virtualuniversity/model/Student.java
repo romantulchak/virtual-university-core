@@ -42,10 +42,14 @@ public class Student extends UserAbstract{
     @OneToMany(mappedBy = "student")
     private Collection<StudentGroupGrade> studentGroupGrades;
 
-    public Student(long id, String firstName, String lastName){
+    @ManyToOne
+    private StudentGroup currentGroup;
+
+    public Student(long id, String firstName, String lastName, String numberIdentifier){
         setId(id);
         setFirstName(firstName);
         setLastName(lastName);
+        setNumberIdentifier(numberIdentifier);
     }
 
     public Student(String firstName, String lastName, StudentDetails studentDetails, StudentStatus studentStatus, Gender gender, String privateEmail, String email) {
@@ -146,5 +150,13 @@ public class Student extends UserAbstract{
 
     public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
         this.studentGroupGrades = studentGroupGrades;
+    }
+
+    public StudentGroup getCurrentGroup() {
+        return currentGroup;
+    }
+
+    public void setCurrentGroup(StudentGroup currentGroup) {
+        this.currentGroup = currentGroup;
     }
 }

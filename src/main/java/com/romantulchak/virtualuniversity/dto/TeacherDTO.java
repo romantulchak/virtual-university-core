@@ -9,7 +9,7 @@ public class TeacherDTO extends UserDTO{
     public TeacherDTO(){}
 
     public TeacherDTO(Teacher teacher) {
-        super(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getPrivateEmail(), teacher.getEmail(),teacher.getGender());
+        super(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getPrivateEmail(), teacher.getEmail(),teacher.getGender(), teacher.getNumberIdentifier());
     }
     @JsonView({Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class,Views.SubjectView.class, Views.StudentGroupView.class})
     @Override

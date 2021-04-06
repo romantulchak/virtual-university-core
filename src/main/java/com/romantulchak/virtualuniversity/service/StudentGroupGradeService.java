@@ -10,4 +10,6 @@ public interface StudentGroupGradeService {
     void setGrade(Collection<StudentGroupGrade> studentGroupGrade);
 
     Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId);
+
+    Collection<StudentGroupGradeDTO> findStudentGrades(long studentId);
 }

@@ -31,8 +31,8 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
     Collection<StudentGradeLimitedTeacher> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId);
 
 
-    @Query(value = "SELECT * FROM student_group_grade WHERE student_id = :studentId AND student_group_id = :groupId", nativeQuery = true)
-    Collection<StudentGradeLimitedStudent> findStudentGradesForStudent(@Param("studentId") long studentId, @Param("groupId") long groupId);
+    @Query(value = "SELECT sgg.id as id, sgg.subjectTeacherGroup as subjectTeacherGroup, sgg.grade as grade  FROM StudentGroupGrade sgg LEFT JOIN sgg.studentGroup sg WHERE sgg.student.id = :studentId AND sgg.student.currentGroup.id = sg.id")
+    Collection<StudentGradeLimitedStudent> findStudentGradesForStudent(@Param("studentId") long studentId);
 
 
 

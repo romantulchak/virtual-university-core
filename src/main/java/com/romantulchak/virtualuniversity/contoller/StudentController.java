@@ -52,6 +52,7 @@ public class StudentController {
 
     @GetMapping("/studentWithoutGroup")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @JsonView(Views.StudentGroupView.class)
     public Collection<StudentDTO> getStudentsWithoutGroup(){
         return studentService.findStudentsWithoutGroup();
     }

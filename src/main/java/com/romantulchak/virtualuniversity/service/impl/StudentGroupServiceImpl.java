@@ -8,6 +8,7 @@ import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.projection.*;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
+import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupService;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,21 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private final StudentGroupRepository studentGroupRepository;
     private final SubjectTeacherRepository subjectTeacherRepository;
     private final StudentGroupGradeRepository studentGroupGradeRepository;
+    public final StudentRepository studentRepository;
 
-    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository, SubjectTeacherRepository subjectTeacherRepository, StudentGroupGradeRepository studentGroupGradeRepository) {
+    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository, SubjectTeacherRepository subjectTeacherRepository, StudentGroupGradeRepository studentGroupGradeRepository, StudentRepository studentRepository) {
         this.studentGroupRepository = studentGroupRepository;
         this.subjectTeacherRepository = subjectTeacherRepository;
         this.studentGroupGradeRepository = studentGroupGradeRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Transactional
     @Override
     public void create(StudentGroup studentGroup) {
         if (!studentGroupRepository.isExistsByName(studentGroup.getName())) {
-            StudentGroup studentGroupAfterSave = studentGroupRepository.save(studentGroup);
+            StudentGroup studentGroupAfterSave = studentGroupRepository.saveAndFlush(studentGroup);
+            setCurrentGroupForStudent(studentGroupAfterSave.getStudents(), studentGroup);
             studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> subjectTeacherGroup.setStudentGroup(studentGroupAfterSave));
             subjectTeacherRepository.saveAll(studentGroup.getSubjectTeacherGroups());
             createStudentGrades(studentGroup.getStudents(), studentGroupAfterSave.getSubjectTeacherGroups(), studentGroupAfterSave.getId());
@@ -53,9 +57,11 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
         StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(() -> new GroupNotFoundException(id));
+        int studentsCount = studentGroupRepository.groupStudentsCount(group.getId());
         return new StudentGroupDTO.Builder(group.getId(), group.getName())
                 .withSpecialization(group.getSpecialization())
                 .withSubjects(getSubjects(group))
+                .withCounter(studentsCount)
                 .build();
 
     }
@@ -72,12 +78,17 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         students.removeAll(studentsWithGroup);
         group.getStudents().addAll(students);
         studentGroupRepository.save(group);
-
-
-
+        setCurrentGroupForStudent(students, group);
         createStudentGrades(students, group.getSubjectTeacherGroups(), group.getId());
         if (studentsWithGroup.size() != 0) {
             throw new StudentAlreadyHasGroupException(students);
+        }
+    }
+
+    @Transactional
+    void setCurrentGroupForStudent(Collection<Student> students, StudentGroup group) {
+        for (Student student : students) {
+            studentRepository.updateCurrentGroup(group.getId(), student.getId());
         }
     }
 

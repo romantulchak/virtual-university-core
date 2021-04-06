@@ -42,12 +42,13 @@ public class StudentDTO extends UserDTO{
 
     //TODO
     public StudentDTO(Student student){
-        super(student.getId(), student.getFirstName(), student.getLastName(), student.getPrivateEmail(), student.getEmail(), student.getGender());
+        super(student.getId(), student.getFirstName(), student.getLastName(), student.getPrivateEmail(), student.getEmail(), student.getGender(), student.getNumberIdentifier());
         this.studentDetails = student.getStudentDetails();
         this.studentStatus = student.getStudentStatus();
         this.address = student.address;
         this.specializations = student.getSpecializations() != null ? student.getSpecializations().stream().map(SpecializationDTO::new).collect(Collectors.toList()) : null;
         this.currentSemester = student.getCurrentSemester();
+
     }
 
     public StudentDetails getStudentDetails() {

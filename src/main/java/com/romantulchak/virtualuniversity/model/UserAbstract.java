@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.ERole;
 

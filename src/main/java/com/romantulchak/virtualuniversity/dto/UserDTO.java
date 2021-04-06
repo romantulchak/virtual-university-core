@@ -33,19 +33,20 @@ public abstract class UserDTO implements Comparable<UserDTO>{
     @JsonView(Views.StudentView.class)
     private Gender gender;
 
-    @JsonView({Views.StudentView.class})
+    @JsonView({Views.StudentView.class, Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
     private String numberIdentifier;
 
     public UserDTO() {
     }
 
-    public UserDTO(long id, String firstName, String lastName, String privateEmail, String email, Gender gender) {
+    public UserDTO(long id, String firstName, String lastName, String privateEmail, String email, Gender gender, String numberIdentifier) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.privateEmail = privateEmail;
         this.email = email;
         this.gender = gender;
+        this.numberIdentifier = numberIdentifier;
     }
 
     public long getId() {
@@ -94,6 +95,15 @@ public abstract class UserDTO implements Comparable<UserDTO>{
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+
+    public String getNumberIdentifier() {
+        return numberIdentifier;
+    }
+
+    public void setNumberIdentifier(String numberIdentifier) {
+        this.numberIdentifier = numberIdentifier;
     }
 
     @Override
