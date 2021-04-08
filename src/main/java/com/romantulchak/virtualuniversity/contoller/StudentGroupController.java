@@ -78,4 +78,9 @@ public class StudentGroupController {
     public Collection<StudentGroupDTO> findGroupsForTeacher(@PathVariable("id") long id){
         return studentGroupService.findGroupsForTeacher(id);
     }
+    @DeleteMapping("/deleteStudentFromGroup")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteStudentFromGroup(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "studentId") long studentId){
+        studentGroupService.deleteStudentFromGroup(groupId, studentId);
+    }
 }

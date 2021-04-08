@@ -41,4 +41,10 @@ public class StudentGroupGradeController {
         return studentGroupGradeService.findStudentGrades(studentId);
     }
 
+    @GetMapping("/findGradeForStudentBySubject")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('STUDENT') AND @authComponent.hasPermission(authentication,#studentId)")
+    public double findGradeForStudentBySubject(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "studentId") long studentId, @RequestParam(value = "subjectId") long subjectId){
+        return studentGroupGradeService.findGradeForStudentBySubject(groupId, studentId, subjectId);
+    }
+
 }

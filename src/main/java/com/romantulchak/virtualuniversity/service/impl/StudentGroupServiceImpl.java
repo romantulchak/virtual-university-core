@@ -4,7 +4,9 @@ import com.romantulchak.virtualuniversity.dto.*;
 import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
 import com.romantulchak.virtualuniversity.exception.GroupWithNameAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.StudentAlreadyHasGroupException;
+import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.model.enumes.GradeStatus;
 import com.romantulchak.virtualuniversity.projection.*;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
@@ -49,7 +51,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private void createStudentGrades(Collection<Student> students, Collection<SubjectTeacherGroup> subjectTeacherGroups, long studentGroupId) {
         for (Student student : students) {
             for (SubjectTeacherGroup subjectTeacherGroup : subjectTeacherGroups) {
-                studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId());
+                studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId(), GradeStatus.ACTIVE);
             }
         }
     }
@@ -79,9 +81,19 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         group.getStudents().addAll(students);
         studentGroupRepository.save(group);
         setCurrentGroupForStudent(students, group);
-        createStudentGrades(students, group.getSubjectTeacherGroups(), group.getId());
+        setGrades(students, group);
         if (studentsWithGroup.size() != 0) {
             throw new StudentAlreadyHasGroupException(students);
+        }
+    }
+
+    private void setGrades(List<Student> students, StudentGroup group) {
+        for (Student student : students) {
+            if (studentGroupGradeRepository.gradesAlreadyExists(student.getId(), group.getId())){
+                updateStatusForGrade(student.getId(), GradeStatus.ACTIVE);
+            }else {
+                createStudentGrades(students, group.getSubjectTeacherGroups(), group.getId());
+            }
         }
     }
 
@@ -150,6 +162,22 @@ public class StudentGroupServiceImpl implements StudentGroupService {
                 .withSubjects(subjectTeacherGroups)
                 .withSpecialization(groupForTeacher.getSpecialization())
                 .build();
+    }
+    @Transactional
+    @Override
+    public void deleteStudentFromGroup(long groupId, long studentId) {
+        StudentGroup studentGroup = studentGroupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
+        Student student = studentRepository.findStudentById(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
+        updateStatusForGrade(studentId, GradeStatus.IN_ACTIVE);
+        studentGroup.getStudents().remove(student);
+        studentGroupRepository.save(studentGroup);
+    }
+
+    private void updateStatusForGrade(long studentId, GradeStatus status) {
+        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findStudentGradesForStudent(studentId);
+        for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
+            studentGroupGradeRepository.setStatusForGrade(status,studentGradeLimitedStudent.getId());
+        }
     }
 
     private Collection<SubjectTeacherGroupDTO> getSubjectTeacherGroupDTOS(long id, long teacherId) {

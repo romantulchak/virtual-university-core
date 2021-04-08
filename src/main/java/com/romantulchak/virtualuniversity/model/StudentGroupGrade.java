@@ -1,5 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.romantulchak.virtualuniversity.model.enumes.GradeStatus;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -20,6 +22,9 @@ public class StudentGroupGrade {
     private Student student;
 
     private double grade;
+
+    @Enumerated(EnumType.STRING)
+    private GradeStatus status;
 
     public long getId() {
         return id;
@@ -59,5 +64,13 @@ public class StudentGroupGrade {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    public GradeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GradeStatus status) {
+        this.status = status;
     }
 }

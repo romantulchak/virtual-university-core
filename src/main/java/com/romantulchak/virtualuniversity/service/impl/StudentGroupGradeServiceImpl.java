@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
@@ -45,7 +47,7 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     private Collection<StudentGroupGradeDTO> getGradesForStudent(Collection<StudentGradeLimitedStudent> studentGradesForStudent) {
-        Collection<StudentGroupGradeDTO>grades = new ArrayList<>();
+        Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
             StudentGroupGradeDTO studentGroupGradeDTO = new StudentGroupGradeDTO.Builder(studentGradeLimitedStudent.getId())
                     .withGrade(studentGradeLimitedStudent.getGrade())
@@ -53,7 +55,9 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
                     .build();
             grades.add(studentGroupGradeDTO);
         }
-        return grades;
+        return grades.stream()
+                            .sorted(Comparator.comparing(x -> x.getSubjectTeacherGroup().getSubject().getName()))
+                            .collect(Collectors.toList());
     }
 
     private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimitedTeacher> gradesProjection) {
@@ -65,6 +69,11 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
                     .build();
             grades.add(studentGrade);
         }
-        return grades;
+        return grades.stream().sorted().collect(Collectors.toList());
+    }
+
+    @Override
+    public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId) {
+        return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId);
     }
 }

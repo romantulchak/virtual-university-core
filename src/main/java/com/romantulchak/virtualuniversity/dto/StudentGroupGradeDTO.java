@@ -4,24 +4,25 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.*;
 
 import javax.persistence.*;
+import java.util.Comparator;
 
-public class StudentGroupGradeDTO {
+public class StudentGroupGradeDTO implements Comparable<StudentGroupGradeDTO>{
 
-    @JsonView(Views.TeacherStudentGrades.class)
+    @JsonView({Views.TeacherStudentGrades.class, Views.SubjectGrade.class})
     private long id;
 
-    @JsonView(Views.TeacherStudentGrades.class)
+    @JsonView({Views.TeacherStudentGrades.class,Views.SubjectGrade.class})
     private StudentGroupDTO studentGroup;
 
 
-    @JsonView(Views.TeacherStudentGrades.class)
+    @JsonView({Views.TeacherStudentGrades.class,Views.SubjectGrade.class})
     private SubjectTeacherGroupDTO subjectTeacherGroup;
 
 
     @JsonView(Views.TeacherStudentGrades.class)
     private StudentDTO student;
 
-    @JsonView(Views.TeacherStudentGrades.class)
+    @JsonView({Views.TeacherStudentGrades.class,Views.SubjectGrade.class})
     private double grade;
 
     public StudentGroupGradeDTO(Builder builder){
@@ -70,6 +71,13 @@ public class StudentGroupGradeDTO {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    @Override
+    public int compareTo(StudentGroupGradeDTO o) {
+        return Comparator.comparing(StudentDTO::getFirstName)
+                         .thenComparing(StudentDTO::getLastName)
+                         .compare(this.student, o.student);
     }
 
     public static class Builder{
