@@ -1,46 +1,37 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
-import com.romantulchak.virtualuniversity.dto.UserDTO;
 import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.repository.RoleRepository;
-import com.romantulchak.virtualuniversity.repository.StudentGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
 import com.romantulchak.virtualuniversity.utils.AlbumNumberGenerator;
 import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentGradeRepository studentGradeRepository;
+
     private final StudentRepository studentRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
     @Autowired
-    public StudentServiceImpl(StudentGradeRepository studentGradeRepository,
-                              StudentRepository studentRepository,
+    public StudentServiceImpl(StudentRepository studentRepository,
                               RoleRepository roleRepository,
                               PasswordEncoder passwordEncoder,
                               EmailSender emailSender){
-        this.studentGradeRepository = studentGradeRepository;
         this.studentRepository = studentRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;

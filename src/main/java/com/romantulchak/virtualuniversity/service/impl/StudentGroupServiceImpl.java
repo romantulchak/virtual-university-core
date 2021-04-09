@@ -52,6 +52,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         for (Student student : students) {
             for (SubjectTeacherGroup subjectTeacherGroup : subjectTeacherGroups) {
                 studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId(), GradeStatus.ACTIVE);
+                updateStatusForGrade(student.getId(), GradeStatus.ACTIVE);
             }
         }
     }

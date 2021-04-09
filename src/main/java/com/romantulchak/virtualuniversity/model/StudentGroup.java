@@ -20,7 +20,7 @@ public class StudentGroup {
     @ManyToOne
     private Semester semester;
 
-    @OneToOne
+    @OneToOne(mappedBy = "studentGroup")
     private Schedule schedule;
 
     @ManyToMany

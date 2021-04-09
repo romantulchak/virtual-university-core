@@ -25,9 +25,6 @@ public class Specialization {
     private Collection<Teacher> teachers;
 
     @OneToMany(mappedBy = "specialization")
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
-
-    @OneToMany(mappedBy = "specialization")
     private Collection<Semester> semesters;
 
     @ManyToMany
@@ -83,14 +80,6 @@ public class Specialization {
 
     public void setTeachers(Collection<Teacher> teachers) {
         this.teachers = teachers;
-    }
-
-    public Collection<TeacherSubjectStudentGradeLink> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
-
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
     public Collection<Semester> getSemesters() {

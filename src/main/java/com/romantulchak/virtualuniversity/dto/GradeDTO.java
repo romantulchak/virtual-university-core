@@ -1,7 +1,6 @@
 package com.romantulchak.virtualuniversity.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.romantulchak.virtualuniversity.model.Grade;
 import com.romantulchak.virtualuniversity.model.Views;
 
 public class GradeDTO {

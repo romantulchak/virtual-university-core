@@ -29,9 +29,6 @@ public class Student extends UserAbstract{
     @JoinTable(name = "studets_specializations", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
     private Collection<Specialization> specializations;
 
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -102,14 +99,6 @@ public class Student extends UserAbstract{
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public Collection<TeacherSubjectStudentGradeLink> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
-
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
     public Set<Role> getRoles() {

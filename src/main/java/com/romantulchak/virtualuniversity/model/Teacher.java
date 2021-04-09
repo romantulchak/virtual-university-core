@@ -20,10 +20,6 @@ public class Teacher extends UserAbstract{
     @JoinTable(name = "teacher_specialization", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "specialization_id"))
     private Collection<Specialization> specializations;
 
-    @OneToMany(mappedBy = "teacher")
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
-
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "teachers_roles", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -48,14 +44,6 @@ public class Teacher extends UserAbstract{
 
     public void setSpecializations(Collection<Specialization> specializations) {
         this.specializations = specializations;
-    }
-
-    public Collection<TeacherSubjectStudentGradeLink> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
-
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
     public Set<Role> getRoles() {

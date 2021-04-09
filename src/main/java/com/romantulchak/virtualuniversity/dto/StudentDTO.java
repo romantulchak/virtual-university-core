@@ -28,7 +28,6 @@ public class StudentDTO extends UserDTO{
     @JsonView(Views.StudentView.class)
     private Collection<SpecializationDTO> specializations;
 
-    private Collection<TeacherSubjectStudentGradeLinkDTO> teacherSubjectStudentGradeLinks;
     @JsonView(Views.StudentView.class)
     private int currentSemester;
 
@@ -81,14 +80,6 @@ public class StudentDTO extends UserDTO{
 
     public void setSpecializations(Collection<SpecializationDTO> specializations) {
         this.specializations = specializations;
-    }
-
-    public Collection<TeacherSubjectStudentGradeLinkDTO> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
-
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLinkDTO> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
     public Set<Role> getRoles() {

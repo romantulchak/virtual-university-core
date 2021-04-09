@@ -31,6 +31,8 @@ public class SubjectTeacherGroup {
     @OneToMany(mappedBy = "subjectTeacherGroup")
     private Collection<StudentGroupGrade> studentGrades;
 
+    @OneToMany(mappedBy = "subjectTeacher")
+    private Collection<Lesson> lessons;
 
     public SubjectTeacherGroup(){
 
@@ -74,5 +76,13 @@ public class SubjectTeacherGroup {
 
     public void setStudentGrades(Collection<StudentGroupGrade> studentGrades) {
         this.studentGrades = studentGrades;
+    }
+
+    public Collection<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(Collection<Lesson> lessons) {
+        this.lessons = lessons;
     }
 }

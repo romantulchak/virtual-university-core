@@ -27,9 +27,6 @@ public class Subject implements Comparator<Subject> {
     private Collection<Teacher> teachers;
 
     @OneToMany(mappedBy = "subject")
-    private Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks;
-
-    @OneToMany(mappedBy = "subject")
     private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
     @ManyToMany(mappedBy = "subjects")
@@ -49,14 +46,6 @@ public class Subject implements Comparator<Subject> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Collection<TeacherSubjectStudentGradeLink> getTeacherSubjectStudentGradeLinks() {
-        return teacherSubjectStudentGradeLinks;
-    }
-
-    public void setTeacherSubjectStudentGradeLinks(Collection<TeacherSubjectStudentGradeLink> teacherSubjectStudentGradeLinks) {
-        this.teacherSubjectStudentGradeLinks = teacherSubjectStudentGradeLinks;
     }
 
     public SubjectType getType() {
