@@ -33,7 +33,7 @@ public abstract class UserDTO implements Comparable<UserDTO>{
     @JsonView(Views.StudentView.class)
     private Gender gender;
 
-    @JsonView({Views.StudentView.class, Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
+    @JsonView({Views.StudentView.class, Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.ScheduleView.class})
     private String numberIdentifier;
 
     public UserDTO() {

@@ -4,6 +4,7 @@ import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @Entity
 public class Lesson {
@@ -72,4 +73,5 @@ public class Lesson {
     public void setStatus(LessonStatus status) {
         this.status = status;
     }
+
 }

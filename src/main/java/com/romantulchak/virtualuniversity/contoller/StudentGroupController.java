@@ -2,9 +2,13 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.service.SubjectTeacherService;
 import com.romantulchak.virtualuniversity.service.impl.StudentGroupServiceImpl;
+import com.romantulchak.virtualuniversity.service.impl.SubjectTeacherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +20,13 @@ import java.util.List;
 @RequestMapping("/api/student-group")
 public class StudentGroupController {
 
-    StudentGroupServiceImpl studentGroupService;
+    private final StudentGroupServiceImpl studentGroupService;
+    private final SubjectTeacherServiceImpl subjectTeacherService;
 
     @Autowired
-    public StudentGroupController(StudentGroupServiceImpl studentGroupService){
+    public StudentGroupController(StudentGroupServiceImpl studentGroupService, SubjectTeacherServiceImpl subjectTeacherService){
         this.studentGroupService = studentGroupService;
+        this.subjectTeacherService = subjectTeacherService;
     }
 
     @PostMapping("/create")
@@ -82,5 +88,11 @@ public class StudentGroupController {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteStudentFromGroup(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "studentId") long studentId){
         studentGroupService.deleteStudentFromGroup(groupId, studentId);
+    }
+
+    @GetMapping("/findSubjectsForGroup/{groupId}")
+    @JsonView(Views.StudentGroupView.class)
+    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroup(@PathVariable("groupId") long groupId){
+        return subjectTeacherService.findGroupSubjects(groupId);
     }
 }

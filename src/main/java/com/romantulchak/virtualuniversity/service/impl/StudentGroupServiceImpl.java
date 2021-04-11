@@ -174,6 +174,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         studentGroupRepository.save(studentGroup);
     }
 
+
     private void updateStatusForGrade(long studentId, GradeStatus status) {
         Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findStudentGradesForStudent(studentId);
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {

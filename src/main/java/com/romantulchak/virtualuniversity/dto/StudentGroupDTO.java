@@ -12,7 +12,7 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
     @JsonView({Views.StudentGroupView.class,Views.SubjectGrade.class})
     private long id;
 
-    @JsonView({Views.StudentGroupView.class,Views.SubjectGrade.class})
+    @JsonView({Views.StudentGroupView.class,Views.SubjectGrade.class, Views.ScheduleView.class})
     private String name;
 
     @JsonView({Views.StudentGroupView.class,Views.SubjectGrade.class})
