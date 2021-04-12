@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.dto.ScheduleDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
 import com.romantulchak.virtualuniversity.exception.ScheduleIsNullException;
+import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.Schedule;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
@@ -40,18 +41,25 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void create(Schedule schedule) {
         if (schedule != null) {
             scheduleRepository.save(schedule);
-            saveDays(schedule);
+            if (schedule.getDays() != null && schedule.getDays().size() > 0) {
+                saveDays(schedule);
+            }
         } else {
             throw new ScheduleIsNullException();
         }
 
     }
 
+    //TODO: fix it
     @Override
     public ScheduleDTO findScheduleForGroup(long groupId) {
+        long scheduleId = scheduleRepository.getScheduleId(groupId).orElseThrow(ScheduleNotFoundException::new);
         return scheduleRepository.findScheduleByGroupId(groupId)
                 .map(schedule -> new ScheduleDTO(schedule.getId(), convertScheduleDayToDTO(schedule.getDays()), getStudentGroupDTO(schedule.getStudentGroup())))
-                .orElse(new ScheduleDTO());
+                .orElse(new ScheduleDTO(scheduleId));
+
+
+
     }
 
     private StudentGroupDTO getStudentGroupDTO(StudentGroup studentGroup) {

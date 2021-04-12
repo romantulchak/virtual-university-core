@@ -8,11 +8,9 @@ import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.model.enumes.GradeStatus;
 import com.romantulchak.virtualuniversity.projection.*;
-import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
-import com.romantulchak.virtualuniversity.repository.StudentGroupRepository;
-import com.romantulchak.virtualuniversity.repository.StudentRepository;
-import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
+import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.StudentGroupService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +23,20 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private final StudentGroupRepository studentGroupRepository;
     private final SubjectTeacherRepository subjectTeacherRepository;
     private final StudentGroupGradeRepository studentGroupGradeRepository;
-    public final StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+    private final ScheduleServiceImpl scheduleService;
 
-    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository, SubjectTeacherRepository subjectTeacherRepository, StudentGroupGradeRepository studentGroupGradeRepository, StudentRepository studentRepository) {
+    @Autowired
+    public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository,
+                                   SubjectTeacherRepository subjectTeacherRepository,
+                                   StudentGroupGradeRepository studentGroupGradeRepository,
+                                   StudentRepository studentRepository,
+                                   ScheduleServiceImpl scheduleService) {
         this.studentGroupRepository = studentGroupRepository;
         this.subjectTeacherRepository = subjectTeacherRepository;
         this.studentGroupGradeRepository = studentGroupGradeRepository;
         this.studentRepository = studentRepository;
+        this.scheduleService = scheduleService;
     }
 
     @Transactional
@@ -43,6 +48,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
             studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> subjectTeacherGroup.setStudentGroup(studentGroupAfterSave));
             subjectTeacherRepository.saveAll(studentGroup.getSubjectTeacherGroups());
             createStudentGrades(studentGroup.getStudents(), studentGroupAfterSave.getSubjectTeacherGroups(), studentGroupAfterSave.getId());
+
+            Schedule schedule = new Schedule();
+            schedule.setGroup(studentGroupAfterSave);
+            scheduleService.create(schedule);
         } else {
             throw new GroupWithNameAlreadyExistsException(studentGroup.getName());
         }

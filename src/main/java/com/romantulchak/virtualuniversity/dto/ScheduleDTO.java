@@ -20,12 +20,12 @@ public class ScheduleDTO {
     @JsonView(Views.ScheduleView.class)
     private Collection<ScheduleDayDTO> days;
 
-    public ScheduleDTO(){
-
+    public ScheduleDTO(long id ){
+        this.id = id;
     }
 
     public ScheduleDTO(long id, Collection<ScheduleDayDTO> days, StudentGroupDTO studentGroup) {
-        this.id = id;
+        this(id);
         this.days = days;
         this.studentGroup = studentGroup;
     }
