@@ -37,7 +37,8 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
     //TODO: remove if
     public SubjectDTO(Subject subject) {
         this(subject.getId(), subject.getName(), subject.getType());
-        this.teachers = subject.getTeachers().stream().map(TeacherDTO::new).collect(Collectors.toList());
+        if(subject.getTeachers() != null)
+            this.teachers = subject.getTeachers().stream().map(TeacherDTO::new).collect(Collectors.toList());
     }
 
 

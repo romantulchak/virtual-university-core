@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.contoller;
 
+import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +19,8 @@ public class LessonController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void createLessonForDay(@RequestBody Lesson lesson){
-        lessonService.addLessonToDay(lesson);
+    public LessonDTO createLessonForDay(@RequestBody Lesson lesson){
+       return lessonService.addLessonToDay(lesson);
     }
 
 

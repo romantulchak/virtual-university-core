@@ -1,10 +1,14 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
+import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.ScheduleDayServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
@@ -20,6 +24,11 @@ public class ScheduleDayController {
     @GetMapping("/checkIfFree")
     public boolean checkIfDayAvailable(@RequestParam(value = "scheduleId") long scheduleId, @RequestParam(value = "day")String day){
         return scheduleDayService.checkIfDayAvailable(scheduleId, day);
+    }
+    @GetMapping("/findScheduleInRange")
+    @JsonView(Views.ScheduleView.class)
+    public Collection<ScheduleDayDTO> findScheduleInRange(@RequestParam(value = "scheduleId") long scheduleId, @RequestParam(value = "dayAfter")String dayAfter, @RequestParam(value = "dayBefore") String dayBefore){
+        return scheduleDayService.findAllDaysInRange(dayAfter, dayBefore, scheduleId);
     }
 
 }

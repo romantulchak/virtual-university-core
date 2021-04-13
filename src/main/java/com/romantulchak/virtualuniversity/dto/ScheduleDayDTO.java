@@ -8,8 +8,9 @@ import com.romantulchak.virtualuniversity.model.Views;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 
-public class ScheduleDayDTO {
+public class ScheduleDayDTO implements Comparable<ScheduleDayDTO>{
 
     @JsonView(Views.ScheduleView.class)
     private long id;
@@ -60,5 +61,10 @@ public class ScheduleDayDTO {
 
     public void setSchedule(ScheduleDTO schedule) {
         this.schedule = schedule;
+    }
+
+    @Override
+    public int compareTo(ScheduleDayDTO o) {
+        return Comparator.comparing(ScheduleDayDTO::getDay).compare(this, o);
     }
 }

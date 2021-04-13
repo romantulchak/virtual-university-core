@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.exception.LessonAtThatTimeAlreadyExistsException;
+import com.romantulchak.virtualuniversity.exception.LessonIsNullException;
 import com.romantulchak.virtualuniversity.exception.TimeNotCorrectException;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
@@ -8,6 +10,7 @@ import com.romantulchak.virtualuniversity.repository.LessonRepository;
 import com.romantulchak.virtualuniversity.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LessonServiceImpl implements LessonService {
@@ -18,15 +21,18 @@ public class LessonServiceImpl implements LessonService {
         this.lessonRepository = lessonRepository;
     }
 
+    @Transactional
     @Override
-    public void addLessonToDay(Lesson lesson) {
+    public LessonDTO addLessonToDay(Lesson lesson) {
         if (lesson != null) {
             lesson.setDateStart(lesson.getDateStart().plusHours(1));
             lesson.setDateEnd(lesson.getDateEnd().plusHours(1));
             if (!lessonRepository.existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqual(lesson.getDateStart(), lesson.getDateEnd())) {
                 if (!lesson.getDateEnd().isBefore(lesson.getDateStart())) {
                     lesson.setStatus(LessonStatus.ACTIVE);
-                    lessonRepository.save(lesson);
+                    Lesson lessonAfterSave = lessonRepository.save(lesson);
+                    return new LessonDTO(lessonAfterSave);
+
                 } else {
                     throw new TimeNotCorrectException();
                 }
@@ -34,5 +40,6 @@ public class LessonServiceImpl implements LessonService {
                 throw new LessonAtThatTimeAlreadyExistsException(lesson.getDateStart(), lesson.getDateEnd());
             }
         }
+        throw new LessonIsNullException();
     }
 }
