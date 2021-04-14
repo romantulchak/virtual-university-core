@@ -8,4 +8,5 @@ import java.util.Collection;
 public interface ScheduleDayService {
     boolean checkIfDayAvailable(long scheduleId, String day);
     Collection<ScheduleDayDTO> findAllDaysInRange(String dayAfter, String dayBefore, long scheduleId);
+    void deleteDay(long dayId);
 }

@@ -12,5 +12,5 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     boolean existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqual(LocalDateTime dateStart, LocalDateTime dateEnd);
 
-
+    boolean existsById(long id);
 }

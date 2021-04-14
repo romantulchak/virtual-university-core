@@ -23,6 +23,10 @@ public class LessonController {
        return lessonService.addLessonToDay(lesson);
     }
 
-
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void deleteLessonForDay(@PathVariable("id") long lessonId){
+        lessonService.removeLessonsFromDay(lessonId);
+    }
 
 }

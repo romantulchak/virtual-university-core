@@ -39,7 +39,7 @@ public class LessonDTO implements Comparable<LessonDTO>{
         this.dateEnd = lesson.getDateEnd();
         this.subjectTeacher = new SubjectTeacherGroupDTO(lesson.getSubjectTeacher());
         this.status = lesson.getStatus();
-        if (lesson.getSubjectTeacher().getStudentGroup().getName() != null){
+        if (lesson.getSubjectTeacher().getStudentGroup()!= null){
             this.groupName = lesson.getSubjectTeacher().getStudentGroup().getName();
         }
     }

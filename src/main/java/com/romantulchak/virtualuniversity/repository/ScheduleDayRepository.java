@@ -16,4 +16,5 @@ public interface ScheduleDayRepository extends JpaRepository<ScheduleDay, Long> 
     @Query(value = "SELECT sd FROM ScheduleDay sd WHERE sd.day >= :dayAfter AND sd.day <= :dayBefore AND sd.schedule.id = :scheduleId")
     Collection<ScheduleDay> findScheduleDaysByRange(@Param("dayAfter") LocalDate dayAfter, @Param("dayBefore") LocalDate dayBefore, @Param("scheduleId") long scheduleId);
 
+    boolean existsById(long id);
 }

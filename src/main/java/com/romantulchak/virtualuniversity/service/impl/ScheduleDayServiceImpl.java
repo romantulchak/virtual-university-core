@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
+import com.romantulchak.virtualuniversity.exception.ScheduleDayNotFoundException;
+import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
 import com.romantulchak.virtualuniversity.repository.ScheduleDayRepository;
 import com.romantulchak.virtualuniversity.service.ScheduleDayService;
@@ -30,5 +32,14 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
     public Collection<ScheduleDayDTO> findAllDaysInRange(String dayAfter, String dayBefore, long scheduleId) {
         Collection<ScheduleDay> scheduleDaysByRange = scheduleDayRepository.findScheduleDaysByRange(parseStringToDate(dayAfter), parseStringToDate(dayBefore), scheduleId);
         return convertScheduleDayToDTO(scheduleDaysByRange);
+    }
+
+    @Override
+    public void deleteDay(long dayId) {
+        if (scheduleDayRepository.existsById(dayId))
+            scheduleDayRepository.deleteById(dayId);
+        else
+            throw new ScheduleDayNotFoundException(dayId);
+
     }
 }

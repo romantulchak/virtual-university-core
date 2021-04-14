@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.ScheduleDayServiceImpl;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -30,5 +31,9 @@ public class ScheduleDayController {
     public Collection<ScheduleDayDTO> findScheduleInRange(@RequestParam(value = "scheduleId") long scheduleId, @RequestParam(value = "dayAfter")String dayAfter, @RequestParam(value = "dayBefore") String dayBefore){
         return scheduleDayService.findAllDaysInRange(dayAfter, dayBefore, scheduleId);
     }
-
+    @DeleteMapping("/delete/{dayId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteDay(@PathVariable("dayId") long dayId){
+        scheduleDayService.deleteDay(dayId);
+    }
 }

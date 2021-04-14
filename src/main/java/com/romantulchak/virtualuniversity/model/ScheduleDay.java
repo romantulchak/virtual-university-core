@@ -14,7 +14,7 @@ public class ScheduleDay {
 
     private LocalDate day;
 
-    @OneToMany(mappedBy = "scheduleDay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "scheduleDay", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Collection<Lesson> lessons;
 
     @ManyToOne

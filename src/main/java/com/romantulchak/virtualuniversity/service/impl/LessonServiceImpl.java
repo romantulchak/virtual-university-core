@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.exception.LessonAtThatTimeAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.LessonIsNullException;
+import com.romantulchak.virtualuniversity.exception.LessonNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TimeNotCorrectException;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
@@ -32,7 +33,6 @@ public class LessonServiceImpl implements LessonService {
                     lesson.setStatus(LessonStatus.ACTIVE);
                     Lesson lessonAfterSave = lessonRepository.save(lesson);
                     return new LessonDTO(lessonAfterSave);
-
                 } else {
                     throw new TimeNotCorrectException();
                 }
@@ -41,5 +41,13 @@ public class LessonServiceImpl implements LessonService {
             }
         }
         throw new LessonIsNullException();
+    }
+
+    @Override
+    public void removeLessonsFromDay(long lessonId) {
+        if (lessonRepository.existsById(lessonId))
+            lessonRepository.deleteById(lessonId);
+        else
+            throw new LessonNotFoundException(lessonId);
     }
 }
