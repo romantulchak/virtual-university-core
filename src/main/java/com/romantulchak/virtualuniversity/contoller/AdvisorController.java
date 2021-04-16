@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -106,6 +107,11 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(ScheduleDayNotFoundException.class)
     public ResponseEntity<?> handleScheduleDayNotFoundException(ScheduleDayNotFoundException ex, WebRequest webRequest){
+        Map<String ,Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ScheduleDayNotFoundException ex, WebRequest webRequest){
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

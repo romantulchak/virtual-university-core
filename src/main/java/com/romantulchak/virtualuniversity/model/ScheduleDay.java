@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -12,6 +13,7 @@ public class ScheduleDay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     private LocalDate day;
 
     @OneToMany(mappedBy = "scheduleDay", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)

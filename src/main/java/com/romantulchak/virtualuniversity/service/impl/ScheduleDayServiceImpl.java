@@ -6,9 +6,11 @@ import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
 import com.romantulchak.virtualuniversity.repository.ScheduleDayRepository;
 import com.romantulchak.virtualuniversity.service.ScheduleDayService;
+import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import static com.romantulchak.virtualuniversity.utils.DateParserUtility.parseStringToDate;
@@ -32,6 +34,12 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
     public Collection<ScheduleDayDTO> findAllDaysInRange(String dayAfter, String dayBefore, long scheduleId) {
         Collection<ScheduleDay> scheduleDaysByRange = scheduleDayRepository.findScheduleDaysByRange(parseStringToDate(dayAfter), parseStringToDate(dayBefore), scheduleId);
         return convertScheduleDayToDTO(scheduleDaysByRange);
+    }
+
+    @Override
+    public Collection<ScheduleDayDTO> findDaysForWeek(long groupId) {
+        Collection<ScheduleDay> scheduleDaysForWeek = scheduleDayRepository.findScheduleDaysForWeek(groupId, LocalDate.now(), LocalDate.now().plusWeeks(1));
+        return convertScheduleDayToDTO(scheduleDaysForWeek);
     }
 
     @Override

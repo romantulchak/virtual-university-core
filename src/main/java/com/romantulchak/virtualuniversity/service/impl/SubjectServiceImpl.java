@@ -11,6 +11,7 @@ import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,11 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
-    private final TeacherRepository teacherRepository;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository, TeacherRepository teacherRepository) {
+    @Autowired
+    public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
-        this.teacherRepository = teacherRepository;
     }
 
     @Override

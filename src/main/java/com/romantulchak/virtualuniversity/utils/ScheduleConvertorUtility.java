@@ -10,7 +10,17 @@ import java.util.stream.Collectors;
 
 public final class ScheduleConvertorUtility {
 
-    public static Collection<ScheduleDayDTO> convertScheduleDayToDTO(Collection<ScheduleDay> days) {
+    /***
+     *
+     * @param days Collection of ScheduleDay
+     * @return Collection of ScheduleDayDTO
+     * @exception RuntimeException
+     */
+
+    public static Collection<ScheduleDayDTO> convertScheduleDayToDTO(Collection<ScheduleDay> days){
+        if (days == null){
+            throw new RuntimeException("Days cannot be null");
+        }
         return days.stream()
                 .map(day -> new ScheduleDayDTO(day.getId(), day.getDay(), convertLessonsToDTO(day.getLessons())))
                 .sorted()
@@ -19,6 +29,9 @@ public final class ScheduleConvertorUtility {
     }
 
     private static Collection<LessonDTO> convertLessonsToDTO(Collection<Lesson> lessons) {
+        if (lessons == null || lessons.isEmpty()){
+            throw new RuntimeException("Lessons cannot be empty");
+        }
         return lessons.stream().map(LessonDTO::new).sorted().collect(Collectors.toList());
     }
 }

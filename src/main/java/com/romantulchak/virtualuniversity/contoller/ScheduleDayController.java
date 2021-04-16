@@ -31,6 +31,13 @@ public class ScheduleDayController {
     public Collection<ScheduleDayDTO> findScheduleInRange(@RequestParam(value = "scheduleId") long scheduleId, @RequestParam(value = "dayAfter")String dayAfter, @RequestParam(value = "dayBefore") String dayBefore){
         return scheduleDayService.findAllDaysInRange(dayAfter, dayBefore, scheduleId);
     }
+
+    @GetMapping("/findScheduleForTwoWeek/{groupId}")
+    @JsonView(Views.ScheduleView.class)
+    public Collection<ScheduleDayDTO> findDaysForWeek(@PathVariable("groupId") long groupId){
+        return scheduleDayService.findDaysForWeek(groupId);
+    }
+
     @DeleteMapping("/delete/{dayId}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteDay(@PathVariable("dayId") long dayId){

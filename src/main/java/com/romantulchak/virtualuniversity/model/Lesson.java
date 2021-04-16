@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.model;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
@@ -13,8 +14,10 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     private LocalDateTime dateStart;
 
+    @NotNull
     private LocalDateTime dateEnd;
 
     @ManyToOne
