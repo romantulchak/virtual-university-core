@@ -3,12 +3,13 @@ package com.romantulchak.virtualuniversity.service;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
 public interface SubjectService {
     Collection<SubjectDTO> findAllSubjects();
-    void createSubject(Subject subject);
+    void createSubject(String subjectInString, Collection<MultipartFile> files);
 
     Collection<SubjectDTO> findSubjectAvailableForTeacher(long id);
 

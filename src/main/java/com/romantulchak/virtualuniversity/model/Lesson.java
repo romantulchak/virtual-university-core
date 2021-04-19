@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 
 import javax.persistence.*;

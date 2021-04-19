@@ -68,7 +68,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
-        StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(() -> new GroupNotFoundException(id));
+        StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(GroupNotFoundException::new);
         int studentsCount = studentGroupRepository.groupStudentsCount(group.getId());
         return new StudentGroupDTO.Builder(group.getId(), group.getName())
                 .withSpecialization(group.getSpecialization())

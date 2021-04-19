@@ -5,9 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class Subject implements Comparator<Subject> {
@@ -31,6 +29,11 @@ public class Subject implements Comparator<Subject> {
 
     @ManyToMany(mappedBy = "subjects")
     private Collection<Specialization> specializations;
+
+    private String description;
+
+    @ElementCollection
+    private List<SubjectFile> files = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -80,6 +83,21 @@ public class Subject implements Comparator<Subject> {
         this.specializations = specializations;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<SubjectFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<SubjectFile> files) {
+        this.files = files;
+    }
 
     @Override
     public int compare(Subject o1, Subject o2) {

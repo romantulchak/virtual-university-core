@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    @Query(value = "SELECT s.id FROM Schedule s WHERE s.studentGroup.id = :groupId")
-    Optional<Long> getScheduleId(@Param("groupId") long groupId);
-
     @Query(value = "SELECT s FROM Schedule s JOIN FETCH s.days sd WHERE s.studentGroup.id = :groupId")
     Optional<Schedule> findScheduleByGroupId(@Param("groupId") long groupId);
+
+    @Query(value = "SELECT s.id FROM Schedule s WHERE s.studentGroup.id = :groupId")
+    Optional<Long> findScheduleIdByGroupId(@Param("groupId") long groupId);
 }

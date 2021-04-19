@@ -1,16 +1,22 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
@@ -30,10 +36,11 @@ public class SubjectController {
         return subjectService.findAllSubjects();
     }
 
-    @PostMapping("/createSubject")
+    @PostMapping(value = "/createSubject")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void createSubject(@RequestBody Subject subject){
-        subjectService.createSubject(subject);
+    public void createSubject(@RequestPart(value = "file", required = false) Collection<MultipartFile> files, @RequestPart("subject") String subjectInString) throws IOException {
+
+        subjectService.createSubject(subjectInString, files);
     }
     
     @GetMapping("/availableSubjects/{id}")

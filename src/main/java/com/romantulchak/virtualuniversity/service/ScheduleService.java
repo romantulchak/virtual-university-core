@@ -8,4 +8,5 @@ public interface ScheduleService {
 
     ScheduleDTO findScheduleForGroup(long groupId);
 
+    long findScheduleIdForGroup(long groupId);
 }

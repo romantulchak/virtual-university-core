@@ -34,5 +34,9 @@ public class ScheduleController {
     public ScheduleDTO findScheduleForGroup(@PathVariable("groupId") long groupId){
         return scheduleService.findScheduleForGroup(groupId);
     }
+    @GetMapping("/findScheduleIfForGroup/{groupId}")
+    public long findScheduleIdForGroup(@PathVariable("groupId") long groupId){
+        return scheduleService.findScheduleIdForGroup(groupId);
+    }
 
 }

@@ -18,7 +18,9 @@ import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.*;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,11 +56,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     //TODO: fix it
     @Override
     public ScheduleDTO findScheduleForGroup(long groupId) {
-        long scheduleId = scheduleRepository.getScheduleId(groupId).orElseThrow(ScheduleNotFoundException::new);
+        long scheduleId = scheduleRepository.findScheduleIdByGroupId(groupId).orElseThrow(ScheduleNotFoundException::new);
         return scheduleRepository.findScheduleByGroupId(groupId)
                 .map(schedule -> new ScheduleDTO(schedule.getId(), convertScheduleDayToDTO(schedule.getDays()), getStudentGroupDTO(schedule.getStudentGroup())))
                 .orElse(new ScheduleDTO(scheduleId));
-
 
 
     }
@@ -66,7 +67,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private StudentGroupDTO getStudentGroupDTO(StudentGroup studentGroup) {
         return new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName()).build();
     }
-
 
     private void saveDays(Schedule schedule) {
         for (ScheduleDay day : schedule.getDays()) {
@@ -81,5 +81,11 @@ public class ScheduleServiceImpl implements ScheduleService {
             lesson.setScheduleDay(day);
             lessonRepository.save(lesson);
         }
+    }
+
+    @Override
+    public long findScheduleIdForGroup(long groupId) {
+        return scheduleRepository.findScheduleIdByGroupId(groupId)
+                .orElseThrow(ScheduleNotFoundException::new);
     }
 }

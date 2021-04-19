@@ -1,27 +1,38 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
 import com.romantulchak.virtualuniversity.exception.SpecializationNotFoundException;
 import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
+import com.romantulchak.virtualuniversity.utils.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.romantulchak.virtualuniversity.utils.FileUploader.uploadFile;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
 
+    @Value("${subject.upload.path}")
+    private String path;
     @Autowired
     public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
@@ -39,11 +50,28 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public void createSubject(Subject subject) {
-        if (subject != null) {
-            subjectRepository.save(subject);
-        } else {
+    public void createSubject(String subjectInString, Collection<MultipartFile> files) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Subject subject = objectMapper.readValue(subjectInString, Subject.class);
+            if (subject != null) {
+                addFilesToSubject(files, subject);
+                subjectRepository.save(subject);
+            } else {
+                throw new SubjectIsNullException();
+            }
+
+        }catch (IOException e){
             throw new SubjectIsNullException();
+        }
+
+    }
+
+    private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
+        for (MultipartFile file: files) {
+            String subjectFiles = uploadFile(file, path, "subjectFiles");
+            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), subjectFiles.substring(0, 41));
+            subject.getFiles().add(subjectFile);
         }
     }
 
