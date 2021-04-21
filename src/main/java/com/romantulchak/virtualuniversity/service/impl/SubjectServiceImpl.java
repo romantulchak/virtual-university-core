@@ -2,9 +2,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
-import com.romantulchak.virtualuniversity.exception.SpecializationNotFoundException;
-import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
-import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
+import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
@@ -17,6 +15,7 @@ import com.romantulchak.virtualuniversity.utils.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.romantulchak.virtualuniversity.utils.FileUploader.generateNameForFile;
 import static com.romantulchak.virtualuniversity.utils.FileUploader.uploadFile;
 
 @Service
@@ -49,14 +49,19 @@ public class SubjectServiceImpl implements SubjectService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public void createSubject(String subjectInString, Collection<MultipartFile> files) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Subject subject = objectMapper.readValue(subjectInString, Subject.class);
             if (subject != null) {
-                addFilesToSubject(files, subject);
-                subjectRepository.save(subject);
+                if(!subjectRepository.existsByNameAndType(subject.getName(), subject.getType())) {
+                    addFilesToSubject(files, subject);
+                    subjectRepository.save(subject);
+                }else {
+                    throw new SubjectAlreadyExistsException(subject.getName(), subject.getType().name());
+                }
             } else {
                 throw new SubjectIsNullException();
             }
@@ -69,8 +74,9 @@ public class SubjectServiceImpl implements SubjectService {
 
     private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
         for (MultipartFile file: files) {
-            String subjectFiles = uploadFile(file, path, "subjectFiles");
-            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), subjectFiles.substring(0, 41));
+            String fileName = generateNameForFile(file.getOriginalFilename());
+            String subjectFiles = uploadFile(file, path, "subjectFiles", fileName);
+            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), fileName);
             subject.getFiles().add(subjectFile);
         }
     }
@@ -115,6 +121,13 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Collection<SubjectDTO> findAvailableSubjectsForGroup(long groupId) {
         return subjectRepository.findAvailableSubjectsForGroup(groupId).stream().map(this::convertDTO).sorted().collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<SubjectFile> getFilesForSubject(long subjectId) {
+        Subject subject = subjectRepository.findSubjectFiles(subjectId)
+                                            .orElseThrow(() -> new SubjectNotFoundException(subjectId));
+        return subject.getFiles();
     }
 
     private SubjectDTO convertDTO(Subject subject) {

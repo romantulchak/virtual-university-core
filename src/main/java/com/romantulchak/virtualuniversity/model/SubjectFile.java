@@ -1,5 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.Embeddable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

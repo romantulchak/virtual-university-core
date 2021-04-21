@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
@@ -15,7 +16,6 @@ public class LessonDTO implements Comparable<LessonDTO>{
 
     @JsonView(Views.ScheduleView.class)
     private long id;
-
     @JsonView(Views.ScheduleView.class)
     private LocalDateTime dateStart;
 

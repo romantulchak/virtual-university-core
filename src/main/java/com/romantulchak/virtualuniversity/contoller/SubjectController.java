@@ -76,6 +76,9 @@ public class SubjectController {
     public Collection<SubjectDTO> findAvailableSubjectsForGroup(@PathVariable("id") long id){
         return subjectService.findAvailableSubjectsForGroup(id);
     }
-
+    @GetMapping("/getFilesForSubject/{subjectId}")
+    public Collection<SubjectFile> getFilesForSubject(@PathVariable("subjectId") long id){
+        return subjectService.getFilesForSubject(id);
+    }
 
 }

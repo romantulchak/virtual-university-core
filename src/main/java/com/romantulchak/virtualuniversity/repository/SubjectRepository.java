@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
 import com.romantulchak.virtualuniversity.projection.SubjectLimited;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Transactional
 @Repository
@@ -35,5 +37,10 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Modifying
     @Query(value = "INSERT INTO subject_teacher (subject_id, teacher_id) VALUES (:subjectId, :teacherId)", nativeQuery = true)
     void saveSubjectTeacher(@Param("teacherId") long teacherId, @Param("subjectId") long subjectId);
+
+    boolean existsByNameAndType(String name, SubjectType type);
+
+    @Query(value = "SELECT s FROM Subject s LEFT JOIN FETCH s.files WHERE s.id = :id")
+    Optional<Subject> findSubjectFiles(@Param("id")long subjectId);
 
 }

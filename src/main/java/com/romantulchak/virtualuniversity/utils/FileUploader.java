@@ -20,24 +20,34 @@ public class FileUploader {
      * @param file - MultipartFile
      * @param path path to directory
      * @param directory name of directory only NAME
+     * @param fileName use static method generateNameForFile() to generate
+     *                 unique name
      * @return Path to file with localhost
      */
-    public static String uploadFile(MultipartFile file, String path, String directory){
+    public static String uploadFile(MultipartFile file, String path, String directory, String fileName){
         if(file != null){
             File dir = new File(path + directory);
             if(!dir.exists()){
                 dir.mkdir();
             }
             try {
-                String fileOriginalName = UUID.randomUUID() + "." + file.getOriginalFilename().replace(" ","-");
-                String filePath = path + "/" + directory + "/" + fileOriginalName;
+                String filePath = path + "/" + directory + "/" + fileName;
                 Path copyLocation = Paths.get(filePath);
                 Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-                return "http://localhost:8080/" + "files/" + directory + "/" + fileOriginalName;
+                return "http://localhost:8080/" + "files/" + directory + "/" + fileName;
             }catch (IOException e){
                 e.printStackTrace();
             }
         }
         throw new RuntimeException("File not found");
+    }
+
+    /**
+     *
+     * @param originalName File name
+     * @return unique name for file
+     */
+    public static String generateNameForFile(String originalName){
+       return UUID.randomUUID() + "." + originalName.replace(" ","-");
     }
 }

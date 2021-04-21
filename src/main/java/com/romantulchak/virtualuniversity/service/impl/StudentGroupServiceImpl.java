@@ -67,6 +67,18 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
     @Override
+    public void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId) {
+        StudentGroup studentGroup = studentGroupRepository
+                .groupByIdWithSubjectsAndStudents(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
+        Collection<SubjectTeacherGroup> subjectsAfterSave = new ArrayList<>();
+        subjects.forEach(x -> {
+            subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId());
+            //TODO: fix it
+            subjectsAfterSave.add(subjectTeacherRepository.findBySubject_IdAndTeacher_IdAndStudentGroup_Id(x.getSubject().getId(), x.getTeacher().getId(), groupId));
+        });
+        createStudentGrades(studentGroup.getStudents(), subjectsAfterSave, groupId);
+    }
+    @Override
     public StudentGroupDTO findGroupForStudent(long id) {
         StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(GroupNotFoundException::new);
         int studentsCount = studentGroupRepository.groupStudentsCount(group.getId());
@@ -143,11 +155,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
                 .build();
     }
 
-    @Override
-    public void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId) {
-        StudentGroup studentGroup = studentGroupRepository.groupByIdWithSubjectsAndStudents(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
-        subjects.forEach(x -> subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId()));
-    }
+
 
     @Override
     public void delete(long groupId) {

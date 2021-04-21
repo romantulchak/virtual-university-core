@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
@@ -26,6 +27,9 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
    
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class})
     private Collection<TeacherDTO> teachers;
+
+    @JsonView(Views.SubjectView.class)
+    private Collection<SubjectFile> files;
     
     public SubjectDTO() {
     }
@@ -42,6 +46,13 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
     }
 
 
+    public Collection<SubjectFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Collection<SubjectFile> files) {
+        this.files = files;
+    }
 
     public long getId() {
         return id;
