@@ -15,11 +15,13 @@ public class SubjectTeacherServiceImpl implements SubjectTeacherService {
         this.subjectTeacherRepository = subjectTeacherRepository;
     }
 
+    //TODO: Sort
     @Override
     public Collection<SubjectTeacherGroupDTO> findGroupSubjects(long groupId) {
         return subjectTeacherRepository.findSubjectsForGroup(groupId)
                 .stream()
                 .map(SubjectTeacherGroupDTO::new)
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

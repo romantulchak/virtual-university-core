@@ -7,6 +7,7 @@ import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
 import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
@@ -14,18 +15,25 @@ import com.romantulchak.virtualuniversity.service.SubjectService;
 import com.romantulchak.virtualuniversity.utils.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.romantulchak.virtualuniversity.utils.FileUploader.generateNameForFile;
-import static com.romantulchak.virtualuniversity.utils.FileUploader.uploadFile;
+import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -57,7 +65,9 @@ public class SubjectServiceImpl implements SubjectService {
             Subject subject = objectMapper.readValue(subjectInString, Subject.class);
             if (subject != null) {
                 if(!subjectRepository.existsByNameAndType(subject.getName(), subject.getType())) {
-                    addFilesToSubject(files, subject);
+                    if (files != null && !files.isEmpty())
+                        addFilesToSubject(files, subject);
+
                     subjectRepository.save(subject);
                 }else {
                     throw new SubjectAlreadyExistsException(subject.getName(), subject.getType().name());
@@ -75,8 +85,10 @@ public class SubjectServiceImpl implements SubjectService {
     private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
         for (MultipartFile file: files) {
             String fileName = generateNameForFile(file.getOriginalFilename());
-            String subjectFiles = uploadFile(file, path, "subjectFiles", fileName);
-            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), fileName);
+            String directory = "subjectFiles";
+            String localPathToFile = getLocalPathToFile(path, directory, fileName);
+            String subjectFiles = uploadFile(file, path, localPathToFile,  directory, fileName);
+            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), fileName, localPathToFile);
             subject.getFiles().add(subjectFile);
         }
     }
@@ -128,6 +140,27 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = subjectRepository.findSubjectFiles(subjectId)
                                             .orElseThrow(() -> new SubjectNotFoundException(subjectId));
         return subject.getFiles();
+    }
+
+    @Override
+    public ResponseEntity<Resource> downloadFile(String filename) {
+        String localPath = subjectRepository.findLocalPathToFile(filename).orElseThrow(() -> new RuntimeException("File not found"));
+        Path file = Paths.get(localPath);
+        try {
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()){
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            }else {
+                throw new RuntimeException("File not found");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private SubjectDTO convertDTO(Subject subject) {

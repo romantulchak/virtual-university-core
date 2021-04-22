@@ -1,29 +1,32 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.UniqueElements;
 
-import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Embeddable
 public class SubjectFile {
 
+    @Column(unique = true)
+    @JsonView(Views.FileView.class)
     private String name;
 
     private String path;
-
+    @JsonView(Views.FileView.class)
     private LocalDateTime added;
+
+    private String localPath;
 
     public SubjectFile(){
 
     }
-    public SubjectFile(String path, LocalDateTime added, String name) {
+    public SubjectFile(String path, LocalDateTime added, String name, String localPath) {
         this.path = path;
         this.added = added;
         this.name = name;
+        this.localPath = localPath;
     }
 
     public String getPath() {
@@ -48,5 +51,13 @@ public class SubjectFile {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
     }
 }

@@ -9,7 +9,9 @@ import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +41,6 @@ public class SubjectController {
     @PostMapping(value = "/createSubject")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void createSubject(@RequestPart(value = "file", required = false) Collection<MultipartFile> files, @RequestPart("subject") String subjectInString) throws IOException {
-
         subjectService.createSubject(subjectInString, files);
     }
     
@@ -77,8 +78,14 @@ public class SubjectController {
         return subjectService.findAvailableSubjectsForGroup(id);
     }
     @GetMapping("/getFilesForSubject/{subjectId}")
+    @JsonView(Views.FileView.class)
     public Collection<SubjectFile> getFilesForSubject(@PathVariable("subjectId") long id){
         return subjectService.getFilesForSubject(id);
     }
 
+    @GetMapping("/getFile/{filename}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+        return subjectService.downloadFile(filename);
+    }
 }

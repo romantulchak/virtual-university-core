@@ -1,7 +1,9 @@
 package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
+import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
 import com.romantulchak.virtualuniversity.projection.SubjectLimited;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -43,4 +45,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "SELECT s FROM Subject s LEFT JOIN FETCH s.files WHERE s.id = :id")
     Optional<Subject> findSubjectFiles(@Param("id")long subjectId);
 
+    @Query(value = "SELECT local_path FROM subject_files WHERE name = :filename", nativeQuery = true)
+    Optional<String> findLocalPathToFile(@Param("filename") String filename);
 }

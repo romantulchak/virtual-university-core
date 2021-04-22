@@ -24,14 +24,13 @@ public class FileUploader {
      *                 unique name
      * @return Path to file with localhost
      */
-    public static String uploadFile(MultipartFile file, String path, String directory, String fileName){
+    public static String uploadFile(MultipartFile file, String path, String filePath, String directory, String fileName){
         if(file != null){
             File dir = new File(path + directory);
             if(!dir.exists()){
                 dir.mkdir();
             }
             try {
-                String filePath = path + "/" + directory + "/" + fileName;
                 Path copyLocation = Paths.get(filePath);
                 Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
                 return "http://localhost:8080/" + "files/" + directory + "/" + fileName;
@@ -40,6 +39,10 @@ public class FileUploader {
             }
         }
         throw new RuntimeException("File not found");
+    }
+
+    public static String getLocalPathToFile(String path, String directory, String fileName){
+        return path + "/" + directory + "/" + fileName;
     }
 
     /**

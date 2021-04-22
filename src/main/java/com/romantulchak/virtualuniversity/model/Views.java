@@ -13,4 +13,5 @@ public class Views {
     public interface StudentGradeView{};
     public interface SubjectGrade{}
     public interface ScheduleView{}
+    public interface FileView{}
 }
