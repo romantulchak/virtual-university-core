@@ -110,6 +110,7 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectRepository.findAllByTeachers_Id(id)
                 .stream()
                 .map(this::convertDTO)
+                .sorted()
                 .collect(Collectors.toList());
     }
 

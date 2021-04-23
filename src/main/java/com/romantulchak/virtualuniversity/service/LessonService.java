@@ -7,5 +7,5 @@ public interface LessonService {
 
     LessonDTO addLessonToDay(Lesson lesson);
     void removeLessonsFromDay(long lessonId);
-
+    LessonDTO updateLesson(Lesson lesson);
 }

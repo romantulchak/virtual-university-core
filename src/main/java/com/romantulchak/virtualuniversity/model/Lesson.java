@@ -30,6 +30,8 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private LessonStatus status;
 
+    private String roomNumber;
+
     public long getId() {
         return id;
     }
@@ -78,4 +80,11 @@ public class Lesson {
         this.status = status;
     }
 
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
 }

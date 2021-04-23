@@ -26,8 +26,6 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonDTO addLessonToDay(Lesson lesson) {
         if (lesson != null) {
-            lesson.setDateStart(lesson.getDateStart().plusHours(1));
-            lesson.setDateEnd(lesson.getDateEnd().plusHours(1));
             if (!lessonRepository.existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqual(lesson.getDateStart(), lesson.getDateEnd())) {
                 if (!lesson.getDateEnd().isBefore(lesson.getDateStart())) {
                     lesson.setStatus(LessonStatus.ACTIVE);
@@ -41,6 +39,14 @@ public class LessonServiceImpl implements LessonService {
             }
         }
         throw new LessonIsNullException();
+    }
+
+    @Override
+    public LessonDTO updateLesson(Lesson lesson) {
+        if (lessonRepository.existsById(lesson.getId())){
+            return new LessonDTO(lessonRepository.save(lesson));
+        }
+        throw new LessonNotFoundException(lesson.getId());
     }
 
     @Override

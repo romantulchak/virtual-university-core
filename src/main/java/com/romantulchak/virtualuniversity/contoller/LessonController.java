@@ -29,4 +29,8 @@ public class LessonController {
         lessonService.removeLessonsFromDay(lessonId);
     }
 
+    @PutMapping("/update")
+    public LessonDTO updateLesson(@RequestBody Lesson lesson){
+        return lessonService.updateLesson(lesson);
+    }
 }

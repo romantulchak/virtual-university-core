@@ -31,6 +31,9 @@ public class LessonDTO implements Comparable<LessonDTO>{
     private LessonStatus status;
     @JsonView(Views.ScheduleView.class)
     private String groupName;
+    @JsonView(Views.ScheduleView.class)
+    private String roomNumber;
+
     public LessonDTO(){}
 
     public LessonDTO(Lesson lesson) {
@@ -39,6 +42,7 @@ public class LessonDTO implements Comparable<LessonDTO>{
         this.dateEnd = lesson.getDateEnd();
         this.subjectTeacher = new SubjectTeacherGroupDTO(lesson.getSubjectTeacher());
         this.status = lesson.getStatus();
+        this.roomNumber = lesson.getRoomNumber();
         if (lesson.getSubjectTeacher().getStudentGroup()!= null){
             this.groupName = lesson.getSubjectTeacher().getStudentGroup().getName();
         }
@@ -98,6 +102,14 @@ public class LessonDTO implements Comparable<LessonDTO>{
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     @Override
