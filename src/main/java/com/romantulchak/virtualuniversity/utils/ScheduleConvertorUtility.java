@@ -29,7 +29,7 @@ public final class ScheduleConvertorUtility {
     }
 
     private static Collection<LessonDTO> convertLessonsToDTO(Collection<Lesson> lessons) {
-        if (lessons == null || lessons.isEmpty()){
+        if (lessons == null){
             throw new RuntimeException("Lessons cannot be empty");
         }
         return lessons.stream().map(LessonDTO::new).sorted().collect(Collectors.toList());

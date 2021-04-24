@@ -22,6 +22,12 @@ public class ScheduleDay {
     @ManyToOne
     private Schedule schedule;
 
+    public ScheduleDay(){}
+
+    public ScheduleDay(long id, LocalDate day) {
+        this.id = id;
+        this.day = day;
+    }
 
     public long getId() {
         return id;

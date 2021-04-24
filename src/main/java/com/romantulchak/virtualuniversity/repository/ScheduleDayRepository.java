@@ -19,5 +19,8 @@ public interface ScheduleDayRepository extends JpaRepository<ScheduleDay, Long> 
     @Query(value = "SELECT sd FROM ScheduleDay sd LEFT JOIN sd.schedule s WHERE s.studentGroup.id = :groupId AND sd.day >= :dayAfter AND sd.day <= :dayBefore")
     Collection<ScheduleDay> findScheduleDaysForWeek(@Param("groupId") long groupId, @Param("dayAfter") LocalDate dayAfter, @Param("dayBefore") LocalDate dayBefore);
 
+    @Query(value = "SELECT DISTINCT new ScheduleDay(sd.id, sd.day) FROM ScheduleDay sd LEFT OUTER JOIN sd.lessons sdl LEFT OUTER JOIN sd.schedule sds WHERE sdl.subjectTeacher.teacher.id = :teacherId AND sds.studentGroup.id = :groupId")
+    Collection<ScheduleDay> findScheduleDayForTeacherByGroup(@Param("teacherId") long teacherId, @Param("groupId") long groupId);
+
     boolean existsById(long id);
 }

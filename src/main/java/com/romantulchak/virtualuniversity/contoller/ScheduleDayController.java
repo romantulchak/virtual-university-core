@@ -38,6 +38,12 @@ public class ScheduleDayController {
         return scheduleDayService.findDaysForWeek(groupId);
     }
 
+    @GetMapping("/findScheduleForTeacher")
+    @JsonView(Views.ScheduleView.class)
+    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "groupId") long groupId){
+        return scheduleDayService.findDaysForTeacherByGroup(teacherId, groupId);
+    }
+
     @DeleteMapping("/delete/{dayId}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteDay(@PathVariable("dayId") long dayId){

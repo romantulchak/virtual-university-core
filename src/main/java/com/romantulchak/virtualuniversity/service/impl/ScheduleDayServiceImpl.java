@@ -4,6 +4,7 @@ import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.exception.ScheduleDayNotFoundException;
 import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
+import com.romantulchak.virtualuniversity.repository.LessonRepository;
 import com.romantulchak.virtualuniversity.repository.ScheduleDayRepository;
 import com.romantulchak.virtualuniversity.service.ScheduleDayService;
 import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
@@ -19,10 +20,11 @@ import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.
 @Service
 public class ScheduleDayServiceImpl implements ScheduleDayService {
     private final ScheduleDayRepository scheduleDayRepository;
-
+    private final LessonRepository lessonRepository;
     @Autowired
-    public ScheduleDayServiceImpl(ScheduleDayRepository scheduleDayRepository){
+    public ScheduleDayServiceImpl(ScheduleDayRepository scheduleDayRepository, LessonRepository lessonRepository){
         this.scheduleDayRepository = scheduleDayRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     @Override
@@ -43,11 +45,20 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
     }
 
     @Override
+    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(long teacherId, long groupId) {
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacherByGroup(teacherId, groupId);
+        for (ScheduleDay day : days){
+            day.setLessons(lessonRepository.findLessonsForTeacherByDay(day.getId(), teacherId));
+        }
+        return convertScheduleDayToDTO(days);
+    }
+
+    @Override
     public void deleteDay(long dayId) {
         if (scheduleDayRepository.existsById(dayId))
             scheduleDayRepository.deleteById(dayId);
-        else
+        else {
             throw new ScheduleDayNotFoundException(dayId);
-
+        }
     }
 }
