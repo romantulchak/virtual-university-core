@@ -91,7 +91,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
     private List<SubjectTeacherGroupDTO> getSubjects(StudentGroup group) {
-        return group.getSubjectTeacherGroups().stream().map(SubjectTeacherGroupDTO::new).collect(Collectors.toList());
+        return group.getSubjectTeacherGroups()
+                .stream()
+                .map(SubjectTeacherGroupDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -193,7 +196,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
 
     private void updateStatusForGrade(long studentId, GradeStatus status) {
-        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findStudentGradesForStudent(studentId);
+        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
             studentGroupGradeRepository.setStatusForGrade(status,studentGradeLimitedStudent.getId());
         }

@@ -12,4 +12,11 @@ public interface StudentGradeLimitedStudent {
     double getGrade();
 
 
+    void setId(long id);
+
+    void setSubjectTeacherGroup(SubjectTeacherGroup subjectTeacherGroup);
+
+    void setGrade(double grade);
+
+
 }

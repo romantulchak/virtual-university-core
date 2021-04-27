@@ -21,8 +21,8 @@ public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO
 
     private StudentGroupDTO studentGroup;
 
-    public SubjectTeacherGroupDTO(){
-
+    public SubjectTeacherGroupDTO(long id){
+        this.id = id;
     }
 
     public SubjectTeacherGroupDTO(long id, String name, SubjectType type){
@@ -30,8 +30,9 @@ public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO
     }
 
 
+    //TOOD: change it to set
     public SubjectTeacherGroupDTO(SubjectTeacherGroup subjectTeacherGroup){
-        this.id = subjectTeacherGroup.getId();
+        this(subjectTeacherGroup.getId());
         this.subject = new SubjectDTO(subjectTeacherGroup.getSubject());
         this.teacher = new TeacherDTO(subjectTeacherGroup.getTeacher());
     }

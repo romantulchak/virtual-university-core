@@ -6,6 +6,8 @@ import com.romantulchak.virtualuniversity.model.Schedule;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.ScheduleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +36,18 @@ public class ScheduleController {
     public ScheduleDTO findScheduleForGroup(@PathVariable("groupId") long groupId){
         return scheduleService.findScheduleForGroup(groupId);
     }
-    @GetMapping("/findScheduleIfForGroup/{groupId}")
+    @GetMapping("/findScheduleIdForGroup/{groupId}")
     public long findScheduleIdForGroup(@PathVariable("groupId") long groupId){
         return scheduleService.findScheduleIdForGroup(groupId);
+    }
+    @GetMapping("/findScheduleForTeacherByGroup")
+    public ScheduleDTO findScheduleForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam("groupId") long groupId){
+        return scheduleService.findScheduleForTeacherBeGroup(teacherId, groupId);
+    }
+    @GetMapping("/exportPdf/{scheduleId}")
+    @ResponseBody
+    public ResponseEntity<Resource> exportScheduleAsPDF(@PathVariable("scheduleId") long scheduleId){
+        return scheduleService.exportScheduleAsPDF(scheduleId);
     }
 
 }

@@ -3,34 +3,42 @@ package com.romantulchak.virtualuniversity.service.impl;
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
 import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
+import com.romantulchak.virtualuniversity.exception.StudentGroupGradeEmptyException;
+import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedTeacher;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
+import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupGradeService;
+import com.romantulchak.virtualuniversity.utils.SubjectTeacherConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     private final StudentGroupGradeRepository studentGroupGradeRepository;
+    private final StudentRepository studentRepository;
 
-    public StudentGroupGradeServiceImpl(StudentGroupGradeRepository studentGroupGradeRepository) {
+    public StudentGroupGradeServiceImpl(StudentGroupGradeRepository studentGroupGradeRepository, StudentRepository studentRepository) {
         this.studentGroupGradeRepository = studentGroupGradeRepository;
+        this.studentRepository = studentRepository;
     }
 
 
     @Override
     public void setGrade(Collection<StudentGroupGrade> studentGroupGrade) {
-        if (studentGroupGrade != null) {
+        if (studentGroupGrade != null && !studentGroupGrade.isEmpty()) {
             for (StudentGroupGrade groupGrade : studentGroupGrade) {
-                studentGroupGradeRepository.setGrade(groupGrade.getId(), groupGrade.getGrade());
+                studentGroupGradeRepository.updateGrade(groupGrade.getId(), groupGrade.getGrade());
             }
-
+        }else {
+            throw new StudentGroupGradeEmptyException("Student Group grade cannot be null");
         }
     }
 
@@ -42,22 +50,29 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
 
     @Override
     public Collection<StudentGroupGradeDTO> findStudentGrades(long studentId) {
-        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findStudentGradesForStudent(studentId);
-        return getGradesForStudent(studentGradesForStudent);
+        if (studentRepository.existsById(studentId)) {
+            Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
+            return getGradesForStudent(studentGradesForStudent);
+        }
+        throw new StudentNotFoundException(studentId);
     }
 
     private Collection<StudentGroupGradeDTO> getGradesForStudent(Collection<StudentGradeLimitedStudent> studentGradesForStudent) {
         Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
+            SubjectTeacherGroupDTO subjectTeacherGroupDTO = SubjectTeacherConverter.getSubjectTeacherGroupDTO(studentGradeLimitedStudent.getId(),
+                    studentGradeLimitedStudent.getSubjectTeacherGroup()
+                            .getSubject(),
+                    studentGradeLimitedStudent.getSubjectTeacherGroup().getTeacher());
             StudentGroupGradeDTO studentGroupGradeDTO = new StudentGroupGradeDTO.Builder(studentGradeLimitedStudent.getId())
                     .withGrade(studentGradeLimitedStudent.getGrade())
-                    .withSubjectTeacherGroup(new SubjectTeacherGroupDTO(studentGradeLimitedStudent.getSubjectTeacherGroup()))
+                    .withSubjectTeacherGroup(subjectTeacherGroupDTO)
                     .build();
             grades.add(studentGroupGradeDTO);
         }
         return grades.stream()
-                            .sorted(Comparator.comparing(x -> x.getSubjectTeacherGroup().getSubject().getName()))
-                            .collect(Collectors.toList());
+                .sorted(Comparator.comparing(x -> x.getSubjectTeacherGroup().getSubject().getName()))
+                .collect(Collectors.toList());
     }
 
     private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimitedTeacher> gradesProjection) {
@@ -76,4 +91,6 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId) {
         return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId);
     }
+
+
 }

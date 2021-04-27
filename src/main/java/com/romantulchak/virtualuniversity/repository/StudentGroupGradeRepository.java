@@ -24,7 +24,7 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
 
     @Modifying
     @Query(value ="UPDATE StudentGroupGrade sgg SET sgg.grade = :grade WHERE sgg.id = :studentGroupGradeId")
-    void setGrade(@Param("studentGroupGradeId") long studentGroupGradeId, @Param("grade") double grade);
+    void updateGrade(@Param("studentGroupGradeId") long studentGroupGradeId, @Param("grade") double grade);
 
     @Modifying
     @Query(value = "UPDATE StudentGroupGrade sgg SET sgg.status = :status WHERE sgg.id = :studentGroupGradeId")
@@ -37,7 +37,7 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
 
 
     @Query(value = "SELECT sgg.id as id, sgg.subjectTeacherGroup as subjectTeacherGroup, sgg.grade as grade  FROM StudentGroupGrade sgg LEFT JOIN sgg.studentGroup sg WHERE sgg.student.id = :studentId AND sgg.student.currentGroup.id = sg.id")
-    Collection<StudentGradeLimitedStudent> findStudentGradesForStudent(@Param("studentId") long studentId);
+    Collection<StudentGradeLimitedStudent> findGradesForStudent(@Param("studentId") long studentId);
 
     @Query(value = "SELECT sgg.grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.student s LEFT OUTER JOIN sgg.subjectTeacherGroup sst WHERE s.id = :studentId AND sst.subject.id = :subjectId AND sgg.studentGroup.id = :groupId")
     double findGradeForStudentBySubject(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("studentId") long studentId);
