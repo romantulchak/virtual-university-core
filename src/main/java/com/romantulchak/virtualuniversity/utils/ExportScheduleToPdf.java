@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @Component
 public final class ExportScheduleToPdf {
-    private final static String FILE = "/home/romantulchak/test.pdf";
+    private static String FILE = "/home/romantulchak/test.pdf";
 
     public static Document export(Schedule schedule) throws IOException {
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(FILE));
