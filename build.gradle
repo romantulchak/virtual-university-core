@@ -15,14 +15,17 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'junit:junit:4.12'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.4.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.2'
-
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.2'
+    implementation group: 'com.itextpdf', name: 'layout', version: '7.1.15'
+// https://mvnrepository.com/artifact/com.itextpdf/kernel
+    implementation group: 'com.itextpdf', name: 'kernel', version: '7.1.15'
 
 
 

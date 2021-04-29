@@ -16,4 +16,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query(value = "SELECT s.id FROM Schedule s WHERE s.studentGroup.id = :groupId")
     Optional<Long> findScheduleIdByGroupId(@Param("groupId") long groupId);
+
+    @Query(value = "SELECT s FROM Schedule s JOIN FETCH s.days WHERE s.id = :id")
+    Optional<Schedule> findByIdWithDays(@Param("id") long id);
 }

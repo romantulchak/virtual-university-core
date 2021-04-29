@@ -1,9 +1,6 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
-import com.itextpdf.text.DocumentException;
-import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleDTO;
-import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
 import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
 import com.romantulchak.virtualuniversity.exception.ScheduleIsNullException;
@@ -16,19 +13,16 @@ import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.ScheduleService;
 import com.romantulchak.virtualuniversity.utils.ExportScheduleToPdf;
-import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.*;
-
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertScheduleDayToDTO;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -115,12 +109,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ResponseEntity<Resource> exportScheduleAsPDF(long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(ScheduleNotFoundException::new);
+        Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId).orElseThrow(ScheduleNotFoundException::new);
         try {
-            ExportScheduleToPdf.export(schedule);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
+           ExportScheduleToPdf.export(schedule);
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
