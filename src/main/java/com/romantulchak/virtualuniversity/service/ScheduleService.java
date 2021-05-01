@@ -14,5 +14,7 @@ public interface ScheduleService {
 
     ScheduleDTO findScheduleForTeacherBeGroup(long teacherId, long groupId);
 
-    ResponseEntity<Resource> exportScheduleAsPDF(long scheduleId);
+    byte[] exportFullScheduleAsPDF(long scheduleId);
+
+    byte[] exportScheduleForWeekPDF(long scheduleId);
 }

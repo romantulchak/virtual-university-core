@@ -1,11 +1,9 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDTO;
+import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
-import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
-import com.romantulchak.virtualuniversity.exception.ScheduleIsNullException;
-import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
-import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
+import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.Schedule;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
@@ -20,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertScheduleDayToDTO;
@@ -32,7 +32,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final LessonRepository lessonRepository;
     private final StudentGroupRepository studentGroupRepository;
     private final TeacherRepository teacherRepository;
-
     @Autowired
     public ScheduleServiceImpl(ScheduleRepository scheduleRepository, ScheduleDayRepository scheduleDayRepository, LessonRepository lessonRepository,
                                StudentGroupRepository studentGroupRepository, TeacherRepository teacherRepository) {
@@ -108,14 +107,26 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ResponseEntity<Resource> exportScheduleAsPDF(long scheduleId) {
+    public byte[] exportFullScheduleAsPDF(long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId).orElseThrow(ScheduleNotFoundException::new);
         try {
-           ExportScheduleToPdf.export(schedule);
+          return ExportScheduleToPdf.export(schedule);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public byte[] exportScheduleForWeekPDF(long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(ScheduleNotFoundException::new);
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDaysForWeek(schedule.getStudentGroup().getId(), LocalDate.now(), LocalDate.now().plusDays(7));
+        schedule.setDays(days);
+        try {
+            return ExportScheduleToPdf.export(schedule);
+        } catch (IOException e) {
+            throw new ExportToPdfFailedException();
+        }
     }
 
     private Collection<ScheduleDay> getDaysWithLessonsForTeacher(long teacherId, long groupId) {

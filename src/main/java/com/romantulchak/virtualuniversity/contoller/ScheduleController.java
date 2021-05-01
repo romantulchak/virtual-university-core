@@ -6,12 +6,9 @@ import com.romantulchak.virtualuniversity.model.Schedule;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.ScheduleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
@@ -44,10 +41,15 @@ public class ScheduleController {
     public ScheduleDTO findScheduleForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam("groupId") long groupId){
         return scheduleService.findScheduleForTeacherBeGroup(teacherId, groupId);
     }
-    @GetMapping("/exportPdf/{scheduleId}")
+    @GetMapping(value = "/exportPdf-f/{scheduleId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseBody
-    public ResponseEntity<Resource> exportScheduleAsPDF(@PathVariable("scheduleId") long scheduleId){
-        return scheduleService.exportScheduleAsPDF(scheduleId);
+    public byte[] exportScheduleFullAsPDF(@PathVariable("scheduleId") long scheduleId){
+        return scheduleService.exportFullScheduleAsPDF(scheduleId);
+    }
+    @GetMapping(value = "/exportPdf-w/{scheduleId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @ResponseBody
+    public byte[] exportScheduleWeekAsPDF(@PathVariable("scheduleId") long scheduleId){
+        return scheduleService.exportScheduleForWeekPDF(scheduleId);
     }
 
 }
