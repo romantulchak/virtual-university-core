@@ -6,18 +6,17 @@ import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.exception.StudentGroupGradeEmptyException;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
+import com.romantulchak.virtualuniversity.projection.StudentDataLimited;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedTeacher;
 import com.romantulchak.virtualuniversity.repository.StudentGroupGradeRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupGradeService;
+import com.romantulchak.virtualuniversity.utils.ExportDataToPdf;
 import com.romantulchak.virtualuniversity.utils.SubjectTeacherConverter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,6 +89,16 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     @Override
     public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId) {
         return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId);
+    }
+
+    @Override
+    public byte[] exportStudentGrades(long studentId) {
+        StudentDataLimited student = studentRepository.findStudentInformation(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
+        List<StudentGradeLimitedStudent> grades = new ArrayList<>(studentGroupGradeRepository.findGradesForStudent(studentId))
+                .stream()
+                .sorted(Comparator.comparing(grade -> grade.getSubjectTeacherGroup().getSubject().getName()))
+                .collect(Collectors.toList());
+        return ExportDataToPdf.exportGradesForStudent(student, grades);
     }
 
 

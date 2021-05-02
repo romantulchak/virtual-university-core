@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Collection<StudentDTO> findStudentsWithoutGroup() {
-        return this.studentRepository.findStudentWithoutGroup()
+        return this.studentRepository.findStudentsWithoutGroup()
                 .stream()
                 .map(this::convertToDTO)
                 .sorted()

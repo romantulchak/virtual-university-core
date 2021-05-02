@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.Student;
+import com.romantulchak.virtualuniversity.projection.StudentDataLimited;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,11 +20,15 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByLogin(String login);
 
     Optional<Student> findStudentById(long id);
+
     Collection<Student> findStudentByFirstNameAndLastName(String firstName, String lastName);
 
     //TODO: make projection
     @Query(value = "SELECT new Student(s.id, s.firstName, s.lastName, s.numberIdentifier) FROM Student s LEFT OUTER JOIN s.studentGroups sg WHERE sg.id IS NULL ")
-    Collection<Student> findStudentWithoutGroup();
+    Collection<Student> findStudentsWithoutGroup();
+
+    @Query(value = "SELECT s.id as id, s.firstName as firstName, s.lastName as lastName, s.numberIdentifier as numberIdentifier FROM Student s WHERE s.id = :studentId")
+    Optional<StudentDataLimited> findStudentInformation(@Param("studentId") long studentId);
 
     @Modifying
     @Query(value = "UPDATE  Student s SET s.currentGroup.id = :currentGroupId WHERE s.id = :studentId")

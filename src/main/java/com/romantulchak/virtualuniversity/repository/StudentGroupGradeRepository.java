@@ -44,4 +44,7 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
 
     @Query(value = "SELECT EXISTS(SELECT id FROM student_group_grade WHERE student_group_grade.student_id = :studentId AND student_group_grade.student_group_id = :groupId) ", nativeQuery = true)
     boolean gradesAlreadyExists(@Param("studentId") long studentId, @Param("groupId") long groupId);
+
+    @Query(value = "SELECT EXISTS (SELECT student_group_grade.id FROM student_group_grade LEFT OUTER JOIN student s on student_group_grade.student_id = s.id WHERE s.id = :studentId)", nativeQuery = true)
+    boolean hasAccessToGrades(@Param("studentId") long studentId);
 }

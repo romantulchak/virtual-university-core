@@ -1,7 +1,6 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDTO;
-import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
@@ -10,16 +9,13 @@ import com.romantulchak.virtualuniversity.model.ScheduleDay;
 import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.ScheduleService;
-import com.romantulchak.virtualuniversity.utils.ExportScheduleToPdf;
+import com.romantulchak.virtualuniversity.utils.ExportDataToPdf;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertScheduleDayToDTO;
@@ -110,7 +106,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public byte[] exportFullScheduleAsPDF(long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId).orElseThrow(ScheduleNotFoundException::new);
         try {
-          return ExportScheduleToPdf.export(schedule);
+          return ExportDataToPdf.exportSchedule(schedule);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,7 +119,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDaysForWeek(schedule.getStudentGroup().getId(), LocalDate.now(), LocalDate.now().plusDays(7));
         schedule.setDays(days);
         try {
-            return ExportScheduleToPdf.export(schedule);
+            return ExportDataToPdf.exportSchedule(schedule);
         } catch (IOException e) {
             throw new ExportToPdfFailedException();
         }

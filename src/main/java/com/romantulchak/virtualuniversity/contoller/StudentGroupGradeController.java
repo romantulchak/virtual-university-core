@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.StudentGroupGradeServiceImpl;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,11 @@ public class StudentGroupGradeController {
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('STUDENT') AND @authComponent.hasPermission(authentication,#studentId)")
     public double findGradeForStudentBySubject(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "studentId") long studentId, @RequestParam(value = "subjectId") long subjectId){
         return studentGroupGradeService.findGradeForStudentBySubject(groupId, studentId, subjectId);
+    }
+    @GetMapping(value = "/exportGradesForStudent/{studentId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('STUDENT') AND @accessToStudentGroup.checkAccessToGrades(#studentId)")
+    public byte[] exportGradesForStudent(@PathVariable("studentId") long studentId){
+        return studentGroupGradeService.exportStudentGrades(studentId);
     }
 
 }
