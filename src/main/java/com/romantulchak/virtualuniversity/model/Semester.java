@@ -18,11 +18,10 @@ public class Semester {
 
     private String name;
 
-    @OneToMany(mappedBy = "semester")
+    @ManyToMany(mappedBy = "semesters")
     private Collection<StudentGroup> groups;
 
     private int semesterNumber;
-
 
     @ManyToOne
     private Specialization specialization;
@@ -31,6 +30,8 @@ public class Semester {
 
     private LocalDate endDate;
 
+    @OneToMany(mappedBy = "semester")
+    private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
     public Specialization getSpecialization() {
         return specialization;
@@ -86,6 +87,14 @@ public class Semester {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Collection<SubjectTeacherGroup> getSubjectTeacherGroups() {
+        return subjectTeacherGroups;
+    }
+
+    public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
+        this.subjectTeacherGroups = subjectTeacherGroups;
     }
 
     @Override

@@ -2,10 +2,7 @@ package com.romantulchak.virtualuniversity.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class StudentGroup {
@@ -16,6 +13,10 @@ public class StudentGroup {
 
     @NotBlank
     private String name;
+
+    @ManyToMany
+    @JoinTable(name = "group_semester", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
+    private Collection<Semester> semesters;
 
     @ManyToOne
     private Semester semester;
@@ -56,12 +57,12 @@ public class StudentGroup {
         this.name = name;
     }
 
-    public Semester getSemester() {
-        return semester;
+    public Collection<Semester> getSemesters() {
+        return semesters;
     }
 
-    public void setSemester(Semester semester) {
-        this.semester = semester;
+    public void setSemesters(Collection<Semester> semesters) {
+        this.semesters = semesters;
     }
 
     public Schedule getSchedule() {
@@ -110,5 +111,26 @@ public class StudentGroup {
 
     public void setStudentsInCurrentGroup(Collection<Student> studentsInCurrentGroup) {
         this.studentsInCurrentGroup = studentsInCurrentGroup;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StudentGroup that = (StudentGroup) o;
+        return id == that.id && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

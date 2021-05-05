@@ -23,7 +23,6 @@ public class SubjectTeacherGroup {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "studentGroup_id")
     private StudentGroup studentGroup;
@@ -33,6 +32,10 @@ public class SubjectTeacherGroup {
 
     @OneToMany(mappedBy = "subjectTeacher")
     private Collection<Lesson> lessons;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 
     public SubjectTeacherGroup(){
 
@@ -84,5 +87,13 @@ public class SubjectTeacherGroup {
 
     public void setLessons(Collection<Lesson> lessons) {
         this.lessons = lessons;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }

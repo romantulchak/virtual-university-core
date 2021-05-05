@@ -27,4 +27,6 @@ public interface StudentGroupService {
     StudentGroupDTO findGroupSubjectsForTeacher(long id, long teacherId);
 
     void deleteStudentFromGroup(long groupId, long studentId);
+
+    void  changeGroupSemester(long groupId, long semesterId, List<SubjectTeacherGroup> subjects);
 }

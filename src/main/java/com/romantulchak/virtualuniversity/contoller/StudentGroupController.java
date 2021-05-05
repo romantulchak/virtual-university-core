@@ -95,4 +95,9 @@ public class StudentGroupController {
     public Collection<SubjectTeacherGroupDTO> findSubjectsForGroup(@PathVariable("groupId") long groupId){
         return subjectTeacherService.findGroupSubjects(groupId);
     }
+
+    @PutMapping("/changeGroupSemester")
+    public void changeGroupSemester(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "semesterId") long semesterId, List<SubjectTeacherGroup> subjects){
+        studentGroupService.changeGroupSemester(groupId, semesterId, subjects);
+    }
 }

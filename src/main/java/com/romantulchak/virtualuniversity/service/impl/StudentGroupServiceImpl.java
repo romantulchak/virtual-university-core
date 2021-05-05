@@ -1,10 +1,7 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.*;
-import com.romantulchak.virtualuniversity.exception.GroupNotFoundException;
-import com.romantulchak.virtualuniversity.exception.GroupWithNameAlreadyExistsException;
-import com.romantulchak.virtualuniversity.exception.StudentAlreadyHasGroupException;
-import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
+import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.model.enumes.GradeStatus;
 import com.romantulchak.virtualuniversity.projection.*;
@@ -25,36 +22,51 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private final StudentGroupGradeRepository studentGroupGradeRepository;
     private final StudentRepository studentRepository;
     private final ScheduleServiceImpl scheduleService;
-
+    private final SemesterRepository semesterRepository;
     @Autowired
     public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository,
                                    SubjectTeacherRepository subjectTeacherRepository,
                                    StudentGroupGradeRepository studentGroupGradeRepository,
                                    StudentRepository studentRepository,
-                                   ScheduleServiceImpl scheduleService) {
+                                   ScheduleServiceImpl scheduleService,
+                                   SemesterRepository semesterRepository) {
         this.studentGroupRepository = studentGroupRepository;
         this.subjectTeacherRepository = subjectTeacherRepository;
         this.studentGroupGradeRepository = studentGroupGradeRepository;
         this.studentRepository = studentRepository;
         this.scheduleService = scheduleService;
+        this.semesterRepository = semesterRepository;
     }
 
     @Transactional
     @Override
     public void create(StudentGroup studentGroup) {
         if (!studentGroupRepository.isExistsByName(studentGroup.getName())) {
+            addSemesterToGroupSemesters(studentGroup.getSemester(), studentGroup.getSemesters());
             StudentGroup studentGroupAfterSave = studentGroupRepository.saveAndFlush(studentGroup);
             setCurrentGroupForStudent(studentGroupAfterSave.getStudents(), studentGroup);
             studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> subjectTeacherGroup.setStudentGroup(studentGroupAfterSave));
             subjectTeacherRepository.saveAll(studentGroup.getSubjectTeacherGroups());
             createStudentGrades(studentGroup.getStudents(), studentGroupAfterSave.getSubjectTeacherGroups(), studentGroupAfterSave.getId());
-
-            Schedule schedule = new Schedule();
-            schedule.setGroup(studentGroupAfterSave);
-            scheduleService.create(schedule);
+            createSchedule(studentGroupAfterSave);
         } else {
             throw new GroupWithNameAlreadyExistsException(studentGroup.getName());
         }
+    }
+
+    private void addSemesterToGroupSemesters(Semester semester, Collection<Semester> semesters) {
+        if (semester == null){
+            semesters = new ArrayList<>();
+        }
+        if (semesters.isEmpty()){
+            semesters.add(semester);
+        }
+    }
+
+    private void createSchedule(StudentGroup studentGroupAfterSave) {
+        Schedule schedule = new Schedule();
+        schedule.setGroup(studentGroupAfterSave);
+        scheduleService.create(schedule);
     }
 
     private void createStudentGrades(Collection<Student> students, Collection<SubjectTeacherGroup> subjectTeacherGroups, long studentGroupId) {
@@ -70,6 +82,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     public void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId) {
         StudentGroup studentGroup = studentGroupRepository
                 .groupByIdWithSubjectsAndStudents(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
+        addSubjectsToGroup(subjects, groupId, studentGroup);
+    }
+
+    private void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId, StudentGroup studentGroup) {
         Collection<SubjectTeacherGroup> subjectsAfterSave = new ArrayList<>();
         subjects.forEach(x -> {
             subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId());
@@ -78,6 +94,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         });
         createStudentGrades(studentGroup.getStudents(), subjectsAfterSave, groupId);
     }
+
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
         StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(GroupNotFoundException::new);
@@ -159,7 +176,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
 
-
+    //TODO: fix delete
     @Override
     public void delete(long groupId) {
         studentGroupRepository.deleteById(groupId);
@@ -192,6 +209,18 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         updateStatusForGrade(studentId, GradeStatus.IN_ACTIVE);
         studentGroup.getStudents().remove(student);
         studentGroupRepository.save(studentGroup);
+    }
+
+    @Override
+    public void changeGroupSemester(long groupId, long semesterId, List<SubjectTeacherGroup> subjects) {
+        StudentGroup group = studentGroupRepository.findGroupById(groupId).orElseThrow(GroupNotFoundException::new);
+        Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
+        if (group.getSemester().equals(semester) || group.getSemesters().contains(semester)){
+            throw new SemesterAlreadyExistsException(semester.getName());
+        }
+        group.setSemester(semester);
+        addSubjectsToGroup(subjects, group.getId(), group);
+        studentGroupRepository.save(group);
     }
 
 

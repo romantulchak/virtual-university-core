@@ -9,13 +9,14 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
-import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.model.Lesson;
+import com.romantulchak.virtualuniversity.model.Schedule;
+import com.romantulchak.virtualuniversity.model.ScheduleDay;
+import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.projection.StudentDataLimited;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
