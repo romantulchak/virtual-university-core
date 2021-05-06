@@ -27,4 +27,6 @@ public interface SubjectService {
     Collection<SubjectFile> getFilesForSubject(long subjectId);
 
     ResponseEntity<Resource> downloadFile(String filename);
+
+    Collection<SubjectDTO> findAllSubjectsWithTeachers();
 }

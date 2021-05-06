@@ -23,10 +23,11 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
-    public void create(Semester semester) {
+    public SemesterDTO create(Semester semester) {
         if (semester != null) {
             if (!semesterRepository.existsByName(semester.getName())) {
-                semesterRepository.save(semester);
+                Semester semesterAfterSave = semesterRepository.save(semester);
+                return convertToDTO(semesterAfterSave);
             } else {
                 throw new SemesterAlreadyExistsException(semester.getName());
             }

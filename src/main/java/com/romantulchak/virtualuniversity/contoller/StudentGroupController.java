@@ -97,7 +97,7 @@ public class StudentGroupController {
     }
 
     @PutMapping("/changeGroupSemester")
-    public void changeGroupSemester(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "semesterId") long semesterId, List<SubjectTeacherGroup> subjects){
+    public void changeGroupSemester(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "semesterId") long semesterId, @RequestBody List<SubjectTeacherGroup> subjects){
         studentGroupService.changeGroupSemester(groupId, semesterId, subjects);
     }
 }

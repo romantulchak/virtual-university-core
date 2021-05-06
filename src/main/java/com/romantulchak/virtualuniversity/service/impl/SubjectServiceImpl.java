@@ -41,6 +41,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Value("${subject.upload.path}")
     private String path;
+
     @Autowired
     public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
@@ -64,30 +65,30 @@ public class SubjectServiceImpl implements SubjectService {
             ObjectMapper objectMapper = new ObjectMapper();
             Subject subject = objectMapper.readValue(subjectInString, Subject.class);
             if (subject != null) {
-                if(!subjectRepository.existsByNameAndType(subject.getName(), subject.getType())) {
+                if (!subjectRepository.existsByNameAndType(subject.getName(), subject.getType())) {
                     if (files != null && !files.isEmpty())
                         addFilesToSubject(files, subject);
 
                     subjectRepository.save(subject);
-                }else {
+                } else {
                     throw new SubjectAlreadyExistsException(subject.getName(), subject.getType().name());
                 }
             } else {
                 throw new SubjectIsNullException();
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new SubjectIsNullException();
         }
 
     }
 
     private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
-        for (MultipartFile file: files) {
+        for (MultipartFile file : files) {
             String fileName = generateNameForFile(file.getOriginalFilename());
             String directory = "subjectFiles";
             String localPathToFile = getLocalPathToFile(path, directory, fileName);
-            String subjectFiles = uploadFile(file, path, localPathToFile,  directory, fileName);
+            String subjectFiles = uploadFile(file, path, localPathToFile, directory, fileName);
             SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), fileName, localPathToFile);
             subject.getFiles().add(subjectFile);
         }
@@ -133,13 +134,17 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDTO> findAvailableSubjectsForGroup(long groupId) {
-        return subjectRepository.findAvailableSubjectsForGroup(groupId).stream().map(this::convertDTO).sorted().collect(Collectors.toList());
+        return subjectRepository.findAvailableSubjectsForGroup(groupId)
+                .stream()
+                .map(this::convertDTO)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
     public Collection<SubjectFile> getFilesForSubject(long subjectId) {
         Subject subject = subjectRepository.findSubjectFiles(subjectId)
-                                            .orElseThrow(() -> new SubjectNotFoundException(subjectId));
+                .orElseThrow(() -> new SubjectNotFoundException(subjectId));
         return subject.getFiles();
     }
 
@@ -149,12 +154,12 @@ public class SubjectServiceImpl implements SubjectService {
         Path file = Paths.get(localPath);
         try {
             Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()){
+            if (resource.exists() || resource.isReadable()) {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
-            }else {
+            } else {
                 throw new RuntimeException("File not found");
             }
 
@@ -162,6 +167,11 @@ public class SubjectServiceImpl implements SubjectService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Collection<SubjectDTO> findAllSubjectsWithTeachers() {
+        return subjectRepository.findAllSubjectsWithTeachers().stream().map(this::convertDTO).collect(Collectors.toList());
     }
 
     private SubjectDTO convertDTO(Subject subject) {

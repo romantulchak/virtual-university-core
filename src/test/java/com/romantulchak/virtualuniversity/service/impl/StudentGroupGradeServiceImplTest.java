@@ -119,7 +119,7 @@ public class StudentGroupGradeServiceImplTest {
         assertEquals(1, studentGroup.getId());
         assertEquals(3, student.getId());
         assertEquals(4, subject.getId());
-        studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroup.getId(), subject.getId(), GradeStatus.ACTIVE);
+        studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroup.getId(), subject.getId(), GradeStatus.ACTIVE, studentGroup.getSemester().getId());
 
         StudentGroupGrade studentGroupGrade = new StudentGroupGrade();
         studentGroupGrade.setStudent(student);

@@ -16,8 +16,8 @@ import java.util.Collection;
 public interface SubjectTeacherRepository extends JpaRepository<SubjectTeacherGroup, Long> {
 
     @Modifying
-    @Query(value = "INSERT INTO subject_teacher_group (student_group_id, subject_id, teacher_id)  VALUES (:groupId,:subjectId, :teacherId)", nativeQuery = true)
-    void saveSubjectTeacherGroup(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("teacherId") long teacherId);
+    @Query(value = "INSERT INTO subject_teacher_group (student_group_id, subject_id, teacher_id, semester_id)  VALUES (:groupId,:subjectId, :teacherId, :semesterId)", nativeQuery = true)
+    void saveSubjectTeacherGroup(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("teacherId") long teacherId, @Param("semesterId") long semesterId);
 
     @Query(value = "SELECT DISTINCT s.id as id, s.name as name, s.type as type FROM SubjectTeacherGroup stg LEFT OUTER JOIN stg.subject s WHERE stg.studentGroup.id = :groupId AND stg.teacher.id = :teacherId")
     Collection<SubjectTeacherLimited> subjectsInGroupForTeacher(@Param("groupId") long groupId, @Param("teacherId") long teacherId);
@@ -25,5 +25,5 @@ public interface SubjectTeacherRepository extends JpaRepository<SubjectTeacherGr
     @Query(value = "SELECT stg FROM SubjectTeacherGroup stg WHERE stg.studentGroup.id = :groupId")
     Collection<SubjectTeacherGroup> findSubjectsForGroup(@Param("groupId") long groupId);
 
-    SubjectTeacherGroup findBySubject_IdAndTeacher_IdAndStudentGroup_Id(long subjectId, long teacherId, long studentGroupId);
+    SubjectTeacherGroup findBySubject_IdAndTeacher_IdAndStudentGroup_IdAndSemester_Id(long subjectId, long teacherId, long studentGroupId, long semesterId);
 }

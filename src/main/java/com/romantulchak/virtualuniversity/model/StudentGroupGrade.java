@@ -26,6 +26,9 @@ public class StudentGroupGrade {
     @Enumerated(EnumType.STRING)
     private GradeStatus status;
 
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private Semester semester;
+
     public long getId() {
         return id;
     }
@@ -72,5 +75,14 @@ public class StudentGroupGrade {
 
     public void setStatus(GradeStatus status) {
         this.status = status;
+    }
+
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }

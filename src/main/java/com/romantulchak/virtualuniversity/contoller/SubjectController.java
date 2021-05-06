@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.JoinColumn;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -82,10 +83,14 @@ public class SubjectController {
     public Collection<SubjectFile> getFilesForSubject(@PathVariable("subjectId") long id){
         return subjectService.getFilesForSubject(id);
     }
-
     @GetMapping("/getFile/{filename}")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         return subjectService.downloadFile(filename);
+    }
+    @GetMapping("/findAllSubjectsWithTeachers")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findAllSubjectsWithTeachers(){
+        return subjectService.findAllSubjectsWithTeachers();
     }
 }

@@ -23,6 +23,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private final StudentRepository studentRepository;
     private final ScheduleServiceImpl scheduleService;
     private final SemesterRepository semesterRepository;
+
     @Autowired
     public StudentGroupServiceImpl(StudentGroupRepository studentGroupRepository,
                                    SubjectTeacherRepository subjectTeacherRepository,
@@ -45,7 +46,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
             addSemesterToGroupSemesters(studentGroup.getSemester(), studentGroup.getSemesters());
             StudentGroup studentGroupAfterSave = studentGroupRepository.saveAndFlush(studentGroup);
             setCurrentGroupForStudent(studentGroupAfterSave.getStudents(), studentGroup);
-            studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> subjectTeacherGroup.setStudentGroup(studentGroupAfterSave));
+            studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> {
+                subjectTeacherGroup.setStudentGroup(studentGroupAfterSave);
+                subjectTeacherGroup.setSemester(studentGroupAfterSave.getSemester());
+            });
             subjectTeacherRepository.saveAll(studentGroup.getSubjectTeacherGroups());
             createStudentGrades(studentGroup.getStudents(), studentGroupAfterSave.getSubjectTeacherGroups(), studentGroupAfterSave.getId());
             createSchedule(studentGroupAfterSave);
@@ -55,10 +59,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
     private void addSemesterToGroupSemesters(Semester semester, Collection<Semester> semesters) {
-        if (semester == null){
+        if (semesters == null) {
             semesters = new ArrayList<>();
         }
-        if (semesters.isEmpty()){
+        if (semesters.isEmpty()) {
             semesters.add(semester);
         }
     }
@@ -72,7 +76,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private void createStudentGrades(Collection<Student> students, Collection<SubjectTeacherGroup> subjectTeacherGroups, long studentGroupId) {
         for (Student student : students) {
             for (SubjectTeacherGroup subjectTeacherGroup : subjectTeacherGroups) {
-                studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId(), GradeStatus.ACTIVE);
+                studentGroupGradeRepository.saveStudentGrade(student.getId(), studentGroupId, subjectTeacherGroup.getId(), GradeStatus.ACTIVE, subjectTeacherGroup.getStudentGroup().getSemester().getId());
                 updateStatusForGrade(student.getId(), GradeStatus.ACTIVE);
             }
         }
@@ -88,9 +92,9 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId, StudentGroup studentGroup) {
         Collection<SubjectTeacherGroup> subjectsAfterSave = new ArrayList<>();
         subjects.forEach(x -> {
-            subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId());
+            subjectTeacherRepository.saveSubjectTeacherGroup(studentGroup.getId(), x.getSubject().getId(), x.getTeacher().getId(), studentGroup.getSemester().getId());
             //TODO: fix it
-            subjectsAfterSave.add(subjectTeacherRepository.findBySubject_IdAndTeacher_IdAndStudentGroup_Id(x.getSubject().getId(), x.getTeacher().getId(), groupId));
+            subjectsAfterSave.add(subjectTeacherRepository.findBySubject_IdAndTeacher_IdAndStudentGroup_IdAndSemester_Id(x.getSubject().getId(), x.getTeacher().getId(), groupId, studentGroup.getSemester().getId()));
         });
         createStudentGrades(studentGroup.getStudents(), subjectsAfterSave, groupId);
     }
@@ -103,6 +107,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
                 .withSpecialization(group.getSpecialization())
                 .withSubjects(getSubjects(group))
                 .withCounter(studentsCount)
+                .withSemester(group.getSemester())
                 .build();
 
     }
@@ -131,9 +136,9 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     private void setGrades(List<Student> students, StudentGroup group) {
         for (Student student : students) {
-            if (studentGroupGradeRepository.gradesAlreadyExists(student.getId(), group.getId())){
+            if (studentGroupGradeRepository.gradesAlreadyExists(student.getId(), group.getId())) {
                 updateStatusForGrade(student.getId(), GradeStatus.ACTIVE);
-            }else {
+            } else {
                 createStudentGrades(students, group.getSubjectTeacherGroups(), group.getId());
             }
         }
@@ -172,6 +177,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
                 .withSubjects(getSubjects(studentGroup))
                 .withSpecialization(studentGroup.getSpecialization())
                 .withCounter(studentGroup.getStudents().size())
+                .withSemester(studentGroup.getSemester())
                 .build();
     }
 
@@ -199,8 +205,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         return new StudentGroupDTO.Builder(groupForTeacher.getId(), groupForTeacher.getName())
                 .withSubjects(subjectTeacherGroups)
                 .withSpecialization(groupForTeacher.getSpecialization())
+                .withSemester(groupForTeacher.getSemester())
                 .build();
     }
+
     @Transactional
     @Override
     public void deleteStudentFromGroup(long groupId, long studentId) {
@@ -211,11 +219,13 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         studentGroupRepository.save(studentGroup);
     }
 
+    @Transactional
     @Override
     public void changeGroupSemester(long groupId, long semesterId, List<SubjectTeacherGroup> subjects) {
         StudentGroup group = studentGroupRepository.findGroupById(groupId).orElseThrow(GroupNotFoundException::new);
         Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
-        if (group.getSemester().equals(semester) || group.getSemesters().contains(semester)){
+        //Lazy initialization - fix
+        if (group.getSemester().equals(semester) || group.getSemesters().contains(semester)) {
             throw new SemesterAlreadyExistsException(semester.getName());
         }
         group.setSemester(semester);
@@ -227,7 +237,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     private void updateStatusForGrade(long studentId, GradeStatus status) {
         Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
-            studentGroupGradeRepository.setStatusForGrade(status,studentGradeLimitedStudent.getId());
+            studentGroupGradeRepository.setStatusForGrade(status, studentGradeLimitedStudent.getId());
         }
     }
 

@@ -33,6 +33,9 @@ public class Semester {
     @OneToMany(mappedBy = "semester")
     private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
+    @OneToMany(mappedBy = "semester")
+    private Collection<StudentGroupGrade> studentGroupGrades;
+
     public Specialization getSpecialization() {
         return specialization;
     }
@@ -95,6 +98,14 @@ public class Semester {
 
     public void setSubjectTeacherGroups(Collection<SubjectTeacherGroup> subjectTeacherGroups) {
         this.subjectTeacherGroups = subjectTeacherGroups;
+    }
+
+    public Collection<StudentGroupGrade> getStudentGroupGrades() {
+        return studentGroupGrades;
+    }
+
+    public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
+        this.studentGroupGrades = studentGroupGrades;
     }
 
     @Override

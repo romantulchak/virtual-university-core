@@ -6,7 +6,7 @@ import com.romantulchak.virtualuniversity.model.Semester;
 import java.util.Collection;
 
 public interface SemesterService {
-    void create(Semester semester);
+    SemesterDTO create(Semester semester);
     Collection<SemesterDTO> findAllSemesters();
 
     SemesterDTO findSemester(long specializationId, int currentSemesterId);

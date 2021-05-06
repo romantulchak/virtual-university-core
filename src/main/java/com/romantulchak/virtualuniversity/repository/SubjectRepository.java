@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.repository;
 
+import antlr.actions.python.CodeLexer;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
@@ -47,4 +48,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT local_path FROM subject_files WHERE name = :filename", nativeQuery = true)
     Optional<String> findLocalPathToFile(@Param("filename") String filename);
+
+    @Query(value = "SELECT s FROM Subject s JOIN FETCH s.teachers")
+    Collection<Subject> findAllSubjectsWithTeachers();
 }

@@ -32,8 +32,8 @@ public class SemesterController {
 
     @PostMapping("/createSemester")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void createSemester(@RequestBody Semester semester){
-        semesterService.create(semester);
+    public SemesterDTO createSemester(@RequestBody Semester semester){
+       return semesterService.create(semester);
     }
 
     @GetMapping("/findSemester/{specializationId}/{currentSemester}")

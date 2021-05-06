@@ -27,7 +27,7 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query(value = "SELECT s.id as id, s.name as name, s.semester as semester FROM StudentGroup s")
     Collection<GroupLimited> allGroups();
 
-    @Query(value = "SELECT DISTINCT s FROM StudentGroup s JOIN FETCH s.subjectTeacherGroups as sb LEFT JOIN FETCH s.students as ss WHERE s.id = :id")
+    @Query(value = "SELECT DISTINCT s FROM StudentGroup s JOIN FETCH s.subjectTeacherGroups as sb LEFT JOIN FETCH s.students as ss WHERE s.id = :id AND s.semester.id = sb.semester.id")
     Optional<StudentGroup> groupByIdWithSubjectsAndStudents(@Param("id") long id);
 
     @Query(value = "SELECT s FROM StudentGroup s JOIN FETCH s.students ss JOIN FETCH s.subjectTeacherGroups sst WHERE s.id = :id")
@@ -48,7 +48,7 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query(value = "SELECT EXISTS( SELECT id FROM subject_teacher_group WHERE subject_teacher_group.teacher_id = :teacherId)", nativeQuery = true)
     boolean hasAccess(@Param("teacherId") long id);
 
-    @Query(value = "SELECT s.id as id, s.name as name, s.specialization as specialization FROM StudentGroup s LEFT JOIN s.specialization ss WHERE s.id = :groupId")
+    @Query(value = "SELECT s.id as id, s.name as name, s.specialization as specialization, s.semester as semester FROM StudentGroup s  LEFT JOIN s.specialization ss WHERE s.id = :groupId")
     GroupStudentsLimited groupDetailsForTeacher(@Param("groupId") long groupId);
 
     @Query(value = "SELECT count(st) FROM StudentGroup s LEFT OUTER JOIN s.students st WHERE s.id = :groupId")

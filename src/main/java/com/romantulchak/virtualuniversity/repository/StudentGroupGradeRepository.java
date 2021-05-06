@@ -19,8 +19,8 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
 
 
     @Modifying
-    @Query(value ="INSERT INTO student_group_grade (grade, student_id, student_group_id, subject_teacher_group_id, status) VALUES (0, :studentId, :groupId, :subjectId, :status)", nativeQuery = true)
-    void saveStudentGrade(@Param("studentId") long studentId, @Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("status") GradeStatus status);
+    @Query(value ="INSERT INTO student_group_grade (grade, student_id, student_group_id, subject_teacher_group_id, status, semester_id) VALUES (0, :studentId, :groupId, :subjectId, :status, :semesterId)", nativeQuery = true)
+    void saveStudentGrade(@Param("studentId") long studentId, @Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("status") GradeStatus status, @Param("semesterId") long semesterId);
 
     @Modifying
     @Query(value ="UPDATE StudentGroupGrade sgg SET sgg.grade = :grade WHERE sgg.id = :studentGroupGradeId")
