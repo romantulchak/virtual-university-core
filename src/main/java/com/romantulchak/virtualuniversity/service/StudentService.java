@@ -16,4 +16,6 @@ public interface StudentService {
     Collection<StudentDTO> findStudentByName(String firstName, String lastName);
 
     Collection<StudentDTO> findStudentsWithoutGroup();
+
+    int getCurrentStudentSemester(long id);
 }

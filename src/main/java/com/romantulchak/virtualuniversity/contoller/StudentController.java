@@ -57,5 +57,9 @@ public class StudentController {
         return studentService.findStudentsWithoutGroup();
     }
 
+    @GetMapping("/studentCurrentSemester/{studentId}")
+    public int getCurrentStudentSemester(@PathVariable("studentId") long id){
+        return studentService.getCurrentStudentSemester(id);
+    }
 
 }

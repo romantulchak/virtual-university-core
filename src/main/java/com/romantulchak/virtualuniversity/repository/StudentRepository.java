@@ -33,4 +33,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Modifying
     @Query(value = "UPDATE  Student s SET s.currentGroup.id = :currentGroupId WHERE s.id = :studentId")
     void updateCurrentGroup(@Param("currentGroupId") long currentGroupId, @Param("studentId") long studentId);
+
+    @Query(value = "SELECT s.currentSemester FROM Student s WHERE s.id = :studentId")
+    int getCurrentStudentSemester(@Param("studentId") long id);
   }

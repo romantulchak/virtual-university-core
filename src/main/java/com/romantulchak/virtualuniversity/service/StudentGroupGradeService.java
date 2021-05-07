@@ -13,7 +13,7 @@ public interface StudentGroupGradeService {
 
     Collection<StudentGroupGradeDTO> findStudentGrades(long studentId);
 
-    double findGradeForStudentBySubject(long groupId, long studentId, long subjectId);
+    double findGradeForStudentBySubject(long groupId, long studentId, long subjectId, long semesterId);
 
     byte[] exportStudentGrades(long studentId);
 }

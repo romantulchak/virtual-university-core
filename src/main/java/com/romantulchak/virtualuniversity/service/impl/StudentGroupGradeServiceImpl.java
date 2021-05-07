@@ -36,7 +36,7 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
             for (StudentGroupGrade groupGrade : studentGroupGrade) {
                 studentGroupGradeRepository.updateGrade(groupGrade.getId(), groupGrade.getGrade());
             }
-        }else {
+        } else {
             throw new StudentGroupGradeEmptyException("Student Group grade cannot be null");
         }
     }
@@ -87,8 +87,9 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     @Override
-    public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId) {
-        return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId);
+    public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId, long semesterId) {
+        return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId, semesterId)
+                .orElseThrow(() -> new RuntimeException("Grade not found"));
     }
 
     @Override

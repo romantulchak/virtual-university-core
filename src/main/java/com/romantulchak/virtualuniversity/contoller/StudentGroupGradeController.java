@@ -44,8 +44,11 @@ public class StudentGroupGradeController {
 
     @GetMapping("/findGradeForStudentBySubject")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('STUDENT') AND @authComponent.hasPermission(authentication,#studentId)")
-    public double findGradeForStudentBySubject(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "studentId") long studentId, @RequestParam(value = "subjectId") long subjectId){
-        return studentGroupGradeService.findGradeForStudentBySubject(groupId, studentId, subjectId);
+    public double findGradeForStudentBySubject(@RequestParam(value = "groupId") long groupId,
+                                               @RequestParam(value = "studentId") long studentId,
+                                               @RequestParam(value = "subjectId") long subjectId,
+                                               @RequestParam(value = "semesterId") long semesterId){
+        return studentGroupGradeService.findGradeForStudentBySubject(groupId, studentId, subjectId, semesterId);
     }
     @GetMapping(value = "/exportGradesForStudent/{studentId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('ADMIN') OR hasRole('STUDENT') AND @accessToStudentGroup.checkAccessToGrades(#studentId)")

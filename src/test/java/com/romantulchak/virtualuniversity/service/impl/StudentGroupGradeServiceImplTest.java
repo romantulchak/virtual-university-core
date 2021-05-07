@@ -134,7 +134,7 @@ public class StudentGroupGradeServiceImplTest {
 
         double grade = 3.5;
         studentGroupGradeRepository.updateGrade(studentGroupGrade.getId(), grade);
-        double gradeForStudentBySubject = studentGroupGradeService.findGradeForStudentBySubject(studentGroup.getId(), student.getId(), subject.getId());
+        double gradeForStudentBySubject = studentGroupGradeService.findGradeForStudentBySubject(studentGroup.getId(), student.getId(), subject.getId(), studentGroup.getSemester().getId());
         assertEquals(3.5, gradeForStudentBySubject, 0);
     }
 }

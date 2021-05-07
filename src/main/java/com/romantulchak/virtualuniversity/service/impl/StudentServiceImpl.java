@@ -79,11 +79,19 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Collection<StudentDTO> findStudentsWithoutGroup() {
-        return this.studentRepository.findStudentsWithoutGroup()
+        return studentRepository.findStudentsWithoutGroup()
                 .stream()
                 .map(this::convertToDTO)
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int getCurrentStudentSemester(long id) {
+        if(studentRepository.existsById(id)) {
+            return studentRepository.getCurrentStudentSemester(id);
+        }
+        throw new StudentNotFoundException(id);
     }
 
     private StudentDTO convertToDTO(Student student){

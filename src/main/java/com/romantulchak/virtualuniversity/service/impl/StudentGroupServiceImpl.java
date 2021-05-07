@@ -101,11 +101,14 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
-        StudentGroup group = studentGroupRepository.findByStudents_Id(id).orElseThrow(GroupNotFoundException::new);
+        StudentGroup group = studentGroupRepository.findStudentGroupByStudentId(id).orElseThrow(GroupNotFoundException::new);
+        Collection<SubjectTeacherGroup> subjects = subjectTeacherRepository.findSubjectsForGroupBySemester(group.getId(), group.getSemester().getId());
         int studentsCount = studentGroupRepository.groupStudentsCount(group.getId());
         return new StudentGroupDTO.Builder(group.getId(), group.getName())
                 .withSpecialization(group.getSpecialization())
-                .withSubjects(getSubjects(group))
+                .withSubjects(subjects.stream()
+                        .map(SubjectTeacherGroupDTO::new)
+                        .collect(Collectors.toList()))
                 .withCounter(studentsCount)
                 .withSemester(group.getSemester())
                 .build();

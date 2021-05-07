@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Transactional
 @Repository
@@ -39,8 +40,8 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
     @Query(value = "SELECT sgg.id as id, sgg.subjectTeacherGroup as subjectTeacherGroup, sgg.grade as grade  FROM StudentGroupGrade sgg LEFT JOIN sgg.studentGroup sg WHERE sgg.student.id = :studentId AND sgg.student.currentGroup.id = sg.id")
     Collection<StudentGradeLimitedStudent> findGradesForStudent(@Param("studentId") long studentId);
 
-    @Query(value = "SELECT sgg.grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.student s LEFT OUTER JOIN sgg.subjectTeacherGroup sst WHERE s.id = :studentId AND sst.subject.id = :subjectId AND sgg.studentGroup.id = :groupId")
-    double findGradeForStudentBySubject(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("studentId") long studentId);
+    @Query(value = "SELECT sgg.grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.student s LEFT OUTER JOIN sgg.subjectTeacherGroup sst WHERE s.id = :studentId AND sst.subject.id = :subjectId AND sgg.studentGroup.id = :groupId AND sst.semester.id = :semesterId")
+    Optional<Double> findGradeForStudentBySubject(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("studentId") long studentId, @Param("semesterId") long semesterId);
 
     @Query(value = "SELECT EXISTS(SELECT id FROM student_group_grade WHERE student_group_grade.student_id = :studentId AND student_group_grade.student_group_id = :groupId) ", nativeQuery = true)
     boolean gradesAlreadyExists(@Param("studentId") long studentId, @Param("groupId") long groupId);

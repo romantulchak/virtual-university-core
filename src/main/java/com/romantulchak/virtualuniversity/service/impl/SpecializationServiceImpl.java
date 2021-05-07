@@ -58,7 +58,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     @Override
     public Collection<SpecializationDTO> findAllSpecializations() {
-        return specializationRepository.findSpecializationsWithCourse()
+        return specializationRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
