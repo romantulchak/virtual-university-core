@@ -22,6 +22,7 @@ public class Student extends UserAbstract{
 
     @Embedded
     public Address address;
+
     @Column(columnDefinition = "integer default 1")
     public int currentSemester = 1;
 

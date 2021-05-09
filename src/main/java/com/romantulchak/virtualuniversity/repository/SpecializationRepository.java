@@ -13,9 +13,4 @@ public interface SpecializationRepository extends JpaRepository<Specialization, 
 
     Collection<Specialization> findAllByStudents_id(@Param("studentId") long studentId);
     Collection<Specialization> findAllByTeachers_Id(@Param("teacherId") long teacherId);
-
-
-
-    @Query(value = "SELECT s FROM Specialization s LEFT JOIN FETCH s.semesters as ss")
-    Collection<Specialization> findSpecializationsWithCourse();
 }

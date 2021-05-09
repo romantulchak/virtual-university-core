@@ -22,6 +22,9 @@ public class ScheduleDay {
     @ManyToOne
     private Schedule schedule;
 
+    @ManyToOne
+    private Semester semester;
+
     public ScheduleDay(){}
 
     public ScheduleDay(long id, LocalDate day) {
@@ -59,5 +62,13 @@ public class ScheduleDay {
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }

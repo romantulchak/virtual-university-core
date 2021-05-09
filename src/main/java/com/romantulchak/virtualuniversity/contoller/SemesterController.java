@@ -32,10 +32,11 @@ public class SemesterController {
 
     @PostMapping("/createSemester")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public SemesterDTO createSemester(@RequestBody Semester semester){
+    public SemesterDTO create(@RequestBody Semester semester){
        return semesterService.create(semester);
     }
 
+    @Deprecated
     @GetMapping("/findSemester/{specializationId}/{currentSemester}")
     @JsonView(Views.SemesterView.class)
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
@@ -48,5 +49,12 @@ public class SemesterController {
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public Collection<SemesterDTO> findSemestersForSpecialization(@PathVariable("id") long id){
         return semesterService.findSemestersForSpecialization(id);
+    }
+
+    @GetMapping("/findSemestersForGroup/{groupId}")
+    @JsonView(Views.SemesterView.class)
+    @PreAuthorize("isAuthenticated()")
+    public Collection<SemesterDTO> findSemestersForGroup(@PathVariable("groupId") long groupId){
+        return semesterService.findSemesterForGroup(groupId);
     }
 }

@@ -16,10 +16,10 @@ public class StudentDetails {
     @JsonView(Views.StudentView.class)
     private String passport;
 
-
     @NotNull(message = "Citizen is required")
     @JsonView(Views.StudentView.class)
     private String citizen;
+
     @JsonView(Views.StudentView.class)
     private LocalDate birthDay;
 

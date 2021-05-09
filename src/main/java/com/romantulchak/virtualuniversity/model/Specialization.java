@@ -26,9 +26,6 @@ public class Specialization {
     @ManyToMany(mappedBy = "specializations")
     private Collection<Teacher> teachers;
 
-    @OneToMany(mappedBy = "specialization")
-    private Collection<Semester> semesters;
-
     @ManyToMany
     @JoinTable(name = "specialization_subject", joinColumns = @JoinColumn(name = "specialization_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private Collection<Subject> subjects;
@@ -82,14 +79,6 @@ public class Specialization {
 
     public void setTeachers(Collection<Teacher> teachers) {
         this.teachers = teachers;
-    }
-
-    public Collection<Semester> getSemesters() {
-        return semesters;
-    }
-
-    public void setSemesters(Collection<Semester> semesters) {
-        this.semesters = semesters;
     }
 
     public Collection<Subject> getSubjects() {

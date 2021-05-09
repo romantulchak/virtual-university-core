@@ -36,4 +36,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "SELECT s.currentSemester FROM Student s WHERE s.id = :studentId")
     int getCurrentStudentSemester(@Param("studentId") long id);
-  }
+
+}

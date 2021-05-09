@@ -1,15 +1,11 @@
 package com.romantulchak.virtualuniversity.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 
 
 @MappedSuperclass

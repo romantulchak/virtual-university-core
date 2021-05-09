@@ -69,9 +69,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private void saveDays(Schedule schedule) {
         for (ScheduleDay day : schedule.getDays()) {
-            day.setSchedule(schedule);
-            scheduleDayRepository.save(day);
-            saveLessons(day);
+                day.setSemester(schedule.getGroup().getSemester());
+                day.setSchedule(schedule);
+                scheduleDayRepository.save(day);
+                saveLessons(day);
         }
     }
 
@@ -106,11 +107,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public byte[] exportFullScheduleAsPDF(long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId).orElseThrow(ScheduleNotFoundException::new);
         try {
-          return ExportDataToPdf.exportSchedule(schedule);
+            if (schedule.getDays() != null && !schedule.getDays().isEmpty()) {
+                return ExportDataToPdf.exportSchedule(schedule);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        throw new ExportToPdfFailedException();
     }
 
     @Override

@@ -38,12 +38,12 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         this.scheduleService = scheduleService;
         this.semesterRepository = semesterRepository;
     }
-
+    //TODO: move semester creation here
     @Transactional
     @Override
     public void create(StudentGroup studentGroup) {
         if (!studentGroupRepository.isExistsByName(studentGroup.getName())) {
-            addSemesterToGroupSemesters(studentGroup.getSemester(), studentGroup.getSemesters());
+            addSemesterToGroupSemesters(studentGroup);
             StudentGroup studentGroupAfterSave = studentGroupRepository.saveAndFlush(studentGroup);
             setCurrentGroupForStudent(studentGroupAfterSave.getStudents(), studentGroup);
             studentGroup.getSubjectTeacherGroups().forEach(subjectTeacherGroup -> {
@@ -58,13 +58,11 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         }
     }
 
-    private void addSemesterToGroupSemesters(Semester semester, Collection<Semester> semesters) {
-        if (semesters == null) {
-            semesters = new ArrayList<>();
+    private void addSemesterToGroupSemesters(StudentGroup group) {
+        if (group.getSemesters() == null) {
+            group.setSemesters(new ArrayList<>());
         }
-        if (semesters.isEmpty()) {
-            semesters.add(semester);
-        }
+        group.getSemesters().add(group.getSemester());
     }
 
     private void createSchedule(StudentGroup studentGroupAfterSave) {
@@ -203,7 +201,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Override
     public StudentGroupDTO findGroupSubjectsForTeacher(long groupId, long teacherId) {
         GroupStudentsLimited groupForTeacher = studentGroupRepository.groupDetailsForTeacher(groupId);
-        Collection<SubjectTeacherGroupDTO> subjectTeacherGroups = getSubjectTeacherGroupDTOS(groupId, teacherId);
+        Collection<SubjectTeacherGroupDTO> subjectTeacherGroups = getSubjectTeacherGroupDTOS(groupId, teacherId, groupForTeacher.getSemester().getId());
 
         return new StudentGroupDTO.Builder(groupForTeacher.getId(), groupForTeacher.getName())
                 .withSubjects(subjectTeacherGroups)
@@ -227,10 +225,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     public void changeGroupSemester(long groupId, long semesterId, List<SubjectTeacherGroup> subjects) {
         StudentGroup group = studentGroupRepository.findGroupById(groupId).orElseThrow(GroupNotFoundException::new);
         Semester semester = semesterRepository.findById(semesterId).orElseThrow(SemesterNotFoundException::new);
-        //Lazy initialization - fix
         if (group.getSemester().equals(semester) || group.getSemesters().contains(semester)) {
             throw new SemesterAlreadyExistsException(semester.getName());
         }
+        group.getSemesters().add(semester);
         group.setSemester(semester);
         addSubjectsToGroup(subjects, group.getId(), group);
         studentGroupRepository.save(group);
@@ -244,8 +242,8 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         }
     }
 
-    private Collection<SubjectTeacherGroupDTO> getSubjectTeacherGroupDTOS(long id, long teacherId) {
-        return subjectTeacherRepository.subjectsInGroupForTeacher(id, teacherId).stream()
+    private Collection<SubjectTeacherGroupDTO> getSubjectTeacherGroupDTOS(long id, long teacherId, long semesterId) {
+        return subjectTeacherRepository.subjectsInGroupForTeacher(id, teacherId, semesterId).stream()
                 .map(subject -> new SubjectTeacherGroupDTO(subject.getId(),
                         subject.getName(),
                         subject.getType()))

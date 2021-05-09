@@ -23,9 +23,6 @@ public class Semester {
 
     private int semesterNumber;
 
-    @ManyToOne
-    private Specialization specialization;
-
     private LocalDate startDate;
 
     private LocalDate endDate;
@@ -36,13 +33,8 @@ public class Semester {
     @OneToMany(mappedBy = "semester")
     private Collection<StudentGroupGrade> studentGroupGrades;
 
-    public Specialization getSpecialization() {
-        return specialization;
-    }
-
-    public void setSpecialization(Specialization specialization) {
-        this.specialization = specialization;
-    }
+    @OneToMany(mappedBy = "semester")
+    private Collection<ScheduleDay> scheduleDays;
 
     public long getId() {
         return id;
@@ -106,6 +98,14 @@ public class Semester {
 
     public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
         this.studentGroupGrades = studentGroupGrades;
+    }
+
+    public Collection<ScheduleDay> getScheduleDays() {
+        return scheduleDays;
+    }
+
+    public void setScheduleDays(Collection<ScheduleDay> scheduleDays) {
+        this.scheduleDays = scheduleDays;
     }
 
     @Override
