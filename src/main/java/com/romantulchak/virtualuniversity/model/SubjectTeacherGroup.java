@@ -41,6 +41,12 @@ public class SubjectTeacherGroup {
 
     }
 
+    public SubjectTeacherGroup(long id, Subject subject, Teacher teacher) {
+        this.id = id;
+        this.subject = subject;
+        this.teacher = teacher;
+    }
+
     public long getId() {
         return id;
     }

@@ -3,10 +3,8 @@ package com.romantulchak.virtualuniversity.contoller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
-import com.romantulchak.virtualuniversity.model.Specialization;
-import com.romantulchak.virtualuniversity.model.Subject;
-import com.romantulchak.virtualuniversity.model.SubjectFile;
-import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
+import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -92,5 +90,11 @@ public class SubjectController {
     @JsonView(Views.SubjectView.class)
     public Collection<SubjectDTO> findAllSubjectsWithTeachers(){
         return subjectService.findAllSubjectsWithTeachers();
+    }
+
+    @GetMapping("/findSubjectsForGroupBySemester/{semesterId}/{groupId}")
+    @JsonView(Views.StudentGroupView.class)
+    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(@PathVariable("semesterId") long semesterId, @PathVariable("groupId") long groupId){
+        return subjectService.findSubjectsForGroupBySemester(semesterId, groupId);
     }
 }

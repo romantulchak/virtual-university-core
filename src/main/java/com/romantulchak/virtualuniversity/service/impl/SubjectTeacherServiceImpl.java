@@ -17,8 +17,8 @@ public class SubjectTeacherServiceImpl implements SubjectTeacherService {
 
     //TODO: Sort
     @Override
-    public Collection<SubjectTeacherGroupDTO> findGroupSubjects(long groupId) {
-        return subjectTeacherRepository.findSubjectsForGroup(groupId)
+    public Collection<SubjectTeacherGroupDTO> findGroupSubjects(long groupId, long semesterId) {
+        return subjectTeacherRepository.findSubjectsForGroup(groupId, semesterId)
                 .stream()
                 .map(SubjectTeacherGroupDTO::new)
                 .sorted()

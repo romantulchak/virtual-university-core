@@ -22,8 +22,8 @@ public interface SubjectTeacherRepository extends JpaRepository<SubjectTeacherGr
     @Query(value = "SELECT DISTINCT s.id as id, s.name as name, s.type as type FROM SubjectTeacherGroup stg LEFT OUTER JOIN stg.subject s WHERE stg.studentGroup.id = :groupId AND stg.teacher.id = :teacherId AND stg.semester.id = :semesterId")
     Collection<SubjectTeacherLimited> subjectsInGroupForTeacher(@Param("groupId") long groupId, @Param("teacherId") long teacherId, @Param("semesterId") long semesterId);
 
-    @Query(value = "SELECT stg FROM SubjectTeacherGroup stg WHERE stg.studentGroup.id = :groupId")
-    Collection<SubjectTeacherGroup> findSubjectsForGroup(@Param("groupId") long groupId);
+    @Query(value = "SELECT new SubjectTeacherGroup(stg.id, stg.subject, stg.teacher) FROM SubjectTeacherGroup stg WHERE stg.studentGroup.id = :groupId AND stg.semester.id = :semesterId")
+    Collection<SubjectTeacherGroup> findSubjectsForGroup(@Param("groupId") long groupId, @Param("semesterId") long semesterId);
 
     @Query(value = "SELECT stg FROM SubjectTeacherGroup stg WHERE stg.studentGroup.id = :groupId AND stg.semester.id = :semesterId")
     Collection<SubjectTeacherGroup> findSubjectsForGroupBySemester(@Param("groupId") long groupId, @Param("semesterId") long semesterId);

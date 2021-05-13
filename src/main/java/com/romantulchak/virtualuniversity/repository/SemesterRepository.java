@@ -12,12 +12,6 @@ import java.util.Optional;
 @Repository
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
 
-    boolean existsByName(String name);
-
-    @Query(value = "SELECT * FROM semester WHERE semester.specialization_id = :id",nativeQuery = true)
-    Collection<Semester> findSemestersForSpecialization(@Param("id") long id);
-
     @Query(value = "SELECT s FROM Semester s LEFT OUTER JOIN s.groups sg WHERE sg.id = :groupId")
     Collection<Semester> findAllSemesterForGroup(@Param("groupId") long groupId);
-
 }

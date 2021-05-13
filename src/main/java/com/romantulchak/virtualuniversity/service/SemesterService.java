@@ -12,7 +12,5 @@ public interface SemesterService {
 
     SemesterDTO findSemester(long specializationId, int currentSemesterId);
 
-    Collection<SemesterDTO> findSemestersForSpecialization(long id);
-
     Collection<SemesterDTO> findSemesterForGroup(long groupId);
 }

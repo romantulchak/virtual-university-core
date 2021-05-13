@@ -65,9 +65,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         group.getSemesters().add(group.getSemester());
     }
 
-    private void createSchedule(StudentGroup studentGroupAfterSave) {
+    private void createSchedule(StudentGroup studentGroup) {
         Schedule schedule = new Schedule();
-        schedule.setGroup(studentGroupAfterSave);
+//        schedule.setGroup(studentGroup);
+        schedule.setSemester(studentGroup.getSemester());
         scheduleService.create(schedule);
     }
 
@@ -100,13 +101,9 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Override
     public StudentGroupDTO findGroupForStudent(long id) {
         StudentGroup group = studentGroupRepository.findStudentGroupByStudentId(id).orElseThrow(GroupNotFoundException::new);
-        Collection<SubjectTeacherGroup> subjects = subjectTeacherRepository.findSubjectsForGroupBySemester(group.getId(), group.getSemester().getId());
         int studentsCount = studentGroupRepository.groupStudentsCount(group.getId());
         return new StudentGroupDTO.Builder(group.getId(), group.getName())
                 .withSpecialization(group.getSpecialization())
-                .withSubjects(subjects.stream()
-                        .map(SubjectTeacherGroupDTO::new)
-                        .collect(Collectors.toList()))
                 .withCounter(studentsCount)
                 .withSemester(group.getSemester())
                 .build();
@@ -162,10 +159,10 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         return studentsWithGroup;
     }
 
+    //TODO: fix
     @Override
     public Collection<StudentGroupDTO> findAllGroups() {
-        return studentGroupRepository.allGroups()
-                .stream()
+        return studentGroupRepository.findAll().stream()
                 .map(group -> convertToDTO(group.getId(), group.getName(), group.getSemester()))
                 .collect(Collectors.toList());
     }
@@ -231,7 +228,8 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         group.getSemesters().add(semester);
         group.setSemester(semester);
         addSubjectsToGroup(subjects, group.getId(), group);
-        studentGroupRepository.save(group);
+        StudentGroup groupAfterSave = studentGroupRepository.save(group);
+        createSchedule(groupAfterSave);
     }
 
 

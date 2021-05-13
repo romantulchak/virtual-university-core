@@ -44,13 +44,6 @@ public class SemesterController {
         return semesterService.findSemester(specializationId, currentSemesterId);
     }
 
-    @GetMapping("/findSemestersForSpecialization/{id}")
-    @JsonView(Views.SemesterView.class)
-    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public Collection<SemesterDTO> findSemestersForSpecialization(@PathVariable("id") long id){
-        return semesterService.findSemestersForSpecialization(id);
-    }
-
     @GetMapping("/findSemestersForGroup/{groupId}")
     @JsonView(Views.SemesterView.class)
     @PreAuthorize("isAuthenticated()")

@@ -14,14 +14,23 @@ public class ScheduleDTO {
 
     @JsonView(Views.ScheduleView.class)
     private long id;
+
     @JsonView(Views.ScheduleView.class)
     private StudentGroupDTO studentGroup;
+
+    @JsonView(Views.ScheduleView.class)
+    private SemesterDTO semesterDTO;
 
     @JsonView(Views.ScheduleView.class)
     private Collection<ScheduleDayDTO> days;
 
     public ScheduleDTO(long id ){
         this.id = id;
+    }
+
+    public ScheduleDTO(long id, Collection<ScheduleDayDTO> days) {
+        this(id);
+        this.days = days;
     }
 
     public ScheduleDTO(long id, Collection<ScheduleDayDTO> days, StudentGroupDTO studentGroup) {

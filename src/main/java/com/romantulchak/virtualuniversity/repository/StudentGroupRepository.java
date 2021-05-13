@@ -24,12 +24,10 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query(value = "SELECT EXISTS (SELECT * FROM student_group sg WHERE name = :name)", nativeQuery = true)
     boolean isExistsByName(@Param("name") String name);
 
-    @Query(value = "SELECT s.id as id, s.name as name, s.semester as semester FROM StudentGroup s")
-    Collection<GroupLimited> allGroups();
-
     @Query(value = "SELECT DISTINCT s FROM StudentGroup s JOIN FETCH s.subjectTeacherGroups as sb LEFT JOIN FETCH s.students as ss WHERE s.id = :id AND s.semester.id = sb.semester.id")
     Optional<StudentGroup> groupByIdWithSubjectsAndStudents(@Param("id") long id);
 
+    //TODO: fix JOIN FETCH
     @Query(value = "SELECT s FROM StudentGroup s JOIN FETCH s.students ss JOIN FETCH s.subjectTeacherGroups sst WHERE s.id = :id")
     Optional<StudentGroup> findGroupById(@Param("id") long id);
 
@@ -38,6 +36,7 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
                     "LEFT OUTER JOIN ss.students st JOIN FETCH ss.students WHERE st.id = :id")
     Optional<StudentGroup> findStudentGroupByStudentId(@Param("id") long id);
 
+    //TODO: add WHERE by Semester
     @Query(value = "SELECT DISTINCT sg FROM StudentGroup sg LEFT OUTER JOIN sg.subjectTeacherGroups as stg LEFT OUTER JOIN stg.teacher as t WHERE t.id = :id")
     Collection<GroupLimited> findGroupsForTeacher(@Param("id") long teacherId);
     

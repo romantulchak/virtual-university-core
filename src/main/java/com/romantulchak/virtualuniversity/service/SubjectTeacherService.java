@@ -6,5 +6,5 @@ import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import java.util.Collection;
 
 public interface SubjectTeacherService {
-    Collection<SubjectTeacherGroupDTO> findGroupSubjects(long groupId);
+    Collection<SubjectTeacherGroupDTO> findGroupSubjects(long groupId, long semesterId);
 }

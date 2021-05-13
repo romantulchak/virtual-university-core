@@ -16,11 +16,11 @@ public interface ScheduleDayRepository extends JpaRepository<ScheduleDay, Long> 
     @Query(value = "SELECT sd FROM ScheduleDay sd WHERE sd.day >= :dayAfter AND sd.day <= :dayBefore AND sd.schedule.id = :scheduleId")
     Collection<ScheduleDay> findScheduleDaysByRange(@Param("dayAfter") LocalDate dayAfter, @Param("dayBefore") LocalDate dayBefore, @Param("scheduleId") long scheduleId);
 
-    @Query(value = "SELECT sd FROM ScheduleDay sd LEFT JOIN sd.schedule s WHERE s.studentGroup.id = :groupId AND sd.day >= :dayAfter AND sd.day <= :dayBefore")
-    Collection<ScheduleDay> findScheduleDaysForWeek(@Param("groupId") long groupId, @Param("dayAfter") LocalDate dayAfter, @Param("dayBefore") LocalDate dayBefore);
+    @Query(value = "SELECT sd FROM ScheduleDay sd LEFT JOIN sd.schedule s WHERE sd.day >= :dayAfter AND sd.day <= :dayBefore AND sd.semester.id = :semesterId")
+    Collection<ScheduleDay> findScheduleDaysForWeek(@Param("semesterId") long semesterId, @Param("dayAfter") LocalDate dayAfter, @Param("dayBefore") LocalDate dayBefore);
 
-    @Query(value = "SELECT DISTINCT new ScheduleDay(sd.id, sd.day) FROM ScheduleDay sd LEFT OUTER JOIN sd.lessons sdl LEFT OUTER JOIN sd.schedule sds WHERE sdl.subjectTeacher.teacher.id = :teacherId AND sds.studentGroup.id = :groupId")
-    Collection<ScheduleDay> findScheduleDayForTeacherByGroup(@Param("teacherId") long teacherId, @Param("groupId") long groupId);
+    @Query(value = "SELECT sd FROM ScheduleDay sd LEFT OUTER JOIN sd.lessons sdl LEFT OUTER JOIN sd.schedule sds WHERE sdl.subjectTeacher.teacher.id = :teacherId AND sd.semester.id = :semesterId")
+    Collection<ScheduleDay> findScheduleDayForTeacherByGroup(@Param("teacherId") long teacherId, @Param("semesterId") long semesterId);
 
     boolean existsById(long id);
 }

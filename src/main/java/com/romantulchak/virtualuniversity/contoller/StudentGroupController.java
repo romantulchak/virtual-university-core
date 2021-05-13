@@ -90,10 +90,10 @@ public class StudentGroupController {
         studentGroupService.deleteStudentFromGroup(groupId, studentId);
     }
 
-    @GetMapping("/findSubjectsForGroup/{groupId}")
+    @GetMapping("/findSubjectsForGroup/{groupId}/{semesterId}")
     @JsonView(Views.StudentGroupView.class)
-    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroup(@PathVariable("groupId") long groupId){
-        return subjectTeacherService.findGroupSubjects(groupId);
+    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroup(@PathVariable("groupId") long groupId, @PathVariable("semesterId") long semesterId){
+        return subjectTeacherService.findGroupSubjects(groupId, semesterId);
     }
 
     @PutMapping("/changeGroupSemester")

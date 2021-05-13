@@ -1,5 +1,8 @@
 package com.romantulchak.virtualuniversity.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -12,11 +15,11 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne
-    private StudentGroup studentGroup;
-
     @OneToMany(mappedBy = "schedule")
     private Collection<ScheduleDay> days;
+
+    @ManyToOne
+    private Semester semester;
 
     public long getId() {
         return id;
@@ -24,22 +27,6 @@ public class Schedule {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public StudentGroup getGroup() {
-        return studentGroup;
-    }
-
-    public void setGroup(StudentGroup studentGroup) {
-        this.studentGroup = studentGroup;
-    }
-
-    public StudentGroup getStudentGroup() {
-        return studentGroup;
-    }
-
-    public void setStudentGroup(StudentGroup studentGroup) {
-        this.studentGroup = studentGroup;
     }
 
     public Collection<ScheduleDay> getDays() {
@@ -50,5 +37,11 @@ public class Schedule {
         this.days = days;
     }
 
+    public Semester getSemester() {
+        return semester;
+    }
 
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
 }

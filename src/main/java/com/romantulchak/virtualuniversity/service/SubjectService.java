@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service;
 
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
@@ -29,4 +30,6 @@ public interface SubjectService {
     ResponseEntity<Resource> downloadFile(String filename);
 
     Collection<SubjectDTO> findAllSubjectsWithTeachers();
+
+    Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(long semesterId, long groupId);
 }

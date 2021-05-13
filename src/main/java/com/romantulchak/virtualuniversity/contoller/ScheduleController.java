@@ -28,28 +28,28 @@ public class ScheduleController {
         scheduleService.create(schedule);
     }
 
-    @GetMapping("/findForGroup/{groupId}")
+    @GetMapping("/findForGroup/{semesterId}")
     @JsonView(Views.ScheduleView.class)
-    public ScheduleDTO findScheduleForGroup(@PathVariable("groupId") long groupId){
-        return scheduleService.findScheduleForGroup(groupId);
+    public ScheduleDTO findScheduleForGroup(@PathVariable("semesterId") long semesterId){
+        return scheduleService.findScheduleForGroup(semesterId);
     }
-    @GetMapping("/findScheduleIdForGroup/{groupId}")
-    public long findScheduleIdForGroup(@PathVariable("groupId") long groupId){
-        return scheduleService.findScheduleIdForGroup(groupId);
+    @GetMapping("/findScheduleIdForGroup/{semesterId}")
+    public long findScheduleIdForGroup(@PathVariable("semesterId") long semesterId){
+        return scheduleService.findScheduleIdForGroup(semesterId);
     }
     @GetMapping("/findScheduleForTeacherByGroup")
-    public ScheduleDTO findScheduleForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam("groupId") long groupId){
-        return scheduleService.findScheduleForTeacherBeGroup(teacherId, groupId);
+    public ScheduleDTO findScheduleForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam("groupId") long groupId, @RequestParam(value = "semesterId") long semesterId){
+        return scheduleService.findScheduleForTeacherBeGroup(teacherId, groupId, semesterId);
     }
     @GetMapping(value = "/exportPdf-f/{scheduleId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseBody
     public byte[] exportScheduleFullAsPDF(@PathVariable("scheduleId") long scheduleId){
         return scheduleService.exportFullScheduleAsPDF(scheduleId);
     }
-    @GetMapping(value = "/exportPdf-w/{scheduleId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/exportPdf-w/{scheduleId}/{semesterId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseBody
-    public byte[] exportScheduleWeekAsPDF(@PathVariable("scheduleId") long scheduleId){
-        return scheduleService.exportScheduleForWeekPDF(scheduleId);
+    public byte[] exportScheduleWeekAsPDF(@PathVariable("scheduleId") long scheduleId, @PathVariable("semesterId") long semesterId){
+        return scheduleService.exportScheduleForWeekPDF(scheduleId, semesterId);
     }
 
 }

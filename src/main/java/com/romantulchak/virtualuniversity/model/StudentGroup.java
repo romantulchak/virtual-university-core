@@ -18,11 +18,8 @@ public class StudentGroup {
     @JoinTable(name = "group_semester", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "semester_id"))
     private Collection<Semester> semesters;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Semester semester;
-
-    @OneToOne(mappedBy = "studentGroup")
-    private Schedule schedule;
 
     @ManyToMany
     @JoinTable(name = "group_student", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
@@ -31,15 +28,24 @@ public class StudentGroup {
     @ManyToOne
     private Specialization specialization;
 
-    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<SubjectTeacherGroup> subjectTeacherGroups = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Collection<StudentGroupGrade> studentGroupGrades;
 
-    @OneToMany(mappedBy = "currentGroup", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "currentGroup", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Collection<Student> studentsInCurrentGroup;
 
+    public StudentGroup(){
+
+    }
+
+    public StudentGroup(long id, String name, Semester semester) {
+        this.id = id;
+        this.name = name;
+        this.semester = semester;
+    }
 
     public long getId() {
         return id;
@@ -63,14 +69,6 @@ public class StudentGroup {
 
     public void setSemesters(Collection<Semester> semesters) {
         this.semesters = semesters;
-    }
-
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
     }
 
     public Collection<Student> getStudents() {

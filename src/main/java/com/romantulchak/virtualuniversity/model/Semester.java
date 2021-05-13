@@ -2,6 +2,8 @@ package com.romantulchak.virtualuniversity.model;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -27,6 +29,9 @@ public class Semester {
 
     private LocalDate endDate;
 
+    @OneToMany(mappedBy = "semester", fetch = FetchType.LAZY)
+    private Collection<Schedule> schedule;
+
     @OneToMany(mappedBy = "semester")
     private Collection<SubjectTeacherGroup> subjectTeacherGroups;
 
@@ -34,7 +39,16 @@ public class Semester {
     private Collection<StudentGroupGrade> studentGroupGrades;
 
     @OneToMany(mappedBy = "semester")
-    private Collection<ScheduleDay> scheduleDays;
+    private Collection<ScheduleDay> days;
+
+    public Semester() {
+    }
+
+    public Semester(long id, String name, int semesterNumber) {
+        this.id = id;
+        this.name = name;
+        this.semesterNumber = semesterNumber;
+    }
 
     public long getId() {
         return id;
@@ -100,12 +114,20 @@ public class Semester {
         this.studentGroupGrades = studentGroupGrades;
     }
 
-    public Collection<ScheduleDay> getScheduleDays() {
-        return scheduleDays;
+    public Collection<Schedule> getSchedule() {
+        return schedule;
     }
 
-    public void setScheduleDays(Collection<ScheduleDay> scheduleDays) {
-        this.scheduleDays = scheduleDays;
+    public Collection<ScheduleDay> getDays() {
+        return days;
+    }
+
+    public void setDays(Collection<ScheduleDay> days) {
+        this.days = days;
+    }
+
+    public void setSchedule(Collection<Schedule> schedule) {
+        this.schedule = schedule;
     }
 
     @Override

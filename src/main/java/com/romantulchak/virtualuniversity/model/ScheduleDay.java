@@ -19,10 +19,10 @@ public class ScheduleDay {
     @OneToMany(mappedBy = "scheduleDay", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Collection<Lesson> lessons;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Schedule schedule;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Semester semester;
 
     public ScheduleDay(){}

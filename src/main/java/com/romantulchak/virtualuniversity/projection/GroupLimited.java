@@ -13,4 +13,6 @@ public interface GroupLimited {
 
     @JsonView(Views.StudentGroupView.class)
     Semester getSemester();
+
+    Semester setSemester(Semester semester);
 }

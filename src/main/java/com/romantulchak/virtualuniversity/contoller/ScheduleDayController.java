@@ -32,16 +32,16 @@ public class ScheduleDayController {
         return scheduleDayService.findAllDaysInRange(dayAfter, dayBefore, scheduleId);
     }
 
-    @GetMapping("/findScheduleForTwoWeek/{groupId}")
+    @GetMapping("/findScheduleForTwoWeek/{groupId}/{semesterId}")
     @JsonView(Views.ScheduleView.class)
-    public Collection<ScheduleDayDTO> findDaysForWeek(@PathVariable("groupId") long groupId){
-        return scheduleDayService.findDaysForWeek(groupId);
+    public Collection<ScheduleDayDTO> findDaysForWeek(@PathVariable("groupId") long groupId, @PathVariable("semesterId") long semesterId){
+        return scheduleDayService.findDaysForWeek(semesterId);
     }
 
     @GetMapping("/findScheduleForTeacher")
     @JsonView(Views.ScheduleView.class)
-    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "groupId") long groupId){
-        return scheduleDayService.findDaysForTeacherByGroup(teacherId, groupId);
+    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "semesterId") long semesterId){
+        return scheduleDayService.findDaysForTeacherByGroup(teacherId, semesterId);
     }
 
     @DeleteMapping("/delete/{dayId}")

@@ -12,7 +12,9 @@ import java.util.List;
 
 public interface StudentGroupService {
     void create(StudentGroup studentGroup);
+
     StudentGroupDTO findGroupForStudent(long id);
+
     void addStudentToGroup(List<Student> student, long groupId);
 
     Collection<StudentGroupDTO> findAllGroups();
@@ -22,6 +24,7 @@ public interface StudentGroupService {
     void addSubjectsToGroup(Collection<SubjectTeacherGroup> subjects, long groupId);
 
     void delete(long groupId);
+
     Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId);
 
     StudentGroupDTO findGroupSubjectsForTeacher(long id, long teacherId);

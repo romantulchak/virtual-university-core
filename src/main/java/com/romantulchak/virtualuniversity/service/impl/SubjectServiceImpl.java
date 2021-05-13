@@ -2,14 +2,13 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.exception.*;
-import com.romantulchak.virtualuniversity.model.Specialization;
-import com.romantulchak.virtualuniversity.model.Subject;
-import com.romantulchak.virtualuniversity.model.SubjectFile;
-import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
 import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
+import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
 import com.romantulchak.virtualuniversity.utils.FileUploader;
@@ -39,12 +38,15 @@ import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
 
+    private final SubjectTeacherRepository subjectTeacherRepository;
+
     @Value("${subject.upload.path}")
     private String path;
 
     @Autowired
-    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository, SubjectTeacherRepository subjectTeacherRepository) {
         this.subjectRepository = subjectRepository;
+        this.subjectTeacherRepository = subjectTeacherRepository;
     }
 
     @Override
@@ -172,6 +174,14 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Collection<SubjectDTO> findAllSubjectsWithTeachers() {
         return subjectRepository.findAllSubjectsWithTeachers().stream().map(this::convertDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(long semesterId, long groupId) {
+        Collection<SubjectTeacherGroup> subjectsForGroupBySemester = subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId);
+        return subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId).stream()
+                .map(SubjectTeacherGroupDTO::new)
+                .collect(Collectors.toList());
     }
 
     private SubjectDTO convertDTO(Subject subject) {

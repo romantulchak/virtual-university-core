@@ -139,7 +139,7 @@ public final class ExportDataToPdf {
                 .setMargin(0)
                 .setMarginBottom(5);
         Cell tableHeader = new Cell(1, 5)
-                .add(new Paragraph("Schedule for group: " + schedule.getStudentGroup().getName()));
+                .add(new Paragraph("Schedule for group: " + "Student group"));//TOOD: get in arguments students group
         tableHeader.setTextAlignment(TextAlignment.CENTER)
                 .setPadding(5)
                 .setBackgroundColor(new DeviceRgb(221, 239, 233));
