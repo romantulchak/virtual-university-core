@@ -13,6 +13,7 @@ import java.util.Collection;
 
 public interface SubjectService {
     Collection<SubjectDTO> findAllSubjects();
+
     void createSubject(String subjectInString, Collection<MultipartFile> files);
 
     Collection<SubjectDTO> findSubjectAvailableForTeacher(long id);
@@ -30,6 +31,4 @@ public interface SubjectService {
     ResponseEntity<Resource> downloadFile(String filename);
 
     Collection<SubjectDTO> findAllSubjectsWithTeachers();
-
-    Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(long semesterId, long groupId);
 }

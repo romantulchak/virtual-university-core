@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
 import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.model.*;
-import com.romantulchak.virtualuniversity.service.SubjectTeacherService;
 import com.romantulchak.virtualuniversity.service.impl.StudentGroupServiceImpl;
 import com.romantulchak.virtualuniversity.service.impl.SubjectTeacherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +61,7 @@ public class StudentGroupController {
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR @accessToStudentGroup.checkAccess(#teacherId)")
     @JsonView(Views.StudentGroupView.class)
     public StudentGroupDTO findGroupSubjectsForTeacher(@PathVariable("id") long id, @PathVariable("teacherId") long teacherId){
-        return studentGroupService.findGroupSubjectsForTeacher(id, teacherId);
+        return studentGroupService.findGroupForTeacher(id, teacherId);
     }
 
     @PutMapping("/addSubjects/{groupId}")
@@ -97,7 +95,13 @@ public class StudentGroupController {
     }
 
     @PutMapping("/changeGroupSemester")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void changeGroupSemester(@RequestParam(value = "groupId") long groupId, @RequestParam(value = "semesterId") long semesterId, @RequestBody List<SubjectTeacherGroup> subjects){
         studentGroupService.changeGroupSemester(groupId, semesterId, subjects);
+    }
+
+    @GetMapping("/findGroup/{groupId}")
+    public StudentGroupDTO findGroup(@PathVariable("groupId") long groupId){
+        return studentGroupService.findGroupById(groupId);
     }
 }

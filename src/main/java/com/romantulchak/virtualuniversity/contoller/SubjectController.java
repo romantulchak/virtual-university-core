@@ -92,9 +92,4 @@ public class SubjectController {
         return subjectService.findAllSubjectsWithTeachers();
     }
 
-    @GetMapping("/findSubjectsForGroupBySemester/{semesterId}/{groupId}")
-    @JsonView(Views.StudentGroupView.class)
-    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(@PathVariable("semesterId") long semesterId, @PathVariable("groupId") long groupId){
-        return subjectService.findSubjectsForGroupBySemester(semesterId, groupId);
-    }
 }

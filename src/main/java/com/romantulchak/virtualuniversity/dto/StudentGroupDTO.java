@@ -18,16 +18,18 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
     @JsonView({Views.StudentGroupView.class,Views.SubjectGrade.class})
     private SemesterDTO semester;
 
-//    private Schedule schedule;
     @JsonView(Views.StudentGroupView.class)
     private Collection<StudentDTO> students;
+
     @JsonView(Views.StudentGroupView.class)
     private SpecializationDTO specialization;
+
     @JsonView(Views.StudentGroupView.class)
     private Collection<SubjectTeacherGroupDTO> subjects;
 
     @JsonView(Views.StudentGroupView.class)
     private int studentsCount;
+
     @JsonView(Views.StudentGroupView.class)
     private Collection<StudentGroupGradeDTO> studentGroupGrades;
 
@@ -118,9 +120,8 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
 
         private SemesterDTO semester;
 
-        //    private Schedule schedule;
-
         private Collection<StudentDTO> students;
+
         private SpecializationDTO specialization;
 
         private Collection<SubjectTeacherGroupDTO> subjects;
@@ -161,8 +162,6 @@ public class StudentGroupDTO implements Comparable<StudentGroupDTO>{
         public StudentGroupDTO build(){
             return new StudentGroupDTO(this);
         }
-
-
     }
 
     @Override

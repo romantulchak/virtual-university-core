@@ -67,7 +67,6 @@ public class StudentGroupServiceImpl implements StudentGroupService {
 
     private void createSchedule(StudentGroup studentGroup) {
         Schedule schedule = new Schedule();
-//        schedule.setGroup(studentGroup);
         schedule.setSemester(studentGroup.getSemester());
         scheduleService.create(schedule);
     }
@@ -196,12 +195,9 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
     @Override
-    public StudentGroupDTO findGroupSubjectsForTeacher(long groupId, long teacherId) {
-        GroupStudentsLimited groupForTeacher = studentGroupRepository.groupDetailsForTeacher(groupId);
-        Collection<SubjectTeacherGroupDTO> subjectTeacherGroups = getSubjectTeacherGroupDTOS(groupId, teacherId, groupForTeacher.getSemester().getId());
-
+    public StudentGroupDTO findGroupForTeacher(long groupId, long teacherId) {
+        GroupStudentsLimited groupForTeacher = studentGroupRepository.groupDetailsForTeacher(groupId).orElseThrow(GroupNotFoundException::new);
         return new StudentGroupDTO.Builder(groupForTeacher.getId(), groupForTeacher.getName())
-                .withSubjects(subjectTeacherGroups)
                 .withSpecialization(groupForTeacher.getSpecialization())
                 .withSemester(groupForTeacher.getSemester())
                 .build();
@@ -232,20 +228,20 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         createSchedule(groupAfterSave);
     }
 
+    @Override
+    public StudentGroupDTO findGroupById(long groupId) {
+        GroupStudentsLimited group = studentGroupRepository.groupDetailsForTeacher(groupId).orElseThrow(GroupNotFoundException::new);
+        return new StudentGroupDTO.Builder(group.getId(), group.getName())
+                .withSemester(group.getSemester())
+                .withSpecialization(group.getSpecialization())
+                .build();
+    }
 
     private void updateStatusForGrade(long studentId, GradeStatus status) {
         Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
             studentGroupGradeRepository.setStatusForGrade(status, studentGradeLimitedStudent.getId());
         }
-    }
-
-    private Collection<SubjectTeacherGroupDTO> getSubjectTeacherGroupDTOS(long id, long teacherId, long semesterId) {
-        return subjectTeacherRepository.subjectsInGroupForTeacher(id, teacherId, semesterId).stream()
-                .map(subject -> new SubjectTeacherGroupDTO(subject.getId(),
-                        subject.getName(),
-                        subject.getType()))
-                .collect(Collectors.toList());
     }
 
     private StudentGroupDTO convertToDTO(long id, String name, Semester semester) {

@@ -176,13 +176,6 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectRepository.findAllSubjectsWithTeachers().stream().map(this::convertDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(long semesterId, long groupId) {
-        Collection<SubjectTeacherGroup> subjectsForGroupBySemester = subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId);
-        return subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId).stream()
-                .map(SubjectTeacherGroupDTO::new)
-                .collect(Collectors.toList());
-    }
 
     private SubjectDTO convertDTO(Subject subject) {
         return new SubjectDTO(subject);

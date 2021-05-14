@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service;
 
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
+import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
 import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.model.Subject;
@@ -27,9 +28,11 @@ public interface StudentGroupService {
 
     Collection<StudentGroupDTO> findGroupsForTeacher(long teacherId);
 
-    StudentGroupDTO findGroupSubjectsForTeacher(long id, long teacherId);
+    StudentGroupDTO findGroupForTeacher(long id, long teacherId);
 
     void deleteStudentFromGroup(long groupId, long studentId);
 
     void  changeGroupSemester(long groupId, long semesterId, List<SubjectTeacherGroup> subjects);
+
+    StudentGroupDTO findGroupById(long groupId);
 }
