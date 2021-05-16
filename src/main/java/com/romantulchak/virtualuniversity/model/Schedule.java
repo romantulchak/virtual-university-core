@@ -15,7 +15,7 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private Collection<ScheduleDay> days;
 
     @ManyToOne

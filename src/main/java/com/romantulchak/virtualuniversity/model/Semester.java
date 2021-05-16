@@ -29,7 +29,7 @@ public class Semester {
 
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "semester", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "semester", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Collection<Schedule> schedule;
 
     @OneToMany(mappedBy = "semester")

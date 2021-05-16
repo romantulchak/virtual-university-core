@@ -39,6 +39,13 @@ public abstract class UserDTO implements Comparable<UserDTO>{
     public UserDTO() {
     }
 
+    public UserDTO(long id, String firstName, String lastName, String numberIdentifier) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.numberIdentifier = numberIdentifier;
+    }
+
     public UserDTO(long id, String firstName, String lastName, String privateEmail, String email, Gender gender, String numberIdentifier) {
         this.id = id;
         this.firstName = firstName;

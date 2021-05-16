@@ -2,7 +2,7 @@ package com.romantulchak.virtualuniversity.projection;
 
 public interface StudentDataLimited {
 
-    String getId();
+    long getId();
 
     String getFirstName();
 

@@ -34,14 +34,11 @@ public class Student extends UserAbstract{
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy = "students")
-    private Collection<StudentGroup> studentGroups;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private StudentGroup studentGroup;
 
     @OneToMany(mappedBy = "student")
     private Collection<StudentGroupGrade> studentGroupGrades;
-
-    @ManyToOne
-    private StudentGroup currentGroup;
 
     public Student(long id, String firstName, String lastName, String numberIdentifier){
         setId(id);
@@ -118,20 +115,12 @@ public class Student extends UserAbstract{
         this.currentSemester = currentSemester;
     }
 
-    public Collection<StudentGroup> getGroups() {
-        return studentGroups;
+    public StudentGroup getStudentGroup() {
+        return studentGroup;
     }
 
-    public void setGroups(Collection<StudentGroup> studentGroups) {
-        this.studentGroups = studentGroups;
-    }
-
-    public Collection<StudentGroup> getStudentGroups() {
-        return studentGroups;
-    }
-
-    public void setStudentGroups(Collection<StudentGroup> studentGroups) {
-        this.studentGroups = studentGroups;
+    public void setStudentGroup(StudentGroup studentGroup) {
+        this.studentGroup = studentGroup;
     }
 
     public Collection<StudentGroupGrade> getStudentGroupGrades() {
@@ -140,13 +129,5 @@ public class Student extends UserAbstract{
 
     public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
         this.studentGroupGrades = studentGroupGrades;
-    }
-
-    public StudentGroup getCurrentGroup() {
-        return currentGroup;
-    }
-
-    public void setCurrentGroup(StudentGroup currentGroup) {
-        this.currentGroup = currentGroup;
     }
 }

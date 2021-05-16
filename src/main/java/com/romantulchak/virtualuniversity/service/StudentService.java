@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import java.util.Collection;
 
 public interface StudentService {
-    StudentDTO create(Student student);
+    void create(Student student);
     StudentDTO getStudentInformation(long id);
     void resetStudentPassword(ResetPasswordRequest resetPasswordRequest);
 

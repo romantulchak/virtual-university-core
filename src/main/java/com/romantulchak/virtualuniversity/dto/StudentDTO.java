@@ -33,7 +33,9 @@ public class StudentDTO extends UserDTO{
 
     private Set<Role> roles = new HashSet<>();
 
-
+    public StudentDTO(long id, String firstName, String lastName, String numberIdentifier) {
+        super(id, firstName, lastName, numberIdentifier);
+    }
 
     public StudentDTO(){
 

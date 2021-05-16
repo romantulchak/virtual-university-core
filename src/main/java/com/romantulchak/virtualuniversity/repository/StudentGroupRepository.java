@@ -30,7 +30,7 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
      * @return StudentGroup
      */
     //TODO: fix JOIN FETCH
-    @Query(value = "SELECT s FROM StudentGroup s JOIN FETCH s.students ss JOIN FETCH s.subjectTeacherGroups sst WHERE s.id = :id")
+    @Query(value = "SELECT s FROM StudentGroup s LEFT OUTER JOIN s.students ss LEFT OUTER JOIN s.subjectTeacherGroups sst WHERE s.id = :id")
     Optional<StudentGroup> findGroupById(@Param("id") long id);
 
     @Query(value = "SELECT ss" +

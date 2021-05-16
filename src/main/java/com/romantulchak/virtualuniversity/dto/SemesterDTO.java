@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.model.Semester;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Views;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,12 @@ public class SemesterDTO {
 
     @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
     private int semesterNumber;
+
+    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
+    private LocalDate startDate;
+
+    @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
+    private LocalDate endDate;
 
     public SemesterDTO(Semester semester) {
         this.id = semester.getId();
@@ -48,5 +55,21 @@ public class SemesterDTO {
 
     public void setSemesterNumber(int semesterNumber) {
         this.semesterNumber = semesterNumber;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 }

@@ -30,10 +30,10 @@ public class SubjectTeacherGroup {
     @OneToMany(mappedBy = "subjectTeacherGroup")
     private Collection<StudentGroupGrade> studentGrades;
 
-    @OneToMany(mappedBy = "subjectTeacher")
+    @OneToMany(mappedBy = "subjectTeacher", cascade = CascadeType.REMOVE)
     private Collection<Lesson> lessons;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "semester_id")
     private Semester semester;
 

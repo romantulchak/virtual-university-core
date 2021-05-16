@@ -6,6 +6,7 @@ import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.exception.StudentWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.Student;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
+import com.romantulchak.virtualuniversity.projection.StudentDataLimited;
 import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentService;
@@ -40,16 +41,15 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public StudentDTO create(Student student) {
+    public void create(Student student) {
         if(studentRepository.existsByLogin(student.getLogin())) {
             throw new StudentWithSameLoginAlreadyExistsException(student.getLogin());
         }
         String password = PasswordGeneratorUtil.generate();
         student.setPassword(passwordEncoder.encode(password));;
         student.setNumberIdentifier(AlbumNumberGenerator.generateAlbumNumber());
-        Student studentAfterSave = studentRepository.save(student);
+        studentRepository.save(student);
         emailSender.sendMail(student.getEmail(), "Your data", String.format("Your login: %s Your password: %s", student.getLogin(), password));
-        return convertToDTO(studentAfterSave);
     }
 
     @Override
@@ -81,8 +81,10 @@ public class StudentServiceImpl implements StudentService {
     public Collection<StudentDTO> findStudentsWithoutGroup() {
         return studentRepository.findStudentsWithoutGroup()
                 .stream()
-                .map(this::convertToDTO)
-                .sorted()
+                .map(student-> new StudentDTO(student.getId(),
+                        student.getFirstName(),
+                        student.getLastName(),
+                        student.getNumberIdentifier()))
                 .collect(Collectors.toList());
     }
 

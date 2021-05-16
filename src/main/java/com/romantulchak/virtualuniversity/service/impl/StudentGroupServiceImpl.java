@@ -123,8 +123,8 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         List<Student> studentsWithGroup = getStudentsWithGroup(students, group);
         students.removeAll(studentsWithGroup);
         group.getStudents().addAll(students);
-        studentGroupRepository.save(group);
         setCurrentGroupForStudent(students, group);
+        studentGroupRepository.save(group);
         setGrades(students, group);
         if (studentsWithGroup.size() != 0) {
             throw new StudentAlreadyHasGroupException(students);
@@ -209,8 +209,8 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         StudentGroup studentGroup = studentGroupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
         Student student = studentRepository.findStudentById(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
         updateStatusForGrade(studentId, GradeStatus.IN_ACTIVE);
-        studentGroup.getStudents().remove(student);
-        studentGroupRepository.save(studentGroup);
+        student.setStudentGroup(null);
+        studentRepository.save(student);
     }
 
     @Transactional

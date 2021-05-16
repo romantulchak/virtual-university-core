@@ -21,8 +21,7 @@ public class StudentGroup {
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Semester semester;
 
-    @ManyToMany
-    @JoinTable(name = "group_student", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.DETACH)
     private Set<Student> students = new LinkedHashSet<>();
 
     @ManyToOne
@@ -33,9 +32,6 @@ public class StudentGroup {
 
     @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Collection<StudentGroupGrade> studentGroupGrades;
-
-    @OneToMany(mappedBy = "currentGroup", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private Collection<Student> studentsInCurrentGroup;
 
     public StudentGroup(){
 
@@ -103,14 +99,6 @@ public class StudentGroup {
         this.studentGroupGrades = studentGroupGrades;
     }
 
-    public Collection<Student> getStudentsInCurrentGroup() {
-        return studentsInCurrentGroup;
-    }
-
-    public void setStudentsInCurrentGroup(Collection<Student> studentsInCurrentGroup) {
-        this.studentsInCurrentGroup = studentsInCurrentGroup;
-    }
-
     public Semester getSemester() {
         return semester;
     }
@@ -118,6 +106,14 @@ public class StudentGroup {
     public void setSemester(Semester semester) {
         this.semester = semester;
     }
+
+    @PreRemove
+    public void preRemove(){
+        for (Student student : students) {
+            student.setStudentGroup(null);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

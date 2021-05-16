@@ -23,15 +23,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Collection<Student> findStudentByFirstNameAndLastName(String firstName, String lastName);
 
-    //TODO: make projection
-    @Query(value = "SELECT new Student(s.id, s.firstName, s.lastName, s.numberIdentifier) FROM Student s LEFT OUTER JOIN s.studentGroups sg WHERE sg.id IS NULL ")
-    Collection<Student> findStudentsWithoutGroup();
+    @Query(value = "SELECT s.id as id, s.firstName as firstName, s.lastName as lastName, s.numberIdentifier as numberIdentifier FROM Student s LEFT OUTER JOIN s.studentGroup sg WHERE sg.id IS NULL ")
+    Collection<StudentDataLimited> findStudentsWithoutGroup();
 
     @Query(value = "SELECT s.id as id, s.firstName as firstName, s.lastName as lastName, s.numberIdentifier as numberIdentifier FROM Student s WHERE s.id = :studentId")
     Optional<StudentDataLimited> findStudentInformation(@Param("studentId") long studentId);
 
     @Modifying
-    @Query(value = "UPDATE  Student s SET s.currentGroup.id = :currentGroupId WHERE s.id = :studentId")
+    @Query(value = "UPDATE  Student s SET s.studentGroup.id = :currentGroupId WHERE s.id = :studentId")
     void updateCurrentGroup(@Param("currentGroupId") long currentGroupId, @Param("studentId") long studentId);
 
     @Query(value = "SELECT s.currentSemester FROM Student s WHERE s.id = :studentId")
