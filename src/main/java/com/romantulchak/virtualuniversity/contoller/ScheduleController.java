@@ -39,12 +39,12 @@ public class ScheduleController {
     }
     @GetMapping("/findScheduleForTeacherByGroup")
     public ScheduleDTO findScheduleForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam("groupId") long groupId, @RequestParam(value = "semesterId") long semesterId){
-        return scheduleService.findScheduleForTeacherBeGroup(teacherId, groupId, semesterId);
+        return scheduleService.findScheduleForTeacherByGroup(teacherId, groupId, semesterId);
     }
-    @GetMapping(value = "/exportPdf-f/{scheduleId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/exportPdf-f/{scheduleId}/{semesterId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseBody
-    public byte[] exportScheduleFullAsPDF(@PathVariable("scheduleId") long scheduleId){
-        return scheduleService.exportFullScheduleAsPDF(scheduleId);
+    public byte[] exportScheduleFullAsPDF(@PathVariable("scheduleId") long scheduleId, @PathVariable("semesterId") long semesterId){
+        return scheduleService.exportFullScheduleAsPDF(scheduleId, semesterId);
     }
     @GetMapping(value = "/exportPdf-w/{scheduleId}/{semesterId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @ResponseBody

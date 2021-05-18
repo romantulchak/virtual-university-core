@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class StudentGroup {
@@ -21,7 +22,7 @@ public class StudentGroup {
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Semester semester;
 
-    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "studentGroup")
     private Set<Student> students = new LinkedHashSet<>();
 
     @ManyToOne
@@ -106,14 +107,6 @@ public class StudentGroup {
     public void setSemester(Semester semester) {
         this.semester = semester;
     }
-
-    @PreRemove
-    public void preRemove(){
-        for (Student student : students) {
-            student.setStudentGroup(null);
-        }
-    }
-
 
     @Override
     public boolean equals(Object o) {

@@ -73,10 +73,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    private StudentGroupDTO getStudentGroupDTO(StudentGroup studentGroup) {
-        return new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName()).build();
-    }
-
     private void saveDays(Schedule schedule) {
         for (ScheduleDay day : schedule.getDays()) {
                 day.setSchedule(schedule);
@@ -100,7 +96,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleDTO findScheduleForTeacherBeGroup(long teacherId, long groupId, long semesterId) {
+    public ScheduleDTO findScheduleForTeacherByGroup(long teacherId, long groupId, long semesterId) {
         if (teacherRepository.existsById(teacherId)) {
             long scheduleId = scheduleRepository.findScheduleIdBySemesterId(semesterId).orElseThrow(ScheduleNotFoundException::new);
             StudentGroup studentGroup = studentGroupRepository.findById(groupId).orElseThrow(GroupNotFoundException::new);
@@ -114,8 +110,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public byte[] exportFullScheduleAsPDF(long scheduleId) {
-        Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId).orElseThrow(ScheduleNotFoundException::new);
+    public byte[] exportFullScheduleAsPDF(long scheduleId, long semesterId) {
+        Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId, semesterId).orElseThrow(ScheduleNotFoundException::new);
         try {
             if (schedule.getDays() != null && !schedule.getDays().isEmpty()) {
                 return ExportDataToPdf.exportSchedule(schedule);

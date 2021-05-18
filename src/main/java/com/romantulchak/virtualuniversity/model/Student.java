@@ -4,6 +4,8 @@ import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -34,7 +36,7 @@ public class Student extends UserAbstract{
     @JoinTable(name = "students_roles", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private StudentGroup studentGroup;
 
     @OneToMany(mappedBy = "student")
@@ -129,5 +131,9 @@ public class Student extends UserAbstract{
 
     public void setStudentGroupGrades(Collection<StudentGroupGrade> studentGroupGrades) {
         this.studentGroupGrades = studentGroupGrades;
+    }
+    @PreRemove
+    public void preRemove(){
+        setStudentGroup(null);
     }
 }

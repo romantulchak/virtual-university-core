@@ -31,4 +31,6 @@ public interface SubjectService {
     ResponseEntity<Resource> downloadFile(String filename);
 
     Collection<SubjectDTO> findAllSubjectsWithTeachers();
+
+    Collection<SubjectDTO> findAllSubjectsWithTeachersForSemester(long semesterId);
 }

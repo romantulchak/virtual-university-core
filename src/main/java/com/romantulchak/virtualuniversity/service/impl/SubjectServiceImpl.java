@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
@@ -38,15 +39,12 @@ import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
 
-    private final SubjectTeacherRepository subjectTeacherRepository;
-
     @Value("${subject.upload.path}")
     private String path;
 
     @Autowired
-    public SubjectServiceImpl(SubjectRepository subjectRepository, SubjectTeacherRepository subjectTeacherRepository) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
-        this.subjectTeacherRepository = subjectTeacherRepository;
     }
 
     @Override
@@ -87,7 +85,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
         for (MultipartFile file : files) {
-            String fileName = generateNameForFile(file.getOriginalFilename());
+            String fileName = generateNameForFile(Objects.requireNonNull(file.getOriginalFilename()));
             String directory = "subjectFiles";
             String localPathToFile = getLocalPathToFile(path, directory, fileName);
             String subjectFiles = uploadFile(file, path, localPathToFile, directory, fileName);
@@ -173,7 +171,18 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDTO> findAllSubjectsWithTeachers() {
-        return subjectRepository.findAllSubjectsWithTeachers().stream().map(this::convertDTO).collect(Collectors.toList());
+        return subjectRepository.findAllSubjectsWithTeachers()
+                .stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<SubjectDTO> findAllSubjectsWithTeachersForSemester(long semesterId) {
+        return subjectRepository.findAllSubjectsWithTeachersBySemester(semesterId)
+                .stream()
+                .map(this::convertDTO)
+                .collect(Collectors.toList());
     }
 
 

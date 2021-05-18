@@ -206,7 +206,6 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Transactional
     @Override
     public void deleteStudentFromGroup(long groupId, long studentId) {
-        StudentGroup studentGroup = studentGroupRepository.findGroupById(groupId).orElseThrow(() -> new GroupNotFoundException(groupId));
         Student student = studentRepository.findStudentById(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
         updateStatusForGrade(studentId, GradeStatus.IN_ACTIVE);
         student.setStudentGroup(null);

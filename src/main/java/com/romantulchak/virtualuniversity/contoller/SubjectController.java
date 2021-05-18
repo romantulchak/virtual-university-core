@@ -92,4 +92,9 @@ public class SubjectController {
         return subjectService.findAllSubjectsWithTeachers();
     }
 
+    @GetMapping("/findAllSubjectsWithTeachersForSemester/{semesterId}")
+    @JsonView(Views.SubjectView.class)
+    public Collection<SubjectDTO> findAllSubjectsWithTeachersForSemester(@PathVariable("semesterId") long semesterId){
+        return subjectService.findAllSubjectsWithTeachersForSemester(semesterId);
+    }
 }

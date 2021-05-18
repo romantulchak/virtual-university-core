@@ -49,6 +49,9 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "SELECT local_path FROM subject_files WHERE name = :filename", nativeQuery = true)
     Optional<String> findLocalPathToFile(@Param("filename") String filename);
 
-    @Query(value = "SELECT s FROM Subject s JOIN FETCH s.teachers")
+    @Query(value = "SELECT s FROM Subject s LEFT OUTER JOIN s.teachers")
     Collection<Subject> findAllSubjectsWithTeachers();
+
+    @Query(value = "SELECT * FROM subject sb WHERE NOT EXISTS(SELECT * FROM subject_teacher_group join subject s on s.id = subject_teacher_group.subject_id WHERE sb.id = s.id AND subject_teacher_group.semester_id = :semesterId)", nativeQuery = true)
+    Collection<Subject> findAllSubjectsWithTeachersBySemester(@Param("semesterId") long semesterId);
 }

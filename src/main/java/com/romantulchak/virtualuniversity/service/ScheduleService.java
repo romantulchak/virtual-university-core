@@ -12,9 +12,9 @@ public interface ScheduleService {
 
     long findScheduleIdForGroup(long semesterId);
 
-    ScheduleDTO findScheduleForTeacherBeGroup(long teacherId, long groupId, long semesterId);
+    ScheduleDTO findScheduleForTeacherByGroup(long teacherId, long groupId, long semesterId);
 
-    byte[] exportFullScheduleAsPDF(long scheduleId);
+    byte[] exportFullScheduleAsPDF(long scheduleId, long semesterId);
 
     byte[] exportScheduleForWeekPDF(long scheduleId, long semesterId);
 }

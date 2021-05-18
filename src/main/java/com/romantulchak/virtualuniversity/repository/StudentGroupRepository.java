@@ -24,12 +24,13 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query(value = "SELECT DISTINCT s FROM StudentGroup s JOIN FETCH s.subjectTeacherGroups as sb LEFT JOIN FETCH s.students as ss WHERE s.id = :id AND s.semester.id = sb.semester.id")
     Optional<StudentGroup> groupByIdWithSubjectsAndStudents(@Param("id") long id);
 
+    @Query(value = "SELECT s FROM StudentGroup s JOIN FETCH s.students ss WHERE s.id = :groupId")
+    Optional<StudentGroup> findStudentGroupByIdWithStudents(@Param("groupId") long groupId);
     /**
      * Student Group with students and subjects
      * @param id group id
      * @return StudentGroup
      */
-    //TODO: fix JOIN FETCH
     @Query(value = "SELECT s FROM StudentGroup s LEFT OUTER JOIN s.students ss LEFT OUTER JOIN s.subjectTeacherGroups sst WHERE s.id = :id")
     Optional<StudentGroup> findGroupById(@Param("id") long id);
 
