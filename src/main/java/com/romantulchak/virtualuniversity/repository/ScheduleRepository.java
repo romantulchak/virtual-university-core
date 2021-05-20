@@ -19,4 +19,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query(value = "SELECT s FROM Schedule s JOIN FETCH s.days WHERE s.id = :id AND s.semester.id = :semesterId")
     Optional<Schedule> findByIdWithDays(@Param("id") long id, @Param("semesterId") long semesterId);
+
+    @Query(value = "SELECT EXISTS(SELECT id FROM schedule WHERE id = :scheduleId AND semester_id = :semesterId) ", nativeQuery = true)
+    boolean existsByIdAndSemester(@Param("scheduleId") long scheduleId, @Param("semesterId") long semesterId);
 }

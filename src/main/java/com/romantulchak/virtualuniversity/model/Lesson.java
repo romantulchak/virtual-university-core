@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 
 @Entity
-public class Lesson {
+public class Lesson implements Comparable<Lesson>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,5 +87,13 @@ public class Lesson {
 
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+
+    @Override
+    public int compareTo(Lesson o) {
+        return Comparator.comparing(Lesson::getDateStart)
+                .thenComparing(Lesson::getDateEnd)
+                .compare(this, o);
     }
 }

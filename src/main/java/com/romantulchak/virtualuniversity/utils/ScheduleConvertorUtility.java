@@ -32,6 +32,9 @@ public final class ScheduleConvertorUtility {
         if (lessons == null){
             throw new RuntimeException("Lessons cannot be empty");
         }
-        return lessons.stream().map(LessonDTO::new).sorted().collect(Collectors.toList());
+        return lessons.stream()
+                .map(LessonDTO::new)
+                .sorted()
+                .collect(Collectors.toList());
     }
 }

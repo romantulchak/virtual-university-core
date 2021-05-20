@@ -9,6 +9,8 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import com.romantulchak.virtualuniversity.dto.LessonDTO;
+import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.Schedule;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
@@ -19,16 +21,17 @@ import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 public final class ExportDataToPdf {
 
-    public static byte[] exportSchedule(Schedule schedule) throws IOException {
+    public static byte[] exportSchedule(Collection<ScheduleDayDTO> days) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(baos));
         Document document = new Document(pdfDocument, PageSize.A4.rotate());
-        createScheduleTable(schedule, document);
+        createScheduleTable(days, document);
         document.close();
         return baos.toByteArray();
     }
@@ -94,11 +97,11 @@ public final class ExportDataToPdf {
     }
 
 
-    private static void createScheduleTable(Schedule schedule, Document document) {
+    private static void createScheduleTable(Collection<ScheduleDayDTO> days, Document document) {
         float[] columnWidths = {100, 100, 250, 225, 100};
-        Table table = getScheduleTableHeader(schedule, columnWidths);
+        Table table = getScheduleTableHeader(columnWidths);
         document.add(table);
-        for (ScheduleDay day : schedule.getDays()) {
+        for (ScheduleDayDTO day : days) {
             Table scheduleDay = getScheduleDayHeader(day);
             document.add(scheduleDay);
             Table lessonsForDay = getLessonsForDay(columnWidths, day);
@@ -106,11 +109,11 @@ public final class ExportDataToPdf {
         }
     }
 
-    private static Table getLessonsForDay(float[] columnWidths, ScheduleDay day) {
+    private static Table getLessonsForDay(float[] columnWidths, ScheduleDayDTO day) {
         Table table = new Table(columnWidths)
                 .setTextAlignment(TextAlignment.CENTER)
                 .setMarginBottom(5);
-        for (Lesson lesson : day.getLessons()) {
+        for (LessonDTO lesson : day.getLessons()) {
             table.addCell(lesson.getDateStart().format(DateTimeFormatter.ofPattern("HH:mm")));
             table.addCell(lesson.getDateEnd().format(DateTimeFormatter.ofPattern("HH:mm")));
             table.addCell(lesson.getSubjectTeacher().getSubject().getName());
@@ -120,7 +123,7 @@ public final class ExportDataToPdf {
         return table;
     }
 
-    private static Table getScheduleDayHeader(ScheduleDay day) {
+    private static Table getScheduleDayHeader(ScheduleDayDTO day) {
         Table table = new Table(1)
                 .useAllAvailableWidth();
         String dayByFormat = day.getDay().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -133,7 +136,7 @@ public final class ExportDataToPdf {
         return table;
     }
 
-    private static Table getScheduleTableHeader(Schedule schedule, float[] columnWidths) {
+    private static Table getScheduleTableHeader(float[] columnWidths) {
         Table table = new Table(columnWidths)
                 .setTextAlignment(TextAlignment.CENTER)
                 .setMargin(0)

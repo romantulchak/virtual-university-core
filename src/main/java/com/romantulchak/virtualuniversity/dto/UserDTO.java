@@ -113,6 +113,10 @@ public abstract class UserDTO implements Comparable<UserDTO>{
         this.numberIdentifier = numberIdentifier;
     }
 
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+    
     @Override
     public int compareTo(UserDTO o) {
         return Comparator.comparing(UserDTO::getFirstName)

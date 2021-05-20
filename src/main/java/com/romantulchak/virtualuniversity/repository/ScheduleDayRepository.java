@@ -10,6 +10,9 @@ import java.util.Collection;
 
 public interface ScheduleDayRepository extends JpaRepository<ScheduleDay, Long> {
 
+    @Query(value = "SELECT sd FROM ScheduleDay sd WHERE sd.schedule.id = :scheduleId AND sd.semester.id = :semesterId")
+    Collection<ScheduleDay> findAllDaysForScheduleAndSemester(@Param("scheduleId") long scheduleId, @Param("semesterId") long semesterId);
+
     @Query(value = "SELECT EXISTS(SELECT id FROM schedule_day WHERE schedule_day.schedule_id = :scheduleId AND schedule_day.day = :day)", nativeQuery = true)
     boolean checkIfDayAvailable(@Param("scheduleId") long id, @Param("day") LocalDate day);
 

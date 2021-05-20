@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDTO;
+import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertScheduleDayToDTO;
 
@@ -28,15 +30,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final LessonRepository lessonRepository;
     private final StudentGroupRepository studentGroupRepository;
     private final TeacherRepository teacherRepository;
+    private final ScheduleDayServiceImpl scheduleDayService;
     @Autowired
     public ScheduleServiceImpl(ScheduleRepository scheduleRepository, ScheduleDayRepository scheduleDayRepository, LessonRepository lessonRepository,
-                               StudentGroupRepository studentGroupRepository, TeacherRepository teacherRepository) {
+                               StudentGroupRepository studentGroupRepository, TeacherRepository teacherRepository, ScheduleDayServiceImpl scheduleDayService) {
         this.scheduleRepository = scheduleRepository;
         this.scheduleDayRepository = scheduleDayRepository;
         this.lessonRepository = lessonRepository;
         this.studentGroupRepository = studentGroupRepository;
         this.teacherRepository = teacherRepository;
+        this.scheduleDayService = scheduleDayService;
     }
+
     //TODO: get scheduleId in arguments
     @Transactional
     @Override
@@ -54,31 +59,29 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private Schedule checkIfScheduleExists(Schedule schedule) {
         Schedule scheduleFromDb = scheduleRepository.findById(schedule.getId()).orElse(null);
-        if (scheduleFromDb == null){
-           scheduleFromDb = scheduleRepository.save(schedule);
-        }else {
+        if (scheduleFromDb == null) {
+            scheduleFromDb = scheduleRepository.save(schedule);
+        } else {
             scheduleFromDb.getDays().addAll(schedule.getDays());
         }
         return scheduleFromDb;
     }
 
-    //TODO: fix it
     @Override
     public ScheduleDTO findScheduleForGroup(long semesterId) {
-        long scheduleId = scheduleRepository.findScheduleIdBySemesterId(semesterId).orElseThrow(ScheduleNotFoundException::new);
         return scheduleRepository.findScheduleBySemesterId(semesterId)
                 .map(schedule -> new ScheduleDTO(schedule.getId(), convertScheduleDayToDTO(schedule.getDays())))
-                .orElse(new ScheduleDTO(scheduleId));
+                .orElseThrow(ScheduleNotFoundException::new);
 
 
     }
 
     private void saveDays(Schedule schedule) {
         for (ScheduleDay day : schedule.getDays()) {
-                day.setSchedule(schedule);
-                day.setSemester(schedule.getSemester());
-                scheduleDayRepository.save(day);
-                saveLessons(day);
+            day.setSchedule(schedule);
+            day.setSemester(schedule.getSemester());
+            scheduleDayRepository.save(day);
+            saveLessons(day);
         }
     }
 
@@ -111,27 +114,32 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public byte[] exportFullScheduleAsPDF(long scheduleId, long semesterId) {
-        Schedule schedule = scheduleRepository.findByIdWithDays(scheduleId, semesterId).orElseThrow(ScheduleNotFoundException::new);
-        try {
-            if (schedule.getDays() != null && !schedule.getDays().isEmpty()) {
-                return ExportDataToPdf.exportSchedule(schedule);
+        if (scheduleRepository.existsByIdAndSemester(scheduleId, semesterId)) {
+            Collection<ScheduleDay> days = scheduleDayRepository.findAllDaysForScheduleAndSemester(scheduleId, semesterId);
+            try {
+                if (days != null && days.size() > 0) {
+                    return ExportDataToPdf.exportSchedule(convertScheduleDayToDTO(days));
+                }
+            } catch (IOException e) {
+                throw new ExportToPdfFailedException();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            throw new ScheduleNotFoundException();
         }
         throw new ExportToPdfFailedException();
     }
 
-    //TODO: fix export
     @Override
     public byte[] exportScheduleForWeekPDF(long scheduleId, long semesterId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(ScheduleNotFoundException::new);
-        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDaysForWeek(semesterId, LocalDate.now(), LocalDate.now().plusDays(7));
-        schedule.setDays(days);
-        try {
-            return ExportDataToPdf.exportSchedule(schedule);
-        } catch (IOException e) {
-            throw new ExportToPdfFailedException();
+        if (scheduleRepository.existsByIdAndSemester(scheduleId, semesterId)) {
+            Collection<ScheduleDayDTO> days = scheduleDayService.findDaysForWeek(semesterId);
+            try {
+                return ExportDataToPdf.exportSchedule(days);
+            } catch (IOException e) {
+                throw new ExportToPdfFailedException();
+            }
+        } else {
+            throw new ScheduleNotFoundException();
         }
     }
 
