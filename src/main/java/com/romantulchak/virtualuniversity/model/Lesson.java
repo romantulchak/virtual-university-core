@@ -31,6 +31,9 @@ public class Lesson implements Comparable<Lesson>{
     @Enumerated(EnumType.STRING)
     private LessonStatus status;
 
+    @Enumerated(EnumType.STRING)
+    private LessonStatus previousStatus;
+
     private String roomNumber;
 
     public long getId() {
@@ -89,6 +92,13 @@ public class Lesson implements Comparable<Lesson>{
         this.roomNumber = roomNumber;
     }
 
+    public LessonStatus getPreviousStatus() {
+        return previousStatus;
+    }
+
+    public void setPreviousStatus(LessonStatus previousStatus) {
+        this.previousStatus = previousStatus;
+    }
 
     @Override
     public int compareTo(Lesson o) {

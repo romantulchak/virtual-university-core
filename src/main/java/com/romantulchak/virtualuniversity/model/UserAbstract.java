@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
 
 import javax.persistence.*;
@@ -121,6 +122,7 @@ public abstract class UserAbstract {
         this.numberIdentifier = numberIdentifier;
     }
 
+    @JsonIgnoreProperties
     public String getFullName(){
         return firstName + " " + lastName;
     }

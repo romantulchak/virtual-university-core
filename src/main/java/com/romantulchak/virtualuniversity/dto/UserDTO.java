@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Specialization;
 import com.romantulchak.virtualuniversity.model.Student;
@@ -15,25 +16,25 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public abstract class UserDTO implements Comparable<UserDTO>{
-    @JsonView({Views.SemesterView.class, Views.StudentView.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
+    @JsonView({Views.SemesterView.class, Views.StudentView.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.TeacherView.class})
     private long id;
 
-    @JsonView({Views.StudentView.class,Views.SemesterView.class,Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
+    @JsonView({Views.StudentView.class,Views.SemesterView.class,Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.TeacherView.class})
     private String firstName;
 
-    @JsonView({Views.StudentView.class, Views.SemesterView.class,Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class})
+    @JsonView({Views.StudentView.class, Views.SemesterView.class,Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.TeacherView.class})
     private String lastName;
 
-    @JsonView(Views.StudentView.class)
+    @JsonView({Views.StudentView.class,Views.TeacherView.class})
     private String privateEmail;
 
-    @JsonView(Views.StudentView.class)
+    @JsonView({Views.StudentView.class,Views.TeacherView.class})
     private String email;
 
-    @JsonView(Views.StudentView.class)
+    @JsonView({Views.StudentView.class,Views.TeacherView.class})
     private Gender gender;
 
-    @JsonView({Views.StudentView.class, Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.ScheduleView.class})
+    @JsonView({Views.StudentView.class, Views.TeacherStudentGrades.class, Views.StudentGroupView.class, Views.ScheduleView.class,Views.TeacherView.class})
     private String numberIdentifier;
 
     public UserDTO() {

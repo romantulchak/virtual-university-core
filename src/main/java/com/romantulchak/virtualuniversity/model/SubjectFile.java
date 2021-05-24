@@ -14,6 +14,7 @@ public class SubjectFile {
     private String name;
 
     private String path;
+
     @JsonView(Views.FileView.class)
     private LocalDateTime added;
 

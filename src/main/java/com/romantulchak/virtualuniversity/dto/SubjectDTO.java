@@ -16,13 +16,13 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class SubjectDTO implements Comparable<SubjectDTO> {
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private long id;
 
-    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.SubjectView.class, Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private String name;
 
-    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private SubjectType type;
    
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.SpecializationView.class})

@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 public class SubjectTeacherGroupDTO implements Comparable<SubjectTeacherGroupDTO>{
 
-    @JsonView({Views.StudentGroupView.class, Views.TeacherStudentGrades.class,Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.StudentGroupView.class, Views.TeacherStudentGrades.class,Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private long id;
 
-    @JsonView({Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private SubjectDTO subject;
 
-    @JsonView({Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class})
+    @JsonView({Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private TeacherDTO teacher;
 
     private StudentGroupDTO studentGroup;

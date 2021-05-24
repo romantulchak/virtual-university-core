@@ -1,10 +1,14 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
+import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
+import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
@@ -32,5 +36,17 @@ public class LessonController {
     @PutMapping("/update")
     public LessonDTO updateLesson(@RequestBody Lesson lesson){
         return lessonService.updateLesson(lesson);
+    }
+
+    @PostMapping("/change-status-request/{lessonId}/{teacherId}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TEACHER') AND @accessToLesson.checkAccess(#lessonId, #teacherId)")
+    public void changeStatusRequest(@PathVariable("lessonId") long lessonId, @PathVariable("teacherId") long teacherId, @RequestBody ScheduleLessonRequest scheduleLessonRequest){
+        lessonService.changeLessonStatus(scheduleLessonRequest);
+    }
+    
+    @GetMapping("/getLessonRequests")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public Collection<ScheduleLessonRequestDTO> findLessonRequests(@RequestParam(value = "page") int page){
+        return lessonService.findLessonRequests(page);
     }
 }

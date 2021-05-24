@@ -17,4 +17,5 @@ public interface ScheduleService {
     byte[] exportFullScheduleAsPDF(long scheduleId, long semesterId);
 
     byte[] exportScheduleForWeekPDF(long scheduleId, long semesterId);
+
 }

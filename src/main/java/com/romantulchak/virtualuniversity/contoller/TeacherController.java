@@ -1,8 +1,10 @@
 package com.romantulchak.virtualuniversity.contoller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.TeacherDTO;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.service.impl.TeacherServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +42,7 @@ public class TeacherController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @JsonView(Views.TeacherView.class)
     public Collection<TeacherDTO> findAllTeachers(){
         return teacherService.findAllTeachers();
     }

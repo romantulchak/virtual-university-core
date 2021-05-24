@@ -14,25 +14,31 @@ import java.util.Comparator;
 
 public class LessonDTO implements Comparable<LessonDTO>{
 
-    @JsonView(Views.ScheduleView.class)
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private long id;
-    @JsonView(Views.ScheduleView.class)
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private LocalDateTime dateStart;
 
-    @JsonView(Views.ScheduleView.class)
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private LocalDateTime dateEnd;
 
-    @JsonView(Views.ScheduleView.class)
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private SubjectTeacherGroupDTO subjectTeacher;
 
     private ScheduleDayDTO scheduleDay;
 
-    @JsonView(Views.ScheduleView.class)
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private LessonStatus status;
-    @JsonView(Views.ScheduleView.class)
+
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private String groupName;
-    @JsonView(Views.ScheduleView.class)
+
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private String roomNumber;
+
+    @JsonView(Views.LessonStatusRequestView.class)
+    private LessonStatus previousStatus;
+
 
     public LessonDTO(){}
 
@@ -43,6 +49,7 @@ public class LessonDTO implements Comparable<LessonDTO>{
         this.subjectTeacher = new SubjectTeacherGroupDTO(lesson.getSubjectTeacher());
         this.status = lesson.getStatus();
         this.roomNumber = lesson.getRoomNumber();
+        this.previousStatus = lesson.getPreviousStatus();
         if (lesson.getSubjectTeacher().getStudentGroup()!= null){
             this.groupName = lesson.getSubjectTeacher().getStudentGroup().getName();
         }
@@ -110,6 +117,14 @@ public class LessonDTO implements Comparable<LessonDTO>{
 
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public LessonStatus getPreviousStatus() {
+        return previousStatus;
+    }
+
+    public void setPreviousStatus(LessonStatus previousStatus) {
+        this.previousStatus = previousStatus;
     }
 
     @Override
