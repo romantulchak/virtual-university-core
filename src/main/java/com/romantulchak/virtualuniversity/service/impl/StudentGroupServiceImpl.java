@@ -237,7 +237,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     }
 
     private void updateStatusForGrade(long studentId, GradeStatus status) {
-        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
+        Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findAllGradesForStudent(studentId);
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
             studentGroupGradeRepository.setStatusForGrade(status, studentGradeLimitedStudent.getId());
         }

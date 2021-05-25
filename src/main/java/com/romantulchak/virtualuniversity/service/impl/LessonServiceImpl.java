@@ -6,18 +6,18 @@ import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.repository.LessonRepository;
 import com.romantulchak.virtualuniversity.repository.ScheduleLessonRepository;
 import com.romantulchak.virtualuniversity.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,8 +65,9 @@ public class LessonServiceImpl implements LessonService {
     public void changeLessonStatus(ScheduleLessonRequest scheduleLessonRequest) {
         LessonStatus lessonStatus = lessonRepository.findLessonActualStatus(scheduleLessonRequest.getLesson().getId())
                 .orElseThrow(() -> new LessonNotFoundException(scheduleLessonRequest.getLesson().getId()));
-        if (!scheduleLessonRequest.getStatus().equals(scheduleLessonRequest.getLesson().getStatus())) {
+        if (!scheduleLessonRequest.getActualStatus().equals(scheduleLessonRequest.getLesson().getStatus())) {
             lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus);
+            scheduleLessonRequest.setPreviousStatus(lessonStatus);
             scheduleLessonRepository.save(scheduleLessonRequest);
         } else {
             throw new LessonStatusNotChangedException();
@@ -76,10 +77,29 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Collection<ScheduleLessonRequestDTO> findLessonRequests(int page) {
         Pageable pageable = PageRequest.of(page, 25);
+        List<ScheduleLessonRequest> allRequests = scheduleLessonRepository.findAllRequests(pageable);
+        System.out.println(allRequests);
         return scheduleLessonRepository.findAllRequests(pageable)
                 .stream()
-                .map(request-> new ScheduleLessonRequestDTO(request.getId(), request.getStatus(), request.getMessage(), new LessonDTO(request.getLesson())))
+                .map(request -> new ScheduleLessonRequestDTO(request.getId(),
+                        request.getActualStatus(),
+                        request.getMessage(),
+                        new LessonDTO(request.getLesson()),
+                        request.getDecision(),
+                        request.getPreviousStatus()))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void acceptRequest(long requestId, RequestStatus decision) {
+        ScheduleLessonRequest request = scheduleLessonRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
+        if (decision != null && request.getLesson() != null){
+            scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
+            lessonRepository.updateStatus(request.getLesson().getId(), request.getActualStatus(), request.getLesson().getPreviousStatus());
+        }else{
+            throw new LessonNotFoundException();
+        }
     }
 
     @Override

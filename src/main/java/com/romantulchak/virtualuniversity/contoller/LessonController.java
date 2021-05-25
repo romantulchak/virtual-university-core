@@ -4,7 +4,9 @@ import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
+import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +50,11 @@ public class LessonController {
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public Collection<ScheduleLessonRequestDTO> findLessonRequests(@RequestParam(value = "page") int page){
         return lessonService.findLessonRequests(page);
+    }
+
+    @PutMapping("/changeRequestStatus")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void changeRequestStatus(@RequestParam(value = "requestId") long requestId, @RequestParam(value = "decision") RequestStatus decision){
+        lessonService.acceptRequest(requestId, decision);
     }
 }

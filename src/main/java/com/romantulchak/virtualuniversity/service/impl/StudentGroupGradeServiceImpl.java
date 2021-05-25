@@ -48,9 +48,9 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     @Override
-    public Collection<StudentGroupGradeDTO> findStudentGrades(long studentId) {
+    public Collection<StudentGroupGradeDTO> findStudentGrades(long studentId, long semesterId) {
         if (studentRepository.existsById(studentId)) {
-            Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId);
+            Collection<StudentGradeLimitedStudent> studentGradesForStudent = studentGroupGradeRepository.findGradesForStudent(studentId, semesterId);
             return getGradesForStudent(studentGradesForStudent);
         }
         throw new StudentNotFoundException(studentId);
@@ -93,9 +93,9 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     @Override
-    public byte[] exportStudentGrades(long studentId) {
+    public byte[] exportStudentGrades(long studentId, long semesterId) {
         StudentDataLimited student = studentRepository.findStudentInformation(studentId).orElseThrow(() -> new StudentNotFoundException(studentId));
-        List<StudentGradeLimitedStudent> grades = new ArrayList<>(studentGroupGradeRepository.findGradesForStudent(studentId))
+        List<StudentGradeLimitedStudent> grades = new ArrayList<>(studentGroupGradeRepository.findGradesForStudent(studentId, semesterId))
                 .stream()
                 .sorted(Comparator.comparing(grade -> grade.getSubjectTeacherGroup().getSubject().getName()))
                 .collect(Collectors.toList());

@@ -103,7 +103,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (teacherRepository.existsById(teacherId)) {
             long scheduleId = scheduleRepository.findScheduleIdBySemesterId(semesterId).orElseThrow(ScheduleNotFoundException::new);
             StudentGroup studentGroup = studentGroupRepository.findById(groupId).orElseThrow(GroupNotFoundException::new);
-            Collection<ScheduleDay> days = getDaysWithLessonsForTeacher(teacherId, semesterId);
+            Collection<ScheduleDay> days = getDaysWithLessonsForTeacher(teacherId, semesterId)
+                    .stream()
+                    .distinct()
+                    .collect(Collectors.toList());
             StudentGroupDTO studentGroupDTO = new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName())
                     .withSemester(studentGroup.getSemester())
                     .build();

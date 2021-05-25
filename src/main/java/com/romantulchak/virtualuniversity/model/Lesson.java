@@ -7,6 +7,7 @@ import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Comparator;
 
 @Entity
@@ -35,6 +36,9 @@ public class Lesson implements Comparable<Lesson>{
     private LessonStatus previousStatus;
 
     private String roomNumber;
+
+    @OneToMany(mappedBy = "lesson")
+    private Collection<ScheduleLessonRequest> scheduleLessonRequests;
 
     public long getId() {
         return id;
@@ -98,6 +102,14 @@ public class Lesson implements Comparable<Lesson>{
 
     public void setPreviousStatus(LessonStatus previousStatus) {
         this.previousStatus = previousStatus;
+    }
+
+    public Collection<ScheduleLessonRequest> getScheduleLessonRequests() {
+        return scheduleLessonRequests;
+    }
+
+    public void setScheduleLessonRequests(Collection<ScheduleLessonRequest> scheduleLessonRequests) {
+        this.scheduleLessonRequests = scheduleLessonRequests;
     }
 
     @Override

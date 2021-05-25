@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 
 import javax.persistence.*;
 
@@ -12,13 +13,18 @@ public class ScheduleLessonRequest {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private LessonStatus status;
+    private LessonStatus actualStatus;
+
+    @Enumerated(EnumType.STRING)
+    private LessonStatus previousStatus;
 
     private String message;
 
-    @OneToOne
+    @ManyToOne
     private Lesson lesson;
 
+    @Enumerated(EnumType.STRING)
+    private RequestStatus decision;
 
     public long getId() {
         return id;
@@ -28,12 +34,20 @@ public class ScheduleLessonRequest {
         this.id = id;
     }
 
-    public LessonStatus getStatus() {
-        return status;
+    public LessonStatus getPreviousStatus() {
+        return previousStatus;
     }
 
-    public void setStatus(LessonStatus status) {
-        this.status = status;
+    public void setPreviousStatus(LessonStatus previousStatus) {
+        this.previousStatus = previousStatus;
+    }
+
+    public LessonStatus getActualStatus() {
+        return actualStatus;
+    }
+
+    public void setActualStatus(LessonStatus actualStatus) {
+        this.actualStatus = actualStatus;
     }
 
     public String getMessage() {
@@ -50,5 +64,13 @@ public class ScheduleLessonRequest {
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
+    }
+
+    public RequestStatus getDecision() {
+        return decision;
+    }
+
+    public void setDecision(RequestStatus decision) {
+        this.decision = decision;
     }
 }

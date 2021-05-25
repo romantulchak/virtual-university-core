@@ -11,9 +11,9 @@ public interface StudentGroupGradeService {
 
     Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId);
 
-    Collection<StudentGroupGradeDTO> findStudentGrades(long studentId);
+    Collection<StudentGroupGradeDTO> findStudentGrades(long studentId, long semesterId);
 
     double findGradeForStudentBySubject(long groupId, long studentId, long subjectId, long semesterId);
 
-    byte[] exportStudentGrades(long studentId);
+    byte[] exportStudentGrades(long studentId, long semesterId);
 }

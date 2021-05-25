@@ -1,6 +1,5 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
-import com.romantulchak.virtualuniversity.dto.StudentDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
 import com.romantulchak.virtualuniversity.exception.StudentGroupGradeEmptyException;
 import com.romantulchak.virtualuniversity.model.*;
@@ -22,7 +21,6 @@ import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -83,7 +81,6 @@ public class StudentGroupGradeServiceImplTest {
         StudentGroup studentGroup = new StudentGroup();
         Student student = new Student(studentId, "Test", "test", "");
         student.setId(studentId);
-        student.setCurrentGroup(studentGroup);
         ProjectionFactory projectionFactory = new SpelAwareProxyProjectionFactory();
         StudentGradeLimitedStudent projection = projectionFactory.createProjection(StudentGradeLimitedStudent.class);
         SubjectTeacherGroup subjectTeacherGroup = new SubjectTeacherGroup();
@@ -92,8 +89,8 @@ public class StudentGroupGradeServiceImplTest {
         projection.setSubjectTeacherGroup(subjectTeacherGroup);
         projection.setGrade(3);
         when(studentRepository.save(student)).thenReturn(student);
-        when(studentGroupGradeRepository.findGradesForStudent(student.getId())).thenReturn(Collections.singletonList(projection));
-        Collection<StudentGroupGradeDTO> studentGrades = studentGroupGradeService.findStudentGrades(studentId);
+        when(studentGroupGradeRepository.findAllGradesForStudent(student.getId())).thenReturn(Collections.singletonList(projection));
+        Collection<StudentGroupGradeDTO> studentGrades = studentGroupGradeService.findStudentGrades(studentId, 10);
         assertNotNull(studentGrades);
         assertEquals(1, studentGrades.size());
     }
@@ -102,7 +99,7 @@ public class StudentGroupGradeServiceImplTest {
         long studentId = 172;
         when(studentRepository.existsById(studentId)).thenReturn(true);
         Collection<StudentGradeLimitedStudent> students = new ArrayList<>();
-        when(studentGroupGradeRepository.findGradesForStudent(studentId)).thenReturn(students);
+        when(studentGroupGradeRepository.findAllGradesForStudent(studentId)).thenReturn(students);
         assertEquals(0, students.size());
     }
     @Test

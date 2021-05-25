@@ -38,8 +38,8 @@ public class StudentGroupGradeController {
     @GetMapping("/studentGrades")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('STUDENT') AND @authComponent.hasPermission(authentication,#studentId)")
     @JsonView(Views.SubjectGrade.class)
-    public Collection<StudentGroupGradeDTO> findStudentGrades(@RequestParam(value = "studentId") long studentId){
-        return studentGroupGradeService.findStudentGrades(studentId);
+    public Collection<StudentGroupGradeDTO> findStudentGrades(@RequestParam(value = "studentId") long studentId, @RequestParam(value = "semesterId") long semesterId){
+        return studentGroupGradeService.findStudentGrades(studentId, semesterId);
     }
 
     @GetMapping("/findGradeForStudentBySubject")
@@ -50,10 +50,10 @@ public class StudentGroupGradeController {
                                                @RequestParam(value = "semesterId") long semesterId){
         return studentGroupGradeService.findGradeForStudentBySubject(groupId, studentId, subjectId, semesterId);
     }
-    @GetMapping(value = "/exportGradesForStudent/{studentId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/exportGradesForStudent/{studentId}/{semesterId}", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('ADMIN') OR hasRole('STUDENT') AND @accessToStudentGroup.checkAccessToGrades(#studentId)")
-    public byte[] exportGradesForStudent(@PathVariable("studentId") long studentId){
-        return studentGroupGradeService.exportStudentGrades(studentId);
+    public byte[] exportGradesForStudent(@PathVariable("studentId") long studentId, @PathVariable("semesterId") long semesterId){
+        return studentGroupGradeService.exportStudentGrades(studentId, semesterId);
     }
 
 }
