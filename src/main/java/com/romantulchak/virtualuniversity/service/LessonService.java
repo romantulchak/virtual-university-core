@@ -15,5 +15,5 @@ public interface LessonService {
     LessonDTO updateLesson(Lesson lesson);
     void changeLessonStatus(ScheduleLessonRequest scheduleLessonRequest);
     Collection<ScheduleLessonRequestDTO> findLessonRequests(int page);
-    void acceptRequest(long requestId, RequestStatus decision);
+    void setRequestDecision(long requestId, RequestStatus decision);
 }

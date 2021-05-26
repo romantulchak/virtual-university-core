@@ -1,6 +1,6 @@
 package com.romantulchak.virtualuniversity.security.jwt;
 
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.service.impl.StudentDetailsServiceImpl;
 import com.romantulchak.virtualuniversity.service.impl.TeacherDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)){
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                ERole type = ERole.valueOf(request.getHeader("type"));
+                RoleType type = RoleType.valueOf(request.getHeader("type"));
                 UserDetails userDetails = null;
                 switch (type){
                     case ROLE_STUDENT:

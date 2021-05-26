@@ -9,7 +9,7 @@ public interface StudentGroupGradeService {
 
     void setGrade(Collection<StudentGroupGrade> studentGroupGrade);
 
-    Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId);
+    Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId, long semesterId);
 
     Collection<StudentGroupGradeDTO> findStudentGrades(long studentId, long semesterId);
 

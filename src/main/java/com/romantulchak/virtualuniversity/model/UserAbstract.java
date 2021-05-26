@@ -6,6 +6,7 @@ import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.Objects;
 
 
@@ -39,6 +40,8 @@ public abstract class UserAbstract {
 
     private String numberIdentifier;
 
+    @OneToOne
+    private NotificationBox notificationBox;
 
     public UserAbstract(){}
 
@@ -125,6 +128,14 @@ public abstract class UserAbstract {
     @JsonIgnoreProperties
     public String getFullName(){
         return firstName + " " + lastName;
+    }
+
+    public NotificationBox getNotificationBox() {
+        return notificationBox;
+    }
+
+    public void setNotificationBox(NotificationBox notificationBox) {
+        this.notificationBox = notificationBox;
     }
 
     @Override

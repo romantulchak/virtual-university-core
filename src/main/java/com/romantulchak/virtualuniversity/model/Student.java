@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.model;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
 import com.romantulchak.virtualuniversity.model.enumes.StudentStatus;
 import org.hibernate.annotations.LazyCollection;

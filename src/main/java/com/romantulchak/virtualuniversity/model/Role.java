@@ -1,9 +1,8 @@
 package com.romantulchak.virtualuniversity.model;
 
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -13,12 +12,12 @@ public class Role {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private ERole name;
+    private RoleType name;
 
     public Role(){
 
     }
-    public Role(ERole name) {
+    public Role(RoleType name) {
         this.name = name;
     }
 
@@ -30,11 +29,11 @@ public class Role {
         this.id = id;
     }
 
-    public ERole getName() {
+    public RoleType getName() {
         return name;
     }
 
-    public void setName(ERole name) {
+    public void setName(RoleType name) {
         this.name = name;
     }
 }

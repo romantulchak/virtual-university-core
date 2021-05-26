@@ -1,15 +1,11 @@
 package com.romantulchak.virtualuniversity.model;
 
-import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.romantulchak.virtualuniversity.model.enumes.Gender;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity

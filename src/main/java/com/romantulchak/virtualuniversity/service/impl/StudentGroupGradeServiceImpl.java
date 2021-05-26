@@ -42,8 +42,8 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     @Override
-    public Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId) {
-        Collection<StudentGradeLimitedTeacher> gradesProjection = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId);
+    public Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId, long semesterId) {
+        Collection<StudentGradeLimitedTeacher> gradesProjection = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId, semesterId);
         return getStudentGroupGradeDTOS(gradesProjection);
     }
 
@@ -83,7 +83,8 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
                     .build();
             grades.add(studentGrade);
         }
-        return grades.stream().sorted().collect(Collectors.toList());
+        return grades.stream().
+                sorted().collect(Collectors.toList());
     }
 
     @Override

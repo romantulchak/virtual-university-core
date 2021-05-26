@@ -1,15 +1,18 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
+import com.romantulchak.virtualuniversity.dto.NotificationDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
+import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
-import com.romantulchak.virtualuniversity.repository.LessonRepository;
-import com.romantulchak.virtualuniversity.repository.ScheduleLessonRepository;
+import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
+import com.romantulchak.virtualuniversity.utils.NotificationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,16 +24,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LessonServiceImpl implements LessonService {
+public class LessonServiceImpl implements LessonService{
 
     private final LessonRepository lessonRepository;
-
     private final ScheduleLessonRepository scheduleLessonRepository;
+    private final TeacherRepository teacherRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public LessonServiceImpl(LessonRepository lessonRepository, ScheduleLessonRepository scheduleLessonRepository) {
+    public LessonServiceImpl(LessonRepository lessonRepository, ScheduleLessonRepository scheduleLessonRepository, TeacherRepository teacherRepository, NotificationRepository notificationRepository) {
         this.lessonRepository = lessonRepository;
         this.scheduleLessonRepository = scheduleLessonRepository;
+        this.teacherRepository = teacherRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Transactional
@@ -69,6 +75,8 @@ public class LessonServiceImpl implements LessonService {
             lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus);
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
             scheduleLessonRepository.save(scheduleLessonRequest);
+            List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
+            List<NotificationDTO> notification = new NotificationUtility<Teacher>(notificationRepository).createAll(teachers, "A new request appeared");
         } else {
             throw new LessonStatusNotChangedException();
         }
@@ -77,8 +85,6 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Collection<ScheduleLessonRequestDTO> findLessonRequests(int page) {
         Pageable pageable = PageRequest.of(page, 25);
-        List<ScheduleLessonRequest> allRequests = scheduleLessonRepository.findAllRequests(pageable);
-        System.out.println(allRequests);
         return scheduleLessonRepository.findAllRequests(pageable)
                 .stream()
                 .map(request -> new ScheduleLessonRequestDTO(request.getId(),
@@ -92,11 +98,15 @@ public class LessonServiceImpl implements LessonService {
 
     @Transactional
     @Override
-    public void acceptRequest(long requestId, RequestStatus decision) {
+    public void setRequestDecision(long requestId, RequestStatus decision) {
         ScheduleLessonRequest request = scheduleLessonRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
         if (decision != null && request.getLesson() != null){
             scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
-            lessonRepository.updateStatus(request.getLesson().getId(), request.getActualStatus(), request.getLesson().getPreviousStatus());
+            if(decision != RequestStatus.REJECTED) {
+                lessonRepository.updateStatus(request.getLesson().getId(), request.getActualStatus(), request.getLesson().getPreviousStatus());
+            }else {
+                lessonRepository.updateStatus(request.getLesson().getId(), request.getPreviousStatus(), request.getLesson().getPreviousStatus());
+            }
         }else{
             throw new LessonNotFoundException();
         }

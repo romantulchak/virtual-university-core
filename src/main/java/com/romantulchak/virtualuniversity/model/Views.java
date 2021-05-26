@@ -16,4 +16,5 @@ public class Views {
     public interface FileView{}
     public interface TeacherView{}
     public interface LessonStatusRequestView{}
+    public interface NotificationView{}
 }

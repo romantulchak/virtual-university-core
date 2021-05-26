@@ -1,12 +1,12 @@
 package com.romantulchak.virtualuniversity.dto;
 
 import com.romantulchak.virtualuniversity.model.Role;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 
 public class RoleDTO {
     private long id;
 
-    private ERole name;
+    private RoleType name;
 
     public RoleDTO(){
 
@@ -23,11 +23,11 @@ public class RoleDTO {
         this.id = id;
     }
 
-    public ERole getName() {
+    public RoleType getName() {
         return name;
     }
 
-    public void setName(ERole name) {
+    public void setName(RoleType name) {
         this.name = name;
     }
 }

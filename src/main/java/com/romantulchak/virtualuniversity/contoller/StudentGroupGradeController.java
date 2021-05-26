@@ -31,8 +31,11 @@ public class StudentGroupGradeController {
     @GetMapping("/findForTeacher")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR @accessToStudentGroup.checkAccess(#teacherId)")
     @JsonView(Views.TeacherStudentGrades.class)
-    public Collection<StudentGroupGradeDTO> findStudentGradesForTeacher(@RequestParam(value = "teacherId") long teacherId,@RequestParam(value = "groupId") long groupId, @RequestParam(value = "sbujectId") long subjectId){
-        return studentGroupGradeService.findStudentGradesBySubjectAndGroupForTeacher(teacherId, groupId, subjectId);
+    public Collection<StudentGroupGradeDTO> findStudentGradesForTeacher(@RequestParam(value = "teacherId") long teacherId,
+                                                                        @RequestParam(value = "groupId") long groupId,
+                                                                        @RequestParam(value = "subjectId") long subjectId,
+                                                                        @RequestParam("semesterId") long semesterId){
+        return studentGroupGradeService.findStudentGradesBySubjectAndGroupForTeacher(teacherId, groupId, subjectId, semesterId);
     }
 
     @GetMapping("/studentGrades")

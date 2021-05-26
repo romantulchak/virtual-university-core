@@ -1,7 +1,7 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.model.Teacher;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +21,6 @@ public class TeacherDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Teacher teacher = teacherRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Teacher with login not found"));
-        return UserDetailsImpl.build(teacher, teacher.getRoles(), ERole.ROLE_TEACHER);
+        return UserDetailsImpl.build(teacher, teacher.getRoles(), RoleType.ROLE_TEACHER);
     }
 }

@@ -1,11 +1,10 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.romantulchak.virtualuniversity.model.NotificationBox;
 import com.romantulchak.virtualuniversity.model.Role;
-import com.romantulchak.virtualuniversity.model.Student;
-import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.UserAbstract;
-import com.romantulchak.virtualuniversity.model.enumes.ERole;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,14 +27,17 @@ public class UserDetailsImpl implements UserDetails {
 
     private String type;
 
-    public UserDetailsImpl(long id, String username, String password, Collection<? extends GrantedAuthority> authorities, String type){
+    private NotificationBox notificationBox;
+
+    public UserDetailsImpl(long id, String username, String password, Collection<? extends GrantedAuthority> authorities, String type, NotificationBox notificationBox){
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.type = type;
+        this.notificationBox = notificationBox;
     }
-    public static UserDetailsImpl build(UserAbstract user, Set<Role> roles, ERole type) {
+    public static UserDetailsImpl build(UserAbstract user, Set<Role> roles, RoleType type) {
         List<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
@@ -44,7 +46,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getLogin(),
                 user.getPassword(),
                 authorities,
-                type.name());
+                type.name(),
+                user.getNotificationBox());
     }
 
     public long getId() {
@@ -53,6 +56,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getType() {
         return type;
+    }
+
+    public NotificationBox getNotificationBox(){
+        return notificationBox;
     }
 
     @Override
