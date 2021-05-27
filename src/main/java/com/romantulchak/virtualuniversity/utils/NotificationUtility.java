@@ -6,6 +6,8 @@ import com.romantulchak.virtualuniversity.model.NotificationBox;
 import com.romantulchak.virtualuniversity.model.UserAbstract;
 import com.romantulchak.virtualuniversity.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,9 +18,12 @@ import java.util.stream.Collectors;
 public class NotificationUtility<T extends UserAbstract> {
 
     private final NotificationRepository notificationRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public NotificationUtility(NotificationRepository notificationRepository){
+    public NotificationUtility(NotificationRepository notificationRepository,
+                               SimpMessagingTemplate simpMessagingTemplate){
         this.notificationRepository = notificationRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public NotificationDTO create(String message, NotificationBox notificationBox){
@@ -40,4 +45,8 @@ public class NotificationUtility<T extends UserAbstract> {
                 .collect(Collectors.toList());
     }
 
+    @Async
+    public void send(String username, String destination, Object data){
+        simpMessagingTemplate.convertAndSendToUser(username, destination, data);
+    }
 }

@@ -33,8 +33,8 @@ public class NotificationController {
 
     @GetMapping("/notificationCounter")
     @PreAuthorize("not isAnonymous()")
-    public double notificationCounter(Authentication authentication){
-        return notificationService.getNotificationCounter(authentication);
+    public double notificationCounter(){
+        return notificationService.getNotificationCounter();
     }
 
 }

@@ -12,7 +12,6 @@ import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
-import com.romantulchak.virtualuniversity.utils.NotificationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,14 +28,16 @@ public class LessonServiceImpl implements LessonService{
     private final LessonRepository lessonRepository;
     private final ScheduleLessonRepository scheduleLessonRepository;
     private final TeacherRepository teacherRepository;
-    private final NotificationRepository notificationRepository;
-
+    private final NotificationServiceImpl notificationService;
     @Autowired
-    public LessonServiceImpl(LessonRepository lessonRepository, ScheduleLessonRepository scheduleLessonRepository, TeacherRepository teacherRepository, NotificationRepository notificationRepository) {
+    public LessonServiceImpl(LessonRepository lessonRepository,
+                             ScheduleLessonRepository scheduleLessonRepository,
+                             TeacherRepository teacherRepository,
+                             NotificationServiceImpl notificationService) {
         this.lessonRepository = lessonRepository;
         this.scheduleLessonRepository = scheduleLessonRepository;
         this.teacherRepository = teacherRepository;
-        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -76,7 +77,9 @@ public class LessonServiceImpl implements LessonService{
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
             scheduleLessonRepository.save(scheduleLessonRequest);
             List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
-            List<NotificationDTO> notification = new NotificationUtility<Teacher>(notificationRepository).createAll(teachers, "A new request appeared");
+            notificationService.createAll(teachers, "New request added");
+            notificationService.notifyUsers(teachers, null, "/queue/notification");
+
         } else {
             throw new LessonStatusNotChangedException();
         }
@@ -100,14 +103,18 @@ public class LessonServiceImpl implements LessonService{
     @Override
     public void setRequestDecision(long requestId, RequestStatus decision) {
         ScheduleLessonRequest request = scheduleLessonRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
-        if (decision != null && request.getLesson() != null){
+        if (decision != null && request.getLesson() != null) {
             scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
-            if(decision != RequestStatus.REJECTED) {
+            NotificationDTO notification = null;
+            if (decision != RequestStatus.REJECTED) {
                 lessonRepository.updateStatus(request.getLesson().getId(), request.getActualStatus(), request.getLesson().getPreviousStatus());
-            }else {
+                notification = notificationService.create("Your request for " + request.getLesson().getScheduleDay().getDay() + " was accepted", request.getLesson().getSubjectTeacher().getTeacher().getNotificationBox());
+            } else {
                 lessonRepository.updateStatus(request.getLesson().getId(), request.getPreviousStatus(), request.getLesson().getPreviousStatus());
+                notification = notificationService.create("Your request for " + request.getLesson().getScheduleDay().getDay() + " was rejected", request.getLesson().getSubjectTeacher().getTeacher().getNotificationBox());
             }
-        }else{
+            notificationService.notifyUser(request.getLesson().getSubjectTeacher().getTeacher(), notification.getMessage(), "/queue/notification");
+        } else {
             throw new LessonNotFoundException();
         }
     }
