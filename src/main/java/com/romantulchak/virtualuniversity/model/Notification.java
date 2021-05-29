@@ -17,7 +17,7 @@ public class Notification{
 
     private LocalDateTime createdAt;
 
-    public boolean read;
+    private boolean read;
 
     public Notification(String message, NotificationBox notificationBox) {
         this.message = message;

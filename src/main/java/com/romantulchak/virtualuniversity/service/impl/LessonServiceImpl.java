@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.dto.NotificationDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.Lesson;
+import com.romantulchak.virtualuniversity.model.Resource;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.enumes.RoleType;
@@ -78,7 +79,7 @@ public class LessonServiceImpl implements LessonService{
             scheduleLessonRepository.save(scheduleLessonRequest);
             List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
             notificationService.createAll(teachers, "New request added");
-            notificationService.notifyUsers(teachers, null, "/queue/notification");
+            notificationService.notifyUsers(teachers, null, Resource.NOTIFICATION_COUNTER_DESTINATION);
 
         } else {
             throw new LessonStatusNotChangedException();
@@ -113,7 +114,7 @@ public class LessonServiceImpl implements LessonService{
                 lessonRepository.updateStatus(request.getLesson().getId(), request.getPreviousStatus(), request.getLesson().getPreviousStatus());
                 notification = notificationService.create("Your request for " + request.getLesson().getScheduleDay().getDay() + " was rejected", request.getLesson().getSubjectTeacher().getTeacher().getNotificationBox());
             }
-            notificationService.notifyUser(request.getLesson().getSubjectTeacher().getTeacher(), notification.getMessage(), "/queue/notification");
+            notificationService.notifyUser(request.getLesson().getSubjectTeacher().getTeacher(), notification.getMessage(), Resource.NOTIFICATION_SNAC_DESTINATION);
         } else {
             throw new LessonNotFoundException();
         }

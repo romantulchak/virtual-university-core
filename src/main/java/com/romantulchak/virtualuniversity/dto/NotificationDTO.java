@@ -15,16 +15,17 @@ public class NotificationDTO {
     @JsonView(Views.NotificationView.class)
     private String message;
 
-    private NotificationBox notificationBox;
-
     @JsonView(Views.NotificationView.class)
     private LocalDateTime createdAt;
+
+    @JsonView(Views.NotificationView.class)
+    private boolean read;
 
     public NotificationDTO(Notification notification) {
         this.id = notification.getId();
         this.message = notification.getMessage();
-        this.notificationBox = notification.getNotificationBox();
         this.createdAt = notification.getCreatedAt();
+        this.read = notification.isRead();
     }
 
     public long getId() {
@@ -43,19 +44,19 @@ public class NotificationDTO {
         this.message = message;
     }
 
-    public NotificationBox getNotificationBox() {
-        return notificationBox;
-    }
-
-    public void setNotificationBox(NotificationBox notificationBox) {
-        this.notificationBox = notificationBox;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }
