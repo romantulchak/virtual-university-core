@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface NotificationService {
-    <T> Collection<NotificationDTO> createAll(List<T> users, String message);
+    <T extends UserAbstract> void createAll(Collection<T> users, String message, String destination);
 
-    NotificationDTO create(String message, NotificationBox notificationBox);
+    <T extends UserAbstract> void create(T user, String message, NotificationBox notificationBox, String destination);
 
     Collection<NotificationDTO> findAllNotificationForUser(Authentication authentication, int page);
 
@@ -21,7 +21,7 @@ public interface NotificationService {
 
     <T extends UserAbstract> void notifyUser(T user, Object data, String destination);
 
-    <T extends UserAbstract> void notifyUsers(List<T> users, Object data, String destination);
+    <T extends UserAbstract> void notifyUsers(Collection<T> users, Object data, String destination);
 
     void readNotification(NotificationRequest notificationRequest);
 }

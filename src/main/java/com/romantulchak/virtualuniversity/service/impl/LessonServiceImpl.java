@@ -1,18 +1,15 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
-import com.romantulchak.virtualuniversity.dto.NotificationDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.exception.*;
-import com.romantulchak.virtualuniversity.model.Lesson;
-import com.romantulchak.virtualuniversity.model.Resource;
-import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
-import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
+import com.romantulchak.virtualuniversity.utils.RequestUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -78,9 +75,7 @@ public class LessonServiceImpl implements LessonService{
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
             scheduleLessonRepository.save(scheduleLessonRequest);
             List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
-            notificationService.createAll(teachers, "New request added");
-            notificationService.notifyUsers(teachers, null, Resource.NOTIFICATION_COUNTER_DESTINATION);
-
+            notificationService.createAll(teachers, "New request added", Resource.NOTIFICATION_COUNTER_DESTINATION);
         } else {
             throw new LessonStatusNotChangedException();
         }
@@ -104,20 +99,19 @@ public class LessonServiceImpl implements LessonService{
     @Override
     public void setRequestDecision(long requestId, RequestStatus decision) {
         ScheduleLessonRequest request = scheduleLessonRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
-        if (decision != null && request.getLesson() != null) {
-            scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
-            NotificationDTO notification = null;
-            if (decision != RequestStatus.REJECTED) {
-                lessonRepository.updateStatus(request.getLesson().getId(), request.getActualStatus(), request.getLesson().getPreviousStatus());
-                notification = notificationService.create("Your request for " + request.getLesson().getScheduleDay().getDay() + " was accepted", request.getLesson().getSubjectTeacher().getTeacher().getNotificationBox());
-            } else {
-                lessonRepository.updateStatus(request.getLesson().getId(), request.getPreviousStatus(), request.getLesson().getPreviousStatus());
-                notification = notificationService.create("Your request for " + request.getLesson().getScheduleDay().getDay() + " was rejected", request.getLesson().getSubjectTeacher().getTeacher().getNotificationBox());
-            }
-            notificationService.notifyUser(request.getLesson().getSubjectTeacher().getTeacher(), notification.getMessage(), Resource.NOTIFICATION_SNAC_DESTINATION);
+        scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
+        RequestUtility requestUtility = new RequestUtility(request);
+        if (decision == RequestStatus.ACCEPTED) {
+            updateRequest(request, requestUtility, request.getActualStatus(), Resource.MSG_REQUEST_ACCEPTED);
+            notificationService.createAll(requestUtility.getStudents(), String.format(Resource.MSG_SCHEDULE_CHANGED, requestUtility.getDay()), Resource.NOTIFICATION_SCHEDULE_CHANGED);
         } else {
-            throw new LessonNotFoundException();
+            updateRequest(request, requestUtility, request.getPreviousStatus(), Resource.MSG_REQUEST_REJECTED);
         }
+    }
+
+    private void updateRequest(ScheduleLessonRequest request, RequestUtility requestUtility, LessonStatus previousStatus, String msgRequestRejected) {
+        lessonRepository.updateStatus(request.getLesson().getId(), previousStatus, request.getLesson().getPreviousStatus());
+        notificationService.create(requestUtility.getTeacher(), String.format(msgRequestRejected, requestUtility.getDay(), requestUtility.getSubject()), requestUtility.getNotificationBox(), Resource.NOTIFICATION_SNAC_DESTINATION);
     }
 
     @Override

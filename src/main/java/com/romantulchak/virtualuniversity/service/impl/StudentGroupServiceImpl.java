@@ -113,6 +113,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
         return group.getSubjectTeacherGroups()
                 .stream()
                 .map(SubjectTeacherGroupDTO::new)
+                .sorted(Comparator.comparing(o -> o.getSubject().getName()))
                 .collect(Collectors.toList());
     }
 
