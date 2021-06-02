@@ -42,7 +42,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleDayService = scheduleDayService;
     }
 
-    //TODO: get scheduleId in arguments
     @Transactional
     @Override
     public void create(Schedule schedule) {
@@ -147,7 +146,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private Collection<ScheduleDay> getDaysWithLessonsForTeacher(long teacherId, long semesterId) {
-        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacherByGroup(teacherId, semesterId);
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacher(teacherId, semesterId);
         for (ScheduleDay day : days) {
             day.setLessons(lessonRepository.findLessonsForTeacherByDay(day.getId(), teacherId));
         }

@@ -1,12 +1,10 @@
 package com.romantulchak.virtualuniversity.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.romantulchak.virtualuniversity.model.Lesson;
+import com.romantulchak.virtualuniversity.model.Request;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
-import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
-
-import javax.persistence.Column;
+import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 
 
 public class ScheduleLessonRequestDTO {
@@ -24,20 +22,22 @@ public class ScheduleLessonRequestDTO {
     private LessonDTO lesson;
 
     @JsonView(Views.LessonStatusRequestView.class)
-    private RequestStatus decision;
+    private RequestDecision decision;
 
     @JsonView(Views.LessonStatusRequestView.class)
     private LessonStatus previousStatus;
 
+    @JsonView(Views.LessonStatusRequestView.class)
+    private Request request;
 
-
-    public ScheduleLessonRequestDTO(long id, LessonStatus actualStatus, String message, LessonDTO lesson, RequestStatus decision, LessonStatus previousStatus) {
+    public ScheduleLessonRequestDTO(long id, LessonStatus actualStatus, String message, LessonDTO lesson, RequestDecision decision, LessonStatus previousStatus, Request request) {
         this.id = id;
         this.actualStatus = actualStatus;
         this.message = message;
         this.lesson = lesson;
         this.decision = decision;
         this.previousStatus = previousStatus;
+        this.request = request;
     }
 
     public long getId() {
@@ -64,11 +64,11 @@ public class ScheduleLessonRequestDTO {
         this.lesson = lesson;
     }
 
-    public RequestStatus getDecision() {
+    public RequestDecision getDecision() {
         return decision;
     }
 
-    public void setDecision(RequestStatus decision) {
+    public void setDecision(RequestDecision decision) {
         this.decision = decision;
     }
 
@@ -86,5 +86,13 @@ public class ScheduleLessonRequestDTO {
 
     public void setPreviousStatus(LessonStatus previousStatus) {
         this.previousStatus = previousStatus;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

@@ -45,11 +45,17 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
     }
 
     @Override
-    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(long teacherId, long semesterId) {
-        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacherByGroup(teacherId, semesterId);
+    public Collection<ScheduleDayDTO> findDaysForTeacher(long teacherId, long semesterId) {
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacher(teacherId, semesterId);
         for (ScheduleDay day : days){
             day.setLessons(lessonRepository.findLessonsForTeacherByDay(day.getId(), teacherId));
         }
+        return convertScheduleDayToDTO(days);
+    }
+
+    @Override
+    public Collection<ScheduleDayDTO> findDaysForWeek(long teacherId, long semesterId) {
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacherForWeek(teacherId, semesterId, LocalDate.now(), LocalDate.now().plusWeeks(1));
         return convertScheduleDayToDTO(days);
     }
 

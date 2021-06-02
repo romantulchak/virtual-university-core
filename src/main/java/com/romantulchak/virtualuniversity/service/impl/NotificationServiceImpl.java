@@ -17,14 +17,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +32,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     public NotificationServiceImpl(NotificationRepository notificationRepository,
-                                   SessionRegistry sessionRegistry,
                                    SimpMessagingTemplate simpMessagingTemplate) {
         this.notificationRepository = notificationRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -89,8 +85,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public <T extends UserAbstract> void notifyUser(T user, Object data, String destination) {
-        send(user.getLogin(), destination, data);
-        send(user.getLogin(), Resource.NOTIFICATION_COUNTER_DESTINATION, getNotificationCounter(user.getNotificationBox().getId()));
+        send(user.getLogin(),data, destination);
+        send(user.getLogin(), getNotificationCounter(user.getNotificationBox().getId()), Resource.NOTIFICATION_COUNTER_DESTINATION);
     }
 
     @Async
@@ -99,16 +95,26 @@ public class NotificationServiceImpl implements NotificationService {
         for (T user : users) {
             if (user.getNotificationBox() != null) {
                 if (data != null) {
-                    send(user.getLogin(), destination, data);
+                    send(user.getLogin(), data, destination);
                 }
-                send(user.getLogin(), Resource.NOTIFICATION_COUNTER_DESTINATION, getNotificationCounter(user.getNotificationBox().getId()));
+                send(user.getLogin(),getNotificationCounter(user.getNotificationBox().getId()), Resource.NOTIFICATION_COUNTER_DESTINATION);
             }
         }
     }
 
+    @Override
+    public void notifyChanel(Object data, String destination) {
+
+    }
+
     @Async
-    protected void send(String username, String destination, Object data) {
+    protected void send(String username, Object data, String destination) {
         simpMessagingTemplate.convertAndSendToUser(username, destination, data);
+    }
+
+    @Async
+    protected void send(Object data, String destination){
+        simpMessagingTemplate.convertAndSend(destination, data);
     }
 
     @Transactional
@@ -117,7 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (notificationRequest != null) {
             if (notificationRepository.existsByIdAndReadIsFalse(notificationRequest.getNotificationId())) {
                 notificationRepository.readNotification(notificationRequest.getNotificationId());
-                send(notificationRequest.getUsername(), Resource.NOTIFICATION_READ, "true");
+                send(notificationRequest.getUsername(), Resource.NOTIFICATION_READ_TOPIC, "true");
             } else {
                 throw new NotificationNotFound();
             }

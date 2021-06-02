@@ -4,7 +4,10 @@ import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
+import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
+import org.springframework.security.core.Authentication;
 
 import java.util.Collection;
 
@@ -15,5 +18,7 @@ public interface LessonService {
     LessonDTO updateLesson(Lesson lesson);
     void changeLessonStatus(ScheduleLessonRequest scheduleLessonRequest);
     Collection<ScheduleLessonRequestDTO> findLessonRequests(int page);
-    void setRequestDecision(long requestId, RequestStatus decision);
+    void setRequestDecision(long requestId, RequestDecision decision);
+    void setRequestStatus(ChangeStatusRequest request, Authentication authentication);
+
 }

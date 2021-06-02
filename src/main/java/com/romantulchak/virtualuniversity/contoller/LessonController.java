@@ -4,14 +4,14 @@ import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
-import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import com.romantulchak.virtualuniversity.service.impl.UserDetailsImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
-import java.security.Principal;
 import java.util.Collection;
 
 @RestController
@@ -54,9 +54,15 @@ public class LessonController {
         return lessonService.findLessonRequests(page);
     }
 
+    @PutMapping("/changeRequestDecision")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public void changeRequestDecision(@RequestParam(value = "requestId") long requestId, @RequestParam(value = "decision") RequestDecision decision){
+        lessonService.setRequestDecision(requestId, decision);
+    }
+
     @PutMapping("/changeRequestStatus")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void changeRequestStatus(@RequestParam(value = "requestId") long requestId, @RequestParam(value = "decision") RequestStatus decision){
-        lessonService.setRequestDecision(requestId, decision);
+    public void changeRequestStatus(@RequestBody ChangeStatusRequest request, Authentication authentication){
+        lessonService.setRequestStatus(request, authentication);
     }
 }

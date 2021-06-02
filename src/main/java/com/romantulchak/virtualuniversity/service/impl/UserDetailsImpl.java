@@ -29,13 +29,16 @@ public class UserDetailsImpl implements UserDetails {
 
     private NotificationBox notificationBox;
 
-    public UserDetailsImpl(long id, String username, String password, Collection<? extends GrantedAuthority> authorities, String type, NotificationBox notificationBox){
+    private String fullName;
+
+    public UserDetailsImpl(long id, String username, String password, Collection<? extends GrantedAuthority> authorities, String type, NotificationBox notificationBox, String fullName){
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.type = type;
         this.notificationBox = notificationBox;
+        this.fullName = fullName;
     }
     public static UserDetailsImpl build(UserAbstract user, Set<Role> roles, RoleType type) {
         List<GrantedAuthority> authorities = roles.stream()
@@ -47,7 +50,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 authorities,
                 type.name(),
-                user.getNotificationBox());
+                user.getNotificationBox(),
+                user.getFullName());
     }
 
     public long getId() {
@@ -60,6 +64,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public NotificationBox getNotificationBox(){
         return notificationBox;
+    }
+
+    public String getFullName(){
+        return fullName;
     }
 
     @Override

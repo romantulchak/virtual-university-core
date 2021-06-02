@@ -10,5 +10,6 @@ public interface ScheduleDayService {
     Collection<ScheduleDayDTO> findAllDaysInRange(String dayAfter, String dayBefore, long scheduleId);
     void deleteDay(long dayId);
     Collection<ScheduleDayDTO> findDaysForWeek(long semesterId);
-    Collection<ScheduleDayDTO> findDaysForTeacherByGroup(long teacherId, long groupId);
+    Collection<ScheduleDayDTO> findDaysForWeek(long teacherId, long semesterId);
+    Collection<ScheduleDayDTO> findDaysForTeacher(long teacherId, long semesterId);
 }

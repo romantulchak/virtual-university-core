@@ -3,7 +3,6 @@ package com.romantulchak.virtualuniversity.payload.request;
 public class NotificationRequest {
     private long notificationId;
     private String username;
-    private String userId;
 
     public long getNotificationId() {
         return notificationId;
@@ -21,11 +20,4 @@ public class NotificationRequest {
         this.username = username;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

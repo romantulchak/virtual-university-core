@@ -1,7 +1,7 @@
 package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
-import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 
 import javax.persistence.*;
 
@@ -24,7 +24,10 @@ public class ScheduleLessonRequest {
     private Lesson lesson;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatus decision;
+    private RequestDecision decision;
+
+    @Embedded
+    private Request request;
 
     public long getId() {
         return id;
@@ -66,11 +69,19 @@ public class ScheduleLessonRequest {
         this.lesson = lesson;
     }
 
-    public RequestStatus getDecision() {
+    public RequestDecision getDecision() {
         return decision;
     }
 
-    public void setDecision(RequestStatus decision) {
+    public void setDecision(RequestDecision decision) {
         this.decision = decision;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

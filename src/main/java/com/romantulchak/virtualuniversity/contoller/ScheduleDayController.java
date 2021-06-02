@@ -1,6 +1,5 @@
 package com.romantulchak.virtualuniversity.contoller;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.model.Views;
@@ -8,7 +7,6 @@ import com.romantulchak.virtualuniversity.service.impl.ScheduleDayServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
@@ -32,16 +30,21 @@ public class ScheduleDayController {
         return scheduleDayService.findAllDaysInRange(dayAfter, dayBefore, scheduleId);
     }
 
-    @GetMapping("/findScheduleForTwoWeek/{groupId}/{semesterId}")
+    @GetMapping("/findScheduleForWeek/{semesterId}")
     @JsonView(Views.ScheduleView.class)
-    public Collection<ScheduleDayDTO> findDaysForWeek(@PathVariable("groupId") long groupId, @PathVariable("semesterId") long semesterId){
+    public Collection<ScheduleDayDTO> findDaysForWeek(@PathVariable("semesterId") long semesterId){
         return scheduleDayService.findDaysForWeek(semesterId);
     }
 
     @GetMapping("/findScheduleForTeacher")
     @JsonView(Views.ScheduleView.class)
-    public Collection<ScheduleDayDTO> findDaysForTeacherByGroup(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "semesterId") long semesterId){
-        return scheduleDayService.findDaysForTeacherByGroup(teacherId, semesterId);
+    public Collection<ScheduleDayDTO> findDaysForTeacher(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "semesterId") long semesterId){
+        return scheduleDayService.findDaysForTeacher(teacherId, semesterId);
+    }
+    @GetMapping("/findScheduleForTeacherForWeek")
+    @JsonView(Views.ScheduleView.class)
+    public Collection<ScheduleDayDTO> findDaysForTeacherForWeek(@RequestParam(value = "teacherId") long teacherId, @RequestParam(value = "semesterId") long semesterId){
+        return scheduleDayService.findDaysForWeek(teacherId, semesterId);
     }
 
     @DeleteMapping("/delete/{dayId}")

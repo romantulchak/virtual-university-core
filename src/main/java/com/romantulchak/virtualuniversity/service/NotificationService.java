@@ -23,5 +23,7 @@ public interface NotificationService {
 
     <T extends UserAbstract> void notifyUsers(Collection<T> users, Object data, String destination);
 
+    void notifyChanel(Object data, String destination);
+
     void readNotification(NotificationRequest notificationRequest);
 }

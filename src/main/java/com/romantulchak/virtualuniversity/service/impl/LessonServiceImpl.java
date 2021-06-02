@@ -4,36 +4,42 @@ import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
-import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
 import com.romantulchak.virtualuniversity.utils.RequestUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.romantulchak.virtualuniversity.model.Resource.NOTIFICATION_CHANGE_REQUEST_STATUS;
+
 @Service
 public class LessonServiceImpl implements LessonService{
 
     private final LessonRepository lessonRepository;
-    private final ScheduleLessonRepository scheduleLessonRepository;
+    private final ScheduleLessonRequestRepository scheduleLessonRequestRepository;
     private final TeacherRepository teacherRepository;
     private final NotificationServiceImpl notificationService;
     @Autowired
     public LessonServiceImpl(LessonRepository lessonRepository,
-                             ScheduleLessonRepository scheduleLessonRepository,
+                             ScheduleLessonRequestRepository scheduleLessonRequestRepository,
                              TeacherRepository teacherRepository,
                              NotificationServiceImpl notificationService) {
         this.lessonRepository = lessonRepository;
-        this.scheduleLessonRepository = scheduleLessonRepository;
+        this.scheduleLessonRequestRepository = scheduleLessonRequestRepository;
         this.teacherRepository = teacherRepository;
         this.notificationService = notificationService;
     }
@@ -73,7 +79,7 @@ public class LessonServiceImpl implements LessonService{
         if (!scheduleLessonRequest.getActualStatus().equals(scheduleLessonRequest.getLesson().getStatus())) {
             lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus);
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
-            scheduleLessonRepository.save(scheduleLessonRequest);
+            scheduleLessonRequestRepository.save(scheduleLessonRequest);
             List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
             notificationService.createAll(teachers, "New request added", Resource.NOTIFICATION_COUNTER_DESTINATION);
         } else {
@@ -84,28 +90,40 @@ public class LessonServiceImpl implements LessonService{
     @Override
     public Collection<ScheduleLessonRequestDTO> findLessonRequests(int page) {
         Pageable pageable = PageRequest.of(page, 25);
-        return scheduleLessonRepository.findAllRequests(pageable)
+        return scheduleLessonRequestRepository.findAllRequests(pageable)
                 .stream()
                 .map(request -> new ScheduleLessonRequestDTO(request.getId(),
                         request.getActualStatus(),
                         request.getMessage(),
                         new LessonDTO(request.getLesson()),
                         request.getDecision(),
-                        request.getPreviousStatus()))
+                        request.getPreviousStatus(),
+                        request.getRequest()))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     @Override
-    public void setRequestDecision(long requestId, RequestStatus decision) {
-        ScheduleLessonRequest request = scheduleLessonRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
-        scheduleLessonRepository.updateRequest(requestId, decision, request.getPreviousStatus());
+    public void setRequestDecision(long requestId, RequestDecision decision) {
+        ScheduleLessonRequest request = scheduleLessonRequestRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
+        scheduleLessonRequestRepository.updateRequest(requestId, decision, request.getPreviousStatus());
         RequestUtility requestUtility = new RequestUtility(request);
-        if (decision == RequestStatus.ACCEPTED) {
+        if (decision == RequestDecision.ACCEPTED) {
             updateRequest(request, requestUtility, request.getActualStatus(), Resource.MSG_REQUEST_ACCEPTED);
             notificationService.createAll(requestUtility.getStudents(), String.format(Resource.MSG_SCHEDULE_CHANGED, requestUtility.getDay()), Resource.NOTIFICATION_SCHEDULE_CHANGED);
         } else {
             updateRequest(request, requestUtility, request.getPreviousStatus(), Resource.MSG_REQUEST_REJECTED);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void setRequestStatus(ChangeStatusRequest changeStatusRequest, Authentication authentication) {
+        ScheduleLessonRequest request = scheduleLessonRequestRepository.findById(changeStatusRequest.getId()).orElseThrow(LessonNotFoundException::new);
+        if(request.getRequest().getRequestStatus() != null && !request.getRequest().getRequestStatus().equals(changeStatusRequest.getStatus())) {
+            UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+            scheduleLessonRequestRepository.setRequestStatus(changeStatusRequest.getId(), changeStatusRequest.getStatus(), user.getFullName());
+            notificationService.send(changeStatusRequest, NOTIFICATION_CHANGE_REQUEST_STATUS);
         }
     }
 
