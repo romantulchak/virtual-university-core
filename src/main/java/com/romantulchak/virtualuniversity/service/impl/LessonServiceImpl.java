@@ -9,6 +9,7 @@ import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
+import com.romantulchak.virtualuniversity.payload.response.ChangeStatusResponse;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
 import com.romantulchak.virtualuniversity.utils.RequestUtility;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -79,6 +79,8 @@ public class LessonServiceImpl implements LessonService{
         if (!scheduleLessonRequest.getActualStatus().equals(scheduleLessonRequest.getLesson().getStatus())) {
             lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus);
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
+            Request request = new Request(RequestStatus.CHECK_OUT);
+            scheduleLessonRequest.setInfo(request);
             scheduleLessonRequestRepository.save(scheduleLessonRequest);
             List<Teacher> teachers = teacherRepository.findTeachersByRole(RoleType.ROLE_ADMIN);
             notificationService.createAll(teachers, "New request added", Resource.NOTIFICATION_COUNTER_DESTINATION);
@@ -98,7 +100,7 @@ public class LessonServiceImpl implements LessonService{
                         new LessonDTO(request.getLesson()),
                         request.getDecision(),
                         request.getPreviousStatus(),
-                        request.getRequest()))
+                        request.getInfo()))
                 .collect(Collectors.toList());
     }
 
@@ -119,11 +121,12 @@ public class LessonServiceImpl implements LessonService{
     @Transactional
     @Override
     public void setRequestStatus(ChangeStatusRequest changeStatusRequest, Authentication authentication) {
-        ScheduleLessonRequest request = scheduleLessonRequestRepository.findById(changeStatusRequest.getId()).orElseThrow(LessonNotFoundException::new);
-        if(request.getRequest().getRequestStatus() != null && !request.getRequest().getRequestStatus().equals(changeStatusRequest.getStatus())) {
+        ScheduleLessonRequest scheduleLessonRequest = scheduleLessonRequestRepository.findById(changeStatusRequest.getId()).orElseThrow(LessonNotFoundException::new);
+        if(scheduleLessonRequest.getInfo().getRequestStatus() != null && !scheduleLessonRequest.getInfo().getRequestStatus().equals(changeStatusRequest.getRequestStatus())) {
             UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
-            scheduleLessonRequestRepository.setRequestStatus(changeStatusRequest.getId(), changeStatusRequest.getStatus(), user.getFullName());
-            notificationService.send(changeStatusRequest, NOTIFICATION_CHANGE_REQUEST_STATUS);
+            scheduleLessonRequestRepository.setRequestStatus(changeStatusRequest.getId(), changeStatusRequest.getRequestStatus(), user.getFullName(), user.getUsername());
+            ChangeStatusResponse response = new ChangeStatusResponse(changeStatusRequest.getId(), changeStatusRequest.getRequestStatus(), user.getFullName(), user.getUsername());
+            notificationService.send(response, NOTIFICATION_CHANGE_REQUEST_STATUS);
         }
     }
 

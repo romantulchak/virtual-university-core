@@ -4,7 +4,7 @@ import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 
 public class ChangeStatusRequest {
     private long id;
-    private RequestStatus status;
+    private RequestStatus requestStatus;
 
     public long getId() {
         return id;
@@ -14,12 +14,11 @@ public class ChangeStatusRequest {
         this.id = id;
     }
 
-    public RequestStatus getStatus() {
-        return status;
+    public RequestStatus getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setStatus(RequestStatus status) {
-        this.status = status;
+    public void setRequestStatus(RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
     }
-
 }

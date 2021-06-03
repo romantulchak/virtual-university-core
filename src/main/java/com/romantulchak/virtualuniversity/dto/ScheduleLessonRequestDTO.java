@@ -28,16 +28,16 @@ public class ScheduleLessonRequestDTO {
     private LessonStatus previousStatus;
 
     @JsonView(Views.LessonStatusRequestView.class)
-    private Request request;
+    private Request info;
 
-    public ScheduleLessonRequestDTO(long id, LessonStatus actualStatus, String message, LessonDTO lesson, RequestDecision decision, LessonStatus previousStatus, Request request) {
+    public ScheduleLessonRequestDTO(long id, LessonStatus actualStatus, String message, LessonDTO lesson, RequestDecision decision, LessonStatus previousStatus, Request info) {
         this.id = id;
         this.actualStatus = actualStatus;
         this.message = message;
         this.lesson = lesson;
         this.decision = decision;
         this.previousStatus = previousStatus;
-        this.request = request;
+        this.info = info;
     }
 
     public long getId() {
@@ -88,11 +88,11 @@ public class ScheduleLessonRequestDTO {
         this.previousStatus = previousStatus;
     }
 
-    public Request getRequest() {
-        return request;
+    public Request getInfo() {
+        return info;
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
+    public void setInfo(Request info) {
+        this.info = info;
     }
 }

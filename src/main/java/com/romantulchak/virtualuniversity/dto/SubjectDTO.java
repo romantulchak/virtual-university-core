@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import static org.hibernate.Hibernate.isInitialized;
+
 public class SubjectDTO implements Comparable<SubjectDTO> {
     @JsonView({Views.SubjectView.class,Views.SemesterView.class, Views.StudentGrades.class,Views.TeacherStudentGrades.class, Views.TeacherSubjectView.class, Views.StudentGroupView.class, Views.SubjectGrade.class, Views.ScheduleView.class, Views.LessonStatusRequestView.class})
     private long id;
@@ -41,8 +43,9 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
     //TODO: remove if
     public SubjectDTO(Subject subject) {
         this(subject.getId(), subject.getName(), subject.getType());
-        if(subject.getTeachers() != null)
-            this.teachers = subject.getTeachers().stream().map(TeacherDTO::new).collect(Collectors.toList());
+        if(subject.getTeachers() != null && isInitialized(subject.getTeachers()))
+            this.teachers = subject.getTeachers().stream().map(TeacherDTO::new)
+                    .collect(Collectors.toList());
     }
 
 

@@ -1,31 +1,26 @@
-package com.romantulchak.virtualuniversity.model;
+package com.romantulchak.virtualuniversity.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-@Embeddable
-public class Request {
-
-    @JsonView(Views.LessonStatusRequestView.class)
-    @Enumerated(EnumType.STRING)
+public class ChangeStatusResponse {
+    private long id;
     private RequestStatus requestStatus;
-
-    @JsonView(Views.LessonStatusRequestView.class)
     private String userFullName;
-
-    @JsonView(Views.LessonStatusRequestView.class)
     private String username;
 
-    public Request() {
-
+    public ChangeStatusResponse(long id, RequestStatus requestStatus, String userFullName, String username) {
+        this.id = id;
+        this.requestStatus = requestStatus;
+        this.userFullName = userFullName;
+        this.username = username;
     }
 
-    public Request(RequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public RequestStatus getRequestStatus() {

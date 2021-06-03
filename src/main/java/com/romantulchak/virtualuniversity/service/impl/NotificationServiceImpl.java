@@ -123,9 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (notificationRequest != null) {
             if (notificationRepository.existsByIdAndReadIsFalse(notificationRequest.getNotificationId())) {
                 notificationRepository.readNotification(notificationRequest.getNotificationId());
-                send(notificationRequest.getUsername(), Resource.NOTIFICATION_READ_TOPIC, "true");
-            } else {
-                throw new NotificationNotFound();
+                send(notificationRequest.getUsername(), "true", Resource.NOTIFICATION_READ_TOPIC);
             }
         }
     }

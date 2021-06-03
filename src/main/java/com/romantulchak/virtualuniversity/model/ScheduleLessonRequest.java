@@ -27,7 +27,7 @@ public class ScheduleLessonRequest {
     private RequestDecision decision;
 
     @Embedded
-    private Request request;
+    private Request info;
 
     public long getId() {
         return id;
@@ -77,11 +77,11 @@ public class ScheduleLessonRequest {
         this.decision = decision;
     }
 
-    public Request getRequest() {
-        return request;
+    public Request getInfo() {
+        return info;
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
+    public void setInfo(Request request) {
+        this.info = request;
     }
 }
