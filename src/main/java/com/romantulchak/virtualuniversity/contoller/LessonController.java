@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
 import com.romantulchak.virtualuniversity.service.impl.UserDetailsImpl;
@@ -56,8 +57,8 @@ public class LessonController {
 
     @PutMapping("/changeRequestDecision")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void changeRequestDecision(@RequestParam(value = "requestId") long requestId, @RequestParam(value = "decision") RequestDecision decision){
-        lessonService.setRequestDecision(requestId, decision);
+    public void changeRequestDecision(@RequestBody ChangeDecisionRequest changeDecisionRequest){
+        lessonService.setRequestDecision(changeDecisionRequest);
     }
 
     @PutMapping("/changeRequestStatus")

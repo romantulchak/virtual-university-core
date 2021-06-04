@@ -37,7 +37,9 @@ public class Lesson implements Comparable<Lesson>{
 
     private String roomNumber;
 
-    @OneToMany(mappedBy = "lesson")
+    private String comment;
+
+    @OneToMany(mappedBy = "lesson", cascade = {CascadeType.REMOVE})
     private Collection<ScheduleLessonRequest> scheduleLessonRequests;
 
     public long getId() {
@@ -110,6 +112,14 @@ public class Lesson implements Comparable<Lesson>{
 
     public void setScheduleLessonRequests(Collection<ScheduleLessonRequest> scheduleLessonRequests) {
         this.scheduleLessonRequests = scheduleLessonRequests;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override

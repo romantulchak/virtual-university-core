@@ -39,6 +39,8 @@ public class LessonDTO implements Comparable<LessonDTO>{
     @JsonView(Views.LessonStatusRequestView.class)
     private LessonStatus previousStatus;
 
+    @JsonView({Views.ScheduleView.class, Views.LessonStatusRequestView.class})
+    private String comment;
 
     public LessonDTO(){}
 
@@ -50,6 +52,7 @@ public class LessonDTO implements Comparable<LessonDTO>{
         this.status = lesson.getStatus();
         this.roomNumber = lesson.getRoomNumber();
         this.previousStatus = lesson.getPreviousStatus();
+        this.comment = lesson.getComment();
         if (lesson.getSubjectTeacher().getStudentGroup()!= null){
             this.groupName = lesson.getSubjectTeacher().getStudentGroup().getName();
         }
@@ -125,6 +128,14 @@ public class LessonDTO implements Comparable<LessonDTO>{
 
     public void setPreviousStatus(LessonStatus previousStatus) {
         this.previousStatus = previousStatus;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override

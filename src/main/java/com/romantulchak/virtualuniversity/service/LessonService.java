@@ -6,6 +6,7 @@ import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import org.springframework.security.core.Authentication;
 
@@ -18,7 +19,7 @@ public interface LessonService {
     LessonDTO updateLesson(Lesson lesson);
     void changeLessonStatus(ScheduleLessonRequest scheduleLessonRequest);
     Collection<ScheduleLessonRequestDTO> findLessonRequests(int page);
-    void setRequestDecision(long requestId, RequestDecision decision);
+    void setRequestDecision(ChangeDecisionRequest requestDecision);
     void setRequestStatus(ChangeStatusRequest request, Authentication authentication);
 
 }

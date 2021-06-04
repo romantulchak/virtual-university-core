@@ -8,6 +8,7 @@ import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.payload.response.ChangeStatusResponse;
 import com.romantulchak.virtualuniversity.repository.*;
@@ -77,7 +78,7 @@ public class LessonServiceImpl implements LessonService{
         LessonStatus lessonStatus = lessonRepository.findLessonActualStatus(scheduleLessonRequest.getLesson().getId())
                 .orElseThrow(() -> new LessonNotFoundException(scheduleLessonRequest.getLesson().getId()));
         if (!scheduleLessonRequest.getActualStatus().equals(scheduleLessonRequest.getLesson().getStatus())) {
-            lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus);
+            lessonRepository.updateStatus(scheduleLessonRequest.getLesson().getId(), LessonStatus.PENDING, lessonStatus, null);
             scheduleLessonRequest.setPreviousStatus(lessonStatus);
             Request request = new Request(RequestStatus.CHECK_OUT);
             scheduleLessonRequest.setInfo(request);
@@ -106,15 +107,16 @@ public class LessonServiceImpl implements LessonService{
 
     @Transactional
     @Override
-    public void setRequestDecision(long requestId, RequestDecision decision) {
-        ScheduleLessonRequest request = scheduleLessonRequestRepository.findById(requestId).orElseThrow(LessonRequestNotFound::new);
-        scheduleLessonRequestRepository.updateRequest(requestId, decision, request.getPreviousStatus());
+    public void setRequestDecision(ChangeDecisionRequest requestDecision) {
+        ScheduleLessonRequest request = scheduleLessonRequestRepository.findById(requestDecision.getId()).orElseThrow(LessonRequestNotFound::new);
+        scheduleLessonRequestRepository.updateRequest(requestDecision.getId(), requestDecision.getRequestDecision(), request.getPreviousStatus());
         RequestUtility requestUtility = new RequestUtility(request);
-        if (decision == RequestDecision.ACCEPTED) {
-            updateRequest(request, requestUtility, request.getActualStatus(), Resource.MSG_REQUEST_ACCEPTED);
+
+        if (requestDecision.getRequestDecision() == RequestDecision.ACCEPTED) {
+            updateRequest(request, requestUtility, request.getActualStatus(), Resource.MSG_REQUEST_ACCEPTED, requestDecision.getComment());
             notificationService.createAll(requestUtility.getStudents(), String.format(Resource.MSG_SCHEDULE_CHANGED, requestUtility.getDay()), Resource.NOTIFICATION_SCHEDULE_CHANGED);
         } else {
-            updateRequest(request, requestUtility, request.getPreviousStatus(), Resource.MSG_REQUEST_REJECTED);
+            updateRequest(request, requestUtility, request.getPreviousStatus(), Resource.MSG_REQUEST_REJECTED, requestDecision.getComment());
         }
     }
 
@@ -130,8 +132,9 @@ public class LessonServiceImpl implements LessonService{
         }
     }
 
-    private void updateRequest(ScheduleLessonRequest request, RequestUtility requestUtility, LessonStatus previousStatus, String msgRequestRejected) {
-        lessonRepository.updateStatus(request.getLesson().getId(), previousStatus, request.getLesson().getPreviousStatus());
+    private void updateRequest(ScheduleLessonRequest request, RequestUtility requestUtility, LessonStatus previousStatus, String msgRequestRejected, String comment) {
+        lessonRepository.updateStatus(request.getLesson().getId(), previousStatus, request.getLesson().getPreviousStatus(), comment);
+        scheduleLessonRequestRepository.setRequestStatus(request.getId(), RequestStatus.CHECK_OUT);
         notificationService.create(requestUtility.getTeacher(), String.format(msgRequestRejected, requestUtility.getDay(), requestUtility.getSubject()), requestUtility.getNotificationBox(), Resource.NOTIFICATION_SNAC_DESTINATION);
     }
 

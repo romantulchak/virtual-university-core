@@ -17,8 +17,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     Collection<Lesson> findLessonsForTeacherByDay(@Param("dayId") long dayId, @Param("teacherId") long teacherId);
 
     @Modifying
-    @Query(value = "UPDATE Lesson l set l.status = :status, l.previousStatus = :previousStatus WHERE l.id = :id")
-    void updateStatus(@Param("id") long lessonId, @Param("status") LessonStatus status, @Param("previousStatus") LessonStatus previousStatus);
+    @Query(value = "UPDATE Lesson l set l.status = :status, l.previousStatus = :previousStatus, l.comment = :comment WHERE l.id = :id")
+    void updateStatus(@Param("id") long lessonId, @Param("status") LessonStatus status, @Param("previousStatus") LessonStatus previousStatus, @Param("comment") String comment);
 
     @Query(value = "SELECT l.status FROM Lesson l WHERE l.id = :lessonId")
     Optional<LessonStatus> findLessonActualStatus(@Param("lessonId") long lessonId);

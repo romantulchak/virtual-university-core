@@ -25,4 +25,7 @@ public interface ScheduleLessonRequestRepository extends JpaRepository<ScheduleL
     @Query(value = "UPDATE ScheduleLessonRequest slr SET slr.info.requestStatus = :requestStatus, slr.info.userFullName = :userFullName, slr.info.username = :username WHERE slr.id = :requestId")
     void setRequestStatus(@Param("requestId") long requestId, @Param("requestStatus")RequestStatus requestStatus, @Param("userFullName") String userFullName, @Param("username") String username);
 
+    @Modifying
+    @Query(value = "UPDATE ScheduleLessonRequest slr SET slr.info.requestStatus = :requestStatus WHERE slr.id = :requestId")
+    void setRequestStatus(@Param("requestId") long requestId, @Param("requestStatus")RequestStatus requestStatus);
 }
