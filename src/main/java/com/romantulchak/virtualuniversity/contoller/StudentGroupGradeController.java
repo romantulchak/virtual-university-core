@@ -23,7 +23,7 @@ public class StudentGroupGradeController {
     }
 
     @PostMapping("/setGrade")
-    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TEACHER') AND @accessToStudentGroup.checkAccessToSetGrade(#studentGroupGrade, authentication)")
     public void setGrade(@RequestBody Collection<StudentGroupGrade> studentGroupGrade){
         studentGroupGradeService.setGrade(studentGroupGrade);
     }
