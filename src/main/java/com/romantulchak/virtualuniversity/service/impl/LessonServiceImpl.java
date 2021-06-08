@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.*;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
@@ -13,8 +14,10 @@ import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.payload.response.ChangeStatusResponse;
 import com.romantulchak.virtualuniversity.repository.*;
 import com.romantulchak.virtualuniversity.service.LessonService;
+import com.romantulchak.virtualuniversity.utils.PageUtil;
 import com.romantulchak.virtualuniversity.utils.RequestUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.model.Resource.NOTIFICATION_CHANGE_REQUEST_STATUS;
+import static com.romantulchak.virtualuniversity.utils.PageUtil.*;
 
 @Service
 public class LessonServiceImpl implements LessonService{
@@ -91,18 +95,20 @@ public class LessonServiceImpl implements LessonService{
     }
 
     @Override
-    public Collection<ScheduleLessonRequestDTO> findLessonRequests(int page) {
-        Pageable pageable = PageRequest.of(page, 25);
-        return scheduleLessonRequestRepository.findAllRequests(pageable)
-                .stream()
+    public PageableDTO<List<ScheduleLessonRequestDTO>> findLessonRequests(int currentPage) {
+        Pageable pageable = PageRequest.of(getFrontendPageNumber(currentPage), 3);
+        Page<ScheduleLessonRequest> page = scheduleLessonRequestRepository.findAllRequests(pageable);
+        List<ScheduleLessonRequestDTO> requests = page.getContent().stream()
                 .map(request -> new ScheduleLessonRequestDTO(request.getId(),
                         request.getActualStatus(),
                         request.getMessage(),
                         new LessonDTO(request.getLesson()),
                         request.getDecision(),
                         request.getPreviousStatus(),
-                        request.getInfo()))
-                .collect(Collectors.toList());
+                        request.getInfo())).collect(Collectors.toList());
+        return new PageableDTO<>(currentPage, page.getTotalPages(), requests);
+
+
     }
 
     @Transactional

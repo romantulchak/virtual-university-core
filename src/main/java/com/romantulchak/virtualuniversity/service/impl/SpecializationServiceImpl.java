@@ -67,7 +67,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     @Override
     public void addSubjectsToSpecialization(Collection<Subject> subjects, long specializationId) {
         if (subjects.size() != 0) {
-            Specialization specialization = specializationRepository.findById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
+            Specialization specialization = specializationRepository.findSpecializationById(specializationId).orElseThrow(() -> new SpecializationNotFoundException(specializationId));
             subjects.removeAll(specialization.getSubjects());
             if (subjects.size() != 0){
                 specialization.getSubjects().addAll(subjects);

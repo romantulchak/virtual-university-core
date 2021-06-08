@@ -28,7 +28,7 @@ public final class ScheduleConvertorUtility {
 
     }
 
-    private static Collection<LessonDTO> convertLessonsToDTO(Collection<Lesson> lessons) {
+    public static Collection<LessonDTO> convertLessonsToDTO(Collection<Lesson> lessons) {
         if (lessons == null){
             throw new RuntimeException("Lessons cannot be empty");
         }

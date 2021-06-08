@@ -7,6 +7,7 @@ import com.romantulchak.virtualuniversity.service.impl.ScheduleDayServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
@@ -51,5 +52,11 @@ public class ScheduleDayController {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteDay(@PathVariable("dayId") long dayId){
         scheduleDayService.deleteDay(dayId);
+    }
+
+    @GetMapping("/getDayLessons/{day}/{groupName}")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
+    public ScheduleDayDTO getDayLessons(@PathVariable("day") String day, @PathVariable("groupName") String groupName){
+        return scheduleDayService.getDayLessons(day, groupName);
     }
 }

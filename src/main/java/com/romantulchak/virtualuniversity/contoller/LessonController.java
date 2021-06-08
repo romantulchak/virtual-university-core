@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
 import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600L)
@@ -51,7 +53,7 @@ public class LessonController {
     
     @GetMapping("/getLessonRequests")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public Collection<ScheduleLessonRequestDTO> findLessonRequests(@RequestParam(value = "page") int page){
+    public PageableDTO<List<ScheduleLessonRequestDTO>> findLessonRequests(@RequestParam(value = "page") int page){
         return lessonService.findLessonRequests(page);
     }
 

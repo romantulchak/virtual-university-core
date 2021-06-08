@@ -10,11 +10,13 @@ import com.romantulchak.virtualuniversity.service.ScheduleDayService;
 import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
 import static com.romantulchak.virtualuniversity.utils.DateParserUtility.parseStringToDate;
+import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertLessonsToDTO;
 import static com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility.convertScheduleDayToDTO;
 
 @Service
@@ -51,6 +53,13 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
             day.setLessons(lessonRepository.findLessonsForTeacherByDay(day.getId(), teacherId));
         }
         return convertScheduleDayToDTO(days);
+    }
+
+    @Override
+    public ScheduleDayDTO getDayLessons(String stringDate, String groupName) {
+        LocalDate date = LocalDate.parse(stringDate);
+        ScheduleDay day = scheduleDayRepository.findScheduleDayByAndGroupName(date, groupName).orElseThrow(ScheduleDayNotFoundException::new);
+        return new ScheduleDayDTO(day.getId(), day.getDay(), convertLessonsToDTO(day.getLessons()));
     }
 
     @Override

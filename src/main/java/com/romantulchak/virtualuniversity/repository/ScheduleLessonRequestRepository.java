@@ -4,6 +4,7 @@ import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface ScheduleLessonRequestRepository extends JpaRepository<ScheduleLessonRequest, Long> {
 
     @Query(value = "SELECT slr FROM ScheduleLessonRequest slr ORDER BY slr.id DESC ")
-    List<ScheduleLessonRequest> findAllRequests(Pageable pageable);
+    Page<ScheduleLessonRequest> findAllRequests(Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE ScheduleLessonRequest slr SET slr.decision = :decision, slr.previousStatus = :previousStatus WHERE slr.id = :requestId")
