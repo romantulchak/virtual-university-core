@@ -3,16 +3,12 @@ package com.romantulchak.virtualuniversity.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
-import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
-import org.hibernate.Hibernate;
-import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceUnitUtil;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.hibernate.Hibernate.isInitialized;
@@ -32,7 +28,11 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
 
     @JsonView(Views.SubjectView.class)
     private Collection<SubjectFile> files;
-    
+
+    @JsonView({Views.StudentGrades.class, Views.SubjectGrade.class})
+    private short ects;
+
+
     public SubjectDTO() {
     }
     public SubjectDTO(long id, String name, SubjectType type){
@@ -43,9 +43,13 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
     //TODO: remove if
     public SubjectDTO(Subject subject) {
         this(subject.getId(), subject.getName(), subject.getType());
-        if(subject.getTeachers() != null && isInitialized(subject.getTeachers()))
-            this.teachers = subject.getTeachers().stream().map(TeacherDTO::new)
+        this.ects = subject.getEcts();
+        if(subject.getTeachers() != null && isInitialized(subject.getTeachers())) {
+            this.teachers = subject.getTeachers()
+                    .stream()
+                    .map(TeacherDTO::new)
                     .collect(Collectors.toList());
+        }
     }
 
 
@@ -87,6 +91,27 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
 
     public void setTeachers(Collection<TeacherDTO> teachers) {
         this.teachers = teachers;
+    }
+
+    public short getEcts() {
+        return ects;
+    }
+
+    public void setEcts(short ects) {
+        this.ects = ects;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubjectDTO that = (SubjectDTO) o;
+        return id == that.id && ects == that.ects && Objects.equals(name, that.name) && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, type, ects);
     }
 
     @Override

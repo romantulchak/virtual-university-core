@@ -35,6 +35,11 @@ public class Subject implements Comparator<Subject> {
     @ElementCollection
     private List<SubjectFile> files = new ArrayList<>();
 
+    @ElementCollection
+    private List<TeacherFileSubject> teacherFileSubjects = new ArrayList<>();
+
+    private short ects;
+
     public long getId() {
         return id;
     }
@@ -97,6 +102,22 @@ public class Subject implements Comparator<Subject> {
 
     public void setFiles(List<SubjectFile> files) {
         this.files = files;
+    }
+
+    public short getEcts() {
+        return ects;
+    }
+
+    public void setEcts(short ects) {
+        this.ects = ects;
+    }
+
+    public List<TeacherFileSubject> getTeacherFileSubjects() {
+        return teacherFileSubjects;
+    }
+
+    public void setTeacherFileSubjects(List<TeacherFileSubject> teacherFileSubjects) {
+        this.teacherFileSubjects = teacherFileSubjects;
     }
 
     @Override

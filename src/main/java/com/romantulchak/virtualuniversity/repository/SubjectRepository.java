@@ -6,6 +6,8 @@ import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
 import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
 import com.romantulchak.virtualuniversity.projection.SubjectLimited;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +25,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "SELECT * FROM subject LEFT OUTER JOIN subject_teacher st on subject.id = st.subject_id WHERE st.teacher_id <> :teacherId", nativeQuery = true)
     Collection<Subject> findAvailableSubjects(@Param("teacherId") long id);
 
-    Collection<Subject> findAllByTeachers_Id(long teachers_id);
+    Page<Subject> findAllByTeachers_Id(long teachers_id, Pageable pageable);
 
     @Query(value = "SELECT * FROM subject LEFT OUTER JOIN specialization_subject ss on subject.id = ss.subject_id WHERE specialization_id = :id ", nativeQuery = true)
     Collection<Subject> findAllForSpecialization(@Param("id") long id);

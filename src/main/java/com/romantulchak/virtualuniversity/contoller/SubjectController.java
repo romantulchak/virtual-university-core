@@ -1,20 +1,18 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
-import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
-import com.romantulchak.virtualuniversity.model.*;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
+import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.JoinColumn;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -50,11 +48,11 @@ public class SubjectController {
         return subjectService.findSubjectAvailableForTeacher(id);
     }
 
-    @GetMapping("/findTeacherSubjects/{teacherId}")
+    @GetMapping("/findTeacherSubjects/{teacherId}/{page}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
     @JsonView(Views.TeacherSubjectView.class)
-    public Collection<SubjectDTO> subjectsForTeacher(@PathVariable("teacherId") long id){
-         return subjectService.findTeacherSubjects(id);
+    public PageableDTO<List<SubjectDTO>> subjectsForTeacher(@PathVariable("teacherId") long id, @PathVariable("page") int page){
+         return subjectService.findTeacherSubjects(id, page);
     }
 
     @GetMapping("/findAllForSpecialization/{id}")

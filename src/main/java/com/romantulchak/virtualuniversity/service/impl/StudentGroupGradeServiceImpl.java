@@ -60,7 +60,8 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
         Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
         for (StudentGradeLimitedStudent studentGradeLimitedStudent : studentGradesForStudent) {
             SubjectTeacherGroupDTO subjectTeacherGroupDTO = SubjectTeacherConverter.getSubjectTeacherGroupDTO(studentGradeLimitedStudent.getId(),
-                    studentGradeLimitedStudent.getSubjectTeacherGroup()
+                    studentGradeLimitedStudent
+                            .getSubjectTeacherGroup()
                             .getSubject(),
                     studentGradeLimitedStudent.getSubjectTeacherGroup().getTeacher());
             StudentGroupGradeDTO studentGroupGradeDTO = new StudentGroupGradeDTO.Builder(studentGradeLimitedStudent.getId())
@@ -84,7 +85,8 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
             grades.add(studentGrade);
         }
         return grades.stream().
-                sorted().collect(Collectors.toList());
+                sorted()
+                .collect(Collectors.toList());
     }
 
     @Override

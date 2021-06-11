@@ -2,20 +2,22 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
-import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
-import com.romantulchak.virtualuniversity.exception.*;
-import com.romantulchak.virtualuniversity.model.*;
-import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
-import com.romantulchak.virtualuniversity.repository.SpecializationRepository;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
+import com.romantulchak.virtualuniversity.exception.FileNotFoundException;
+import com.romantulchak.virtualuniversity.exception.SubjectAlreadyExistsException;
+import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
+import com.romantulchak.virtualuniversity.exception.SubjectNotFoundException;
+import com.romantulchak.virtualuniversity.model.Subject;
+import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
-import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
-import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
-import com.romantulchak.virtualuniversity.utils.FileUploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,6 +35,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
+import static com.romantulchak.virtualuniversity.utils.PageUtil.getFrontendPageNumber;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -107,12 +109,14 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Collection<SubjectDTO> findTeacherSubjects(long id) {
-        return subjectRepository.findAllByTeachers_Id(id)
-                .stream()
+    public PageableDTO<List<SubjectDTO>> findTeacherSubjects(long id, int page) {
+        Pageable pageable = PageRequest.of(getFrontendPageNumber(page), 3);
+        Page<Subject> pageData = subjectRepository.findAllByTeachers_Id(id, pageable);
+        List<SubjectDTO> subject = pageData.getContent().stream()
                 .map(this::convertDTO)
                 .sorted()
                 .collect(Collectors.toList());
+        return new PageableDTO<>(page, pageData.getTotalPages(), subject);
     }
 
     @Override
@@ -160,7 +164,7 @@ public class SubjectServiceImpl implements SubjectService {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                throw new RuntimeException("File not found");
+                throw new FileNotFoundException();
             }
 
         } catch (Exception e) {

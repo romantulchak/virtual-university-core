@@ -1,9 +1,7 @@
 package com.romantulchak.virtualuniversity.service;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 public interface ScheduleDayService {
@@ -13,5 +11,5 @@ public interface ScheduleDayService {
     Collection<ScheduleDayDTO> findDaysForWeek(long semesterId);
     Collection<ScheduleDayDTO> findDaysForWeek(long teacherId, long semesterId);
     Collection<ScheduleDayDTO> findDaysForTeacher(long teacherId, long semesterId);
-    ScheduleDayDTO getDayLessons(String day, String groupName);
+    ScheduleDayDTO getDayLessons(String day, String groupName, long semesterId);
 }

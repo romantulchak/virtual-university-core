@@ -111,7 +111,7 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> handleConstraintViolationException(ScheduleDayNotFoundException ex, WebRequest webRequest){
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex, WebRequest webRequest){
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
@@ -142,6 +142,11 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(NotificationNotFound.class)
     public ResponseEntity<?> handleNotificationNotFound(NotificationNotFound ex, WebRequest webRequest){
+        Map<String ,Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<?> handleFileNotFoundException(FileNotFoundException ex, WebRequest webRequest){
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

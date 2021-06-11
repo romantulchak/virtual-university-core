@@ -1,8 +1,14 @@
 package com.romantulchak.virtualuniversity.dto.pageable;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.romantulchak.virtualuniversity.model.Views;
+
 public class PageableDTO<T>{
+    @JsonView(Views.TeacherSubjectView.class)
     private int currentPage;
+    @JsonView(Views.TeacherSubjectView.class)
     private int totalPages;
+    @JsonView(Views.TeacherSubjectView.class)
     private T data;
 
     public PageableDTO(int currentPage, int totalPages, T data) {

@@ -2,15 +2,12 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.ScheduleDayDTO;
 import com.romantulchak.virtualuniversity.exception.ScheduleDayNotFoundException;
-import com.romantulchak.virtualuniversity.exception.ScheduleNotFoundException;
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
 import com.romantulchak.virtualuniversity.repository.LessonRepository;
 import com.romantulchak.virtualuniversity.repository.ScheduleDayRepository;
 import com.romantulchak.virtualuniversity.service.ScheduleDayService;
-import com.romantulchak.virtualuniversity.utils.ScheduleConvertorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -56,9 +53,9 @@ public class ScheduleDayServiceImpl implements ScheduleDayService {
     }
 
     @Override
-    public ScheduleDayDTO getDayLessons(String stringDate, String groupName) {
+    public ScheduleDayDTO getDayLessons(String stringDate, String groupName, long semesterId) {
         LocalDate date = LocalDate.parse(stringDate);
-        ScheduleDay day = scheduleDayRepository.findScheduleDayByAndGroupName(date, groupName).orElseThrow(ScheduleDayNotFoundException::new);
+        ScheduleDay day = scheduleDayRepository.findScheduleDayByAndGroupName(date, groupName, semesterId).orElseThrow(ScheduleDayNotFoundException::new);
         return new ScheduleDayDTO(day.getId(), day.getDay(), convertLessonsToDTO(day.getLessons()));
     }
 

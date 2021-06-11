@@ -29,6 +29,8 @@ public class ScheduleLessonRequest {
     @Embedded
     private Request info;
 
+    private long semesterId;
+
     public long getId() {
         return id;
     }
@@ -83,5 +85,13 @@ public class ScheduleLessonRequest {
 
     public void setInfo(Request request) {
         this.info = request;
+    }
+
+    public long getSemesterId() {
+        return semesterId;
+    }
+
+    public void setSemesterId(long semesterId) {
+        this.semesterId = semesterId;
     }
 }

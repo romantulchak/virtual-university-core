@@ -5,16 +5,17 @@ import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.exception.*;
 import com.romantulchak.virtualuniversity.model.*;
-import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
-import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.payload.response.ChangeStatusResponse;
-import com.romantulchak.virtualuniversity.repository.*;
+import com.romantulchak.virtualuniversity.repository.LessonRepository;
+import com.romantulchak.virtualuniversity.repository.ScheduleLessonRequestRepository;
+import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.LessonService;
-import com.romantulchak.virtualuniversity.utils.PageUtil;
 import com.romantulchak.virtualuniversity.utils.RequestUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,12 +25,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.model.Resource.NOTIFICATION_CHANGE_REQUEST_STATUS;
-import static com.romantulchak.virtualuniversity.utils.PageUtil.*;
+import static com.romantulchak.virtualuniversity.utils.PageUtil.getFrontendPageNumber;
 
 @Service
 public class LessonServiceImpl implements LessonService{
@@ -105,7 +105,8 @@ public class LessonServiceImpl implements LessonService{
                         new LessonDTO(request.getLesson()),
                         request.getDecision(),
                         request.getPreviousStatus(),
-                        request.getInfo())).collect(Collectors.toList());
+                        request.getInfo(),
+                        request.getSemesterId())).collect(Collectors.toList());
         return new PageableDTO<>(currentPage, page.getTotalPages(), requests);
 
 
