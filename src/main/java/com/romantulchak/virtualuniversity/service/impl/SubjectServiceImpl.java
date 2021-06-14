@@ -9,6 +9,7 @@ import com.romantulchak.virtualuniversity.exception.SubjectIsNullException;
 import com.romantulchak.virtualuniversity.exception.SubjectNotFoundException;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
+import com.romantulchak.virtualuniversity.model.TeacherFileSubject;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,13 +89,17 @@ public class SubjectServiceImpl implements SubjectService {
 
     private void addFilesToSubject(Collection<MultipartFile> files, Subject subject) {
         for (MultipartFile file : files) {
-            String fileName = generateNameForFile(Objects.requireNonNull(file.getOriginalFilename()));
-            String directory = "subjectFiles";
-            String localPathToFile = getLocalPathToFile(path, directory, fileName);
-            String subjectFiles = uploadFile(file, path, localPathToFile, directory, fileName);
-            SubjectFile subjectFile = new SubjectFile(subjectFiles, LocalDateTime.now(), fileName, localPathToFile);
+            SubjectFile subjectFile = getSubjectFile(file);
             subject.getFiles().add(subjectFile);
         }
+    }
+
+    private SubjectFile getSubjectFile(MultipartFile file) {
+        String fileName = generateNameForFile(Objects.requireNonNull(file.getOriginalFilename()));
+        String directory = "subjectFiles";
+        String localPathToFile = getLocalPathToFile(path, directory, fileName);
+        String subjectFiles = uploadFile(file, path, localPathToFile, directory, fileName);
+        return new SubjectFile(subjectFiles, LocalDateTime.now(), fileName, localPathToFile);
     }
 
     @Override
@@ -187,6 +193,18 @@ public class SubjectServiceImpl implements SubjectService {
                 .stream()
                 .map(this::convertDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void uploadFileForSubject(Collection<MultipartFile> files, long subjectId, long groupId, long semesterid,  Authentication authentication) {
+        Subject subject = subjectRepository.findById(subjectId).orElseThrow(() -> new SubjectNotFoundException(subjectId));
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        for (MultipartFile file : files) {
+            SubjectFile subjectFile = getSubjectFile(file);
+            TeacherFileSubject teacherFile = new TeacherFileSubject(subjectFile, user.getId(), groupId, semesterid);
+            subject.getTeacherFileSubjects().add(teacherFile);
+        }
+        subjectRepository.save(subject);
     }
 
 

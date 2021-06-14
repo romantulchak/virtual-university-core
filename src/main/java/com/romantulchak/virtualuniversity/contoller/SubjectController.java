@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.SubjectDTO;
 import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
+import com.romantulchak.virtualuniversity.model.TeacherFileSubject;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +39,7 @@ public class SubjectController {
 
     @PostMapping(value = "/createSubject")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public void createSubject(@RequestPart(value = "file", required = false) Collection<MultipartFile> files, @RequestPart("subject") String subjectInString) throws IOException {
+    public void createSubject(@RequestPart(value = "file", required = false) Collection<MultipartFile> files, @RequestPart("subject") String subjectInString) {
         subjectService.createSubject(subjectInString, files);
     }
     
@@ -94,5 +96,15 @@ public class SubjectController {
     @JsonView(Views.SubjectView.class)
     public Collection<SubjectDTO> findAllSubjectsWithTeachersForSemester(@PathVariable("semesterId") long semesterId){
         return subjectService.findAllSubjectsWithTeachersForSemester(semesterId);
+    }
+
+    @PostMapping("/uploadTeacherFile")
+//    @PreAuthorize("hasRole('TEACHER') AND #authComponent.hasPermissionToSubject(authentication, #subjectId)")
+    public void uploadFile(@RequestPart(value = "file") Collection<MultipartFile> files,
+                           @RequestParam(value = "subjectId") long subjectId,
+                           @RequestParam(value = "groupId") long groupId,
+                           @RequestParam(value = "semesterId") long semesterId,
+                           Authentication authentication){
+        subjectService.uploadFileForSubject(files, subjectId, groupId, semesterId, authentication);
     }
 }

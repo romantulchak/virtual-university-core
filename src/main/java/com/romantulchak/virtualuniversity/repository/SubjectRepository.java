@@ -56,4 +56,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject sb WHERE NOT EXISTS(SELECT * FROM subject_teacher_group join subject s on s.id = subject_teacher_group.subject_id WHERE sb.id = s.id AND subject_teacher_group.semester_id = :semesterId)", nativeQuery = true)
     Collection<Subject> findAllSubjectsWithTeachersBySemester(@Param("semesterId") long semesterId);
+
+    @Query(value = "SELECT EXISTS (SELECT id FROM subject LEFT JOIN subject_teacher st on subject.id = st.subject_id WHERE st.teacher_id = :teacherId AND subject_id = :subjectId)", nativeQuery = true)
+    boolean hasAccessToSubject(@Param("teacherId") long teacherId, @Param("subjectId") long subjectId);
 }
