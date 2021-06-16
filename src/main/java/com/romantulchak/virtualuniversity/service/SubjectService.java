@@ -35,4 +35,6 @@ public interface SubjectService {
     Collection<SubjectDTO> findAllSubjectsWithTeachersForSemester(long semesterId);
 
     void uploadFileForSubject(Collection<MultipartFile> file, long subjectId, long groupId, long semesterId, Authentication authentication);
+
+    Collection<SubjectFile> findTeacherFiles(long subjectId, long groupId, long semesterId, Authentication authentication);
 }

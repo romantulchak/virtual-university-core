@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.exception.*;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -150,6 +153,24 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public ResponseEntity<?> handleFileSizeLimitExceededException(FileSizeLimitExceededException ex, WebRequest webRequest){
+        Map<String ,Object> body = getBodyAsString(ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(SizeLimitExceededException.class)
+    public ResponseEntity<?> handleSizeLimitExceededException(SizeLimitExceededException ex, WebRequest webRequest){
+        Map<String, Object> body = getBodyAsString(ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, Object> getBodyAsString(String message) {
+        Map<String ,Object> body = new HashMap<>();
+        body.put("message", message);
+        body.put("timestamp", LocalDateTime.now());
+        return body;
+    }
+
     private Map<String, Object> getBody(RuntimeException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

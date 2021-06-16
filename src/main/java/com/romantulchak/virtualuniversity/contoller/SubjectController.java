@@ -81,7 +81,7 @@ public class SubjectController {
     public Collection<SubjectFile> getFilesForSubject(@PathVariable("subjectId") long id){
         return subjectService.getFilesForSubject(id);
     }
-    @GetMapping("/getFile/{filename}")
+    @GetMapping("/downloadFile/{filename}")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         return subjectService.downloadFile(filename);
@@ -99,12 +99,22 @@ public class SubjectController {
     }
 
     @PostMapping("/uploadTeacherFile")
-//    @PreAuthorize("hasRole('TEACHER') AND #authComponent.hasPermissionToSubject(authentication, #subjectId)")
+    @PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermissionToSubject(authentication, #subjectId)")
     public void uploadFile(@RequestPart(value = "file") Collection<MultipartFile> files,
                            @RequestParam(value = "subjectId") long subjectId,
                            @RequestParam(value = "groupId") long groupId,
                            @RequestParam(value = "semesterId") long semesterId,
                            Authentication authentication){
         subjectService.uploadFileForSubject(files, subjectId, groupId, semesterId, authentication);
+    }
+
+    @GetMapping("/findTeacherFiles")
+    @JsonView(Views.FileView.class)
+    @PreAuthorize("hasRole('TEACHER') AND @authComponent.hasPermissionToSubject(authentication, #subjectId)")
+    public Collection<SubjectFile> findTeacherFiles(@RequestParam(value = "subjectId") long subjectId,
+                                                    @RequestParam(value = "groupId") long groupId,
+                                                    @RequestParam(value = "semesterId") long semesterId,
+                                                    Authentication authentication){
+        return subjectService.findTeacherFiles(subjectId, groupId, semesterId, authentication);
     }
 }

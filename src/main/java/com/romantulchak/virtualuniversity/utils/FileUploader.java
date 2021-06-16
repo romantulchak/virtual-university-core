@@ -14,6 +14,9 @@ import java.util.UUID;
 @Component
 public class FileUploader {
 
+    private FileUploader(){
+
+    }
 
     /**
      *
@@ -51,6 +54,6 @@ public class FileUploader {
      * @return unique name for file
      */
     public static String generateNameForFile(String originalName){
-       return UUID.randomUUID() + "." + originalName.replace(" ","-");
+       return UUID.randomUUID().toString().substring(0, 10) + "-" + originalName.replace(" ","-");
     }
 }

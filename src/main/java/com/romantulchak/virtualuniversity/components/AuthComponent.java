@@ -29,9 +29,8 @@ public class AuthComponent {
     public boolean hasPermissionToSubject(Authentication authentication, long subjectId){
         if(!authentication.getPrincipal().equals("anonymousUser")) {
             UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
-            subjectRepository.hasAccessToSubject(currentUser.getId(), subjectId);
+            return subjectRepository.hasAccessToSubject(currentUser.getId(), subjectId);
         }
         return false;
-
     }
 }

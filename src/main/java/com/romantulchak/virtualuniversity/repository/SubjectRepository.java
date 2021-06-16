@@ -51,11 +51,20 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "SELECT local_path FROM subject_files WHERE name = :filename", nativeQuery = true)
     Optional<String> findLocalPathToFile(@Param("filename") String filename);
 
+    @Query(value = "SELECT local_path FROM subject_teacher_file_subjects WHERE name = :filename", nativeQuery = true)
+    String findLocalPathToTeacherFile(@Param("filename") String filename);
+
     @Query(value = "SELECT s FROM Subject s LEFT OUTER JOIN s.teachers")
     Collection<Subject> findAllSubjectsWithTeachers();
 
     @Query(value = "SELECT * FROM subject sb WHERE NOT EXISTS(SELECT * FROM subject_teacher_group join subject s on s.id = subject_teacher_group.subject_id WHERE sb.id = s.id AND subject_teacher_group.semester_id = :semesterId)", nativeQuery = true)
     Collection<Subject> findAllSubjectsWithTeachersBySemester(@Param("semesterId") long semesterId);
+
+    @Query(value = "SELECT s FROM Subject s LEFT JOIN FETCH s.teacherFileSubjects WHERE s.id = :id")
+    Optional<Subject> findSubjectTeacherFiles(@Param("id")long subjectId);
+
+    @Query(value = "SELECT s FROM Subject s LEFT JOIN FETCH s.teacherFileSubjects st WHERE s.id = :subjectId AND st.teacherId = :teacherId AND st.semesterId = :semesterId AND st.studentGroupId = :groupId")
+    Optional<Subject> findSubjectFilesForTeacher(@Param("teacherId") long teacherId, @Param("subjectId") long subjectId , @Param("groupId") long groupId, @Param("semesterId") long semesterId);
 
     @Query(value = "SELECT EXISTS (SELECT id FROM subject LEFT JOIN subject_teacher st on subject.id = st.subject_id WHERE st.teacher_id = :teacherId AND subject_id = :subjectId)", nativeQuery = true)
     boolean hasAccessToSubject(@Param("teacherId") long teacherId, @Param("subjectId") long subjectId);

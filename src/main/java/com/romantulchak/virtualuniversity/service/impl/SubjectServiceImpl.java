@@ -31,9 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.romantulchak.virtualuniversity.utils.FileUploader.*;
@@ -160,7 +158,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public ResponseEntity<Resource> downloadFile(String filename) {
-        String localPath = subjectRepository.findLocalPathToFile(filename).orElseThrow(() -> new RuntimeException("File not found"));
+        String localPath = subjectRepository.findLocalPathToFile(filename)
+                .orElse(subjectRepository.findLocalPathToTeacherFile(filename));
         Path file = Paths.get(localPath);
         try {
             Resource resource = new UrlResource(file.toUri());
@@ -197,7 +196,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public void uploadFileForSubject(Collection<MultipartFile> files, long subjectId, long groupId, long semesterid,  Authentication authentication) {
-        Subject subject = subjectRepository.findById(subjectId).orElseThrow(() -> new SubjectNotFoundException(subjectId));
+        Subject subject = subjectRepository.findSubjectTeacherFiles(subjectId).orElseThrow(() -> new SubjectNotFoundException(subjectId));
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         for (MultipartFile file : files) {
             SubjectFile subjectFile = getSubjectFile(file);
@@ -205,6 +204,17 @@ public class SubjectServiceImpl implements SubjectService {
             subject.getTeacherFileSubjects().add(teacherFile);
         }
         subjectRepository.save(subject);
+    }
+
+    @Override
+    public Collection<SubjectFile> findTeacherFiles(long subjectId, long groupId, long semesterId, Authentication authentication) {
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        Optional<Subject> subject = subjectRepository.findSubjectFilesForTeacher(user.getId(), subjectId, groupId, semesterId);
+        return subject
+                .map(value -> value.getTeacherFileSubjects()
+                        .stream()
+                        .map(TeacherFileSubject::getSubjectFile)
+                        .collect(Collectors.toList())).orElseGet(ArrayList::new);
     }
 
 
