@@ -19,7 +19,7 @@ public class FileUploader {
     }
 
     /**
-     *
+     * Upload file to directory
      * @param file - MultipartFile
      * @param path path to directory
      * @param directory name of directory only NAME
@@ -49,7 +49,7 @@ public class FileUploader {
     }
 
     /**
-     *
+     * Generate random name for file
      * @param originalName File name
      * @return unique name for file
      */

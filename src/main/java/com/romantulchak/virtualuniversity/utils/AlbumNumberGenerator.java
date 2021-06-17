@@ -2,7 +2,9 @@ package com.romantulchak.virtualuniversity.utils;
 
 import java.security.SecureRandom;
 
-public class AlbumNumberGenerator {
+public final class AlbumNumberGenerator {
+
+    private AlbumNumberGenerator(){}
 
     public static String generateAlbumNumber(String firstName, String lastName){
         SecureRandom secureRandom = new SecureRandom();

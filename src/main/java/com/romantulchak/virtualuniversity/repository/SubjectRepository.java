@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Transactional
@@ -45,8 +46,11 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     boolean existsByNameAndType(String name, SubjectType type);
 
-    @Query(value = "SELECT s FROM Subject s LEFT JOIN FETCH s.files WHERE s.id = :id")
-    Optional<Subject> findSubjectFiles(@Param("id")long subjectId);
+    @Query(value = "SELECT subject_files.name, subject_files.added FROM subject_files WHERE subject_id = :id", nativeQuery = true)
+    Collection<SubjectFileProjection> findFiles(@Param("id") long subjectId);
+
+    @Query(value = "SELECT st.name, st.added FROM subject_teacher_file_subjects st WHERE subject_id = :id AND st.teacher_id = :teacherId AND st.semester_id = :semesterId AND st.student_group_id = :groupId", nativeQuery = true)
+    Collection<SubjectFileProjection> findTeacherFiles(@Param("id") long subjectId, @Param("groupId") long groupId, @Param("semesterId") long semesterId, @Param("teacherId") long teacherId);
 
     @Query(value = "SELECT local_path FROM subject_files WHERE name = :filename", nativeQuery = true)
     Optional<String> findLocalPathToFile(@Param("filename") String filename);

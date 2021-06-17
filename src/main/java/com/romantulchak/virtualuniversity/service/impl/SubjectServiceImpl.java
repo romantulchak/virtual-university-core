@@ -10,6 +10,7 @@ import com.romantulchak.virtualuniversity.exception.SubjectNotFoundException;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.SubjectFile;
 import com.romantulchak.virtualuniversity.model.TeacherFileSubject;
+import com.romantulchak.virtualuniversity.projection.SubjectFileProjection;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -150,10 +153,13 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Collection<SubjectFile> getFilesForSubject(long subjectId) {
-        Subject subject = subjectRepository.findSubjectFiles(subjectId)
-                .orElseThrow(() -> new SubjectNotFoundException(subjectId));
-        return subject.getFiles();
+    public Collection<SubjectFile> getFilesForSubject(long subjectId, long groupId, long semesterId, long teacherId) {
+        Collection<SubjectFileProjection> files = subjectRepository.findFiles(subjectId);
+        Collection<SubjectFileProjection> teacherFiles = subjectRepository.findTeacherFiles(subjectId, groupId, semesterId, teacherId);
+        teacherFiles.addAll(files);
+        return teacherFiles.stream()
+                .map(file -> new SubjectFile(file.getName(), file.getAdded()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -165,6 +171,7 @@ public class SubjectServiceImpl implements SubjectService {
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);

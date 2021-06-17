@@ -23,6 +23,12 @@ public class SubjectFile {
     public SubjectFile(){
 
     }
+
+    public SubjectFile(String name, LocalDateTime added) {
+        this.name = name;
+        this.added = added;
+    }
+
     public SubjectFile(String path, LocalDateTime added, String name, String localPath) {
         this.path = path;
         this.added = added;

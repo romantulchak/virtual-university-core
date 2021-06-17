@@ -5,6 +5,7 @@ import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.NotificationBox;
+import com.romantulchak.virtualuniversity.model.Role;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
@@ -12,7 +13,6 @@ import com.romantulchak.virtualuniversity.repository.NotificationBoxRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
-import com.romantulchak.virtualuniversity.utils.AlbumNumberGenerator;
 import com.romantulchak.virtualuniversity.utils.EmailSender;
 import com.romantulchak.virtualuniversity.utils.PasswordGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.romantulchak.virtualuniversity.utils.AlbumNumberGenerator.generateAlbumNumber;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -52,7 +53,7 @@ public class TeacherServiceImpl implements TeacherService {
         }
         String password = PasswordGeneratorUtil.generate();
         teacher.setPassword(passwordEncoder.encode(password));
-        teacher.setNumberIdentifier(AlbumNumberGenerator.generateAlbumNumber(teacher.getFirstName(), teacher.getLastName()));
+        teacher.setNumberIdentifier(generateAlbumNumber(teacher.getFirstName(), teacher.getLastName()));
         NotificationBox notificationBox = notificationBoxRepository.save(new NotificationBox());
         teacher.setNotificationBox(notificationBox);
         emailSender.sendMail(teacher.getEmail(), "Your data", String.format("Your login: %s Your password: %s", teacher.getLogin(), password));

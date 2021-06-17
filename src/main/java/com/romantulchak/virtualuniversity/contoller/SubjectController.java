@@ -9,6 +9,7 @@ import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -76,12 +77,15 @@ public class SubjectController {
     public Collection<SubjectDTO> findAvailableSubjectsForGroup(@PathVariable("id") long id){
         return subjectService.findAvailableSubjectsForGroup(id);
     }
-    @GetMapping("/getFilesForSubject/{subjectId}")
+    @GetMapping("/getFilesForSubject")
     @JsonView(Views.FileView.class)
-    public Collection<SubjectFile> getFilesForSubject(@PathVariable("subjectId") long id){
-        return subjectService.getFilesForSubject(id);
+    public Collection<SubjectFile> getFilesForSubject(@RequestParam(value = "subjectId") long subjectId,
+                                                      @RequestParam(value = "groupId") long groupId,
+                                                      @RequestParam(value = "semesterId") long semesterId,
+                                                      @RequestParam(value = "teacherId") long teacherId){
+        return subjectService.getFilesForSubject(subjectId, groupId, semesterId, teacherId);
     }
-    @GetMapping("/downloadFile/{filename}")
+    @GetMapping(value = "/downloadFile/{filename}", produces= MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         return subjectService.downloadFile(filename);

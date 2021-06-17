@@ -26,7 +26,7 @@ public interface SubjectService {
 
     Collection<SubjectDTO> findAvailableSubjectsForGroup(long groupId);
 
-    Collection<SubjectFile> getFilesForSubject(long subjectId);
+    Collection<SubjectFile> getFilesForSubject(long subjectId, long groupId, long semesterId, long teacherId);
 
     ResponseEntity<Resource> downloadFile(String filename);
 
