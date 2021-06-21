@@ -2,14 +2,17 @@ package com.romantulchak.virtualuniversity.service.impl;
 
 import com.romantulchak.virtualuniversity.dto.TeacherDTO;
 import com.romantulchak.virtualuniversity.exception.PasswordNotMatchesException;
+import com.romantulchak.virtualuniversity.exception.RoleNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherNotFoundException;
 import com.romantulchak.virtualuniversity.exception.TeacherWithSameLoginAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.NotificationBox;
 import com.romantulchak.virtualuniversity.model.Role;
 import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Teacher;
+import com.romantulchak.virtualuniversity.model.enumes.RoleType;
 import com.romantulchak.virtualuniversity.payload.request.ResetPasswordRequest;
 import com.romantulchak.virtualuniversity.repository.NotificationBoxRepository;
+import com.romantulchak.virtualuniversity.repository.RoleRepository;
 import com.romantulchak.virtualuniversity.repository.SubjectRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.TeacherService;
@@ -32,17 +35,20 @@ public class TeacherServiceImpl implements TeacherService {
     private final PasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
     private final NotificationBoxRepository notificationBoxRepository;
+    private final RoleRepository roleRepository;
     @Autowired
     public TeacherServiceImpl(TeacherRepository teacherRepository,
                               PasswordEncoder passwordEncoder,
                               SubjectRepository subjectRepository,
                               EmailSender emailSender,
-                              NotificationBoxRepository notificationBoxRepository) {
+                              NotificationBoxRepository notificationBoxRepository,
+                              RoleRepository roleRepository) {
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
         this.subjectRepository = subjectRepository;
         this.emailSender = emailSender;
         this.notificationBoxRepository = notificationBoxRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -54,6 +60,8 @@ public class TeacherServiceImpl implements TeacherService {
         String password = PasswordGeneratorUtil.generate();
         teacher.setPassword(passwordEncoder.encode(password));
         teacher.setNumberIdentifier(generateAlbumNumber(teacher.getFirstName(), teacher.getLastName()));
+        Role role = roleRepository.findByName(RoleType.ROLE_TEACHER).orElseThrow(() -> new RoleNotFoundException(RoleType.ROLE_TEACHER.name()));
+        teacher.getRoles().add(role);
         NotificationBox notificationBox = notificationBoxRepository.save(new NotificationBox());
         teacher.setNotificationBox(notificationBox);
         emailSender.sendMail(teacher.getEmail(), "Your data", String.format("Your login: %s Your password: %s", teacher.getLogin(), password));

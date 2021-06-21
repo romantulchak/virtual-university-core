@@ -163,6 +163,11 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
         Map<String, Object> body = getBodyAsString(ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<?> handleRoleNotFoundException(RoleNotFoundException ex, WebRequest webRequest){
+        Map<String, Object> body = getBody(ex);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
 
     private Map<String, Object> getBodyAsString(String message) {
         Map<String ,Object> body = new HashMap<>();

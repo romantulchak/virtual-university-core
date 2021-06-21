@@ -17,7 +17,7 @@ import java.util.Collection;
 @RequestMapping("/api/teacher")
 public class TeacherController {
 
-    private TeacherServiceImpl teacherService;
+    private final TeacherServiceImpl teacherService;
 
     public TeacherController(TeacherServiceImpl teacherService){
         this.teacherService = teacherService;
