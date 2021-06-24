@@ -123,7 +123,7 @@ public class SubjectServiceImpl implements SubjectService {
                 .map(this::convertDTO)
                 .sorted()
                 .collect(Collectors.toList());
-        return new PageableDTO<>(page, pageData.getTotalPages(), subject);
+        return new PageableDTO<>(page, pageData.getTotalPages(), subject, pageData.getTotalElements());
     }
 
     @Override

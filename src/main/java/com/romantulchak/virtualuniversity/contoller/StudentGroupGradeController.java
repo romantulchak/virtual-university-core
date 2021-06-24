@@ -2,6 +2,7 @@ package com.romantulchak.virtualuniversity.contoller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
 import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.service.impl.StudentGroupGradeServiceImpl;
@@ -29,12 +30,25 @@ public class StudentGroupGradeController {
     }
 
     @GetMapping("/findForTeacher")
-    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR @accessToStudentGroup.checkAccess(#teacherId)")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TECHAER') AND @accessToStudentGroup.checkAccess(#teacherId)")
     @JsonView(Views.TeacherStudentGrades.class)
-    public Collection<StudentGroupGradeDTO> findStudentGradesForTeacher(@RequestParam(value = "teacherId") long teacherId,
-                                                                        @RequestParam(value = "groupId") long groupId,
-                                                                        @RequestParam(value = "subjectId") long subjectId,
-                                                                        @RequestParam("semesterId") long semesterId){
+    public PageableDTO<Collection<StudentGroupGradeDTO>> findStudentGradesForTeacher(
+                                                                                    @RequestParam(value = "teacherId") long teacherId,
+                                                                                    @RequestParam(value = "groupId") long groupId,
+                                                                                    @RequestParam(value = "subjectId") long subjectId,
+                                                                                    @RequestParam(value = "semesterId") long semesterId,
+                                                                                    @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                                    @RequestParam(value = "size", defaultValue = "5") int size) {
+        return studentGroupGradeService.findStudentGradesBySubjectAndGroupForTeacher(teacherId, groupId, subjectId, semesterId, page, size);
+    }
+    @GetMapping("/findGradesForChart")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TECHAER') AND @accessToStudentGroup.checkAccess(#teacherId)")
+    @JsonView(Views.TeacherStudentGrades.class)
+    public Collection<StudentGroupGradeDTO> findStudentGradesForTeacher(
+                                                                                    @RequestParam(value = "teacherId") long teacherId,
+                                                                                    @RequestParam(value = "groupId") long groupId,
+                                                                                    @RequestParam(value = "subjectId") long subjectId,
+                                                                                    @RequestParam(value = "semesterId") long semesterId) {
         return studentGroupGradeService.findStudentGradesBySubjectAndGroupForTeacher(teacherId, groupId, subjectId, semesterId);
     }
 

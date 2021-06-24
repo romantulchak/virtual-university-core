@@ -20,7 +20,7 @@ public class Subject implements Comparator<Subject> {
     private SubjectType type;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.TRUE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "subject_teacher", joinColumns = @JoinColumn(name = "subject_id"), inverseJoinColumns = @JoinColumn(name = "teacher_id"))
     private Collection<Teacher> teachers;
 

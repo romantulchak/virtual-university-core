@@ -3,6 +3,7 @@ package com.romantulchak.virtualuniversity.service.impl;
 import com.romantulchak.virtualuniversity.dto.StudentDTO;
 import com.romantulchak.virtualuniversity.dto.StudentGroupGradeDTO;
 import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
+import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.exception.StudentGroupGradeEmptyException;
 import com.romantulchak.virtualuniversity.exception.StudentNotFoundException;
 import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
@@ -14,10 +15,18 @@ import com.romantulchak.virtualuniversity.repository.StudentRepository;
 import com.romantulchak.virtualuniversity.service.StudentGroupGradeService;
 import com.romantulchak.virtualuniversity.utils.ExportDataToPdf;
 import com.romantulchak.virtualuniversity.utils.SubjectTeacherConverter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.romantulchak.virtualuniversity.utils.PageUtil.getFrontendPageNumber;
 
 @Service
 public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
@@ -42,9 +51,11 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
     }
 
     @Override
-    public Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId, long semesterId) {
-        Collection<StudentGradeLimitedTeacher> gradesProjection = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId, semesterId);
-        return getStudentGroupGradeDTOS(gradesProjection);
+    public PageableDTO<Collection<StudentGroupGradeDTO>> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId, long semesterId, int page, int size) {
+        Pageable pageable = PageRequest.of(getFrontendPageNumber(page), size);
+        Page<StudentGradeLimitedTeacher> gradesPage = studentGroupGradeRepository
+                .findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId, semesterId, teacherId, pageable);
+        return new PageableDTO<>(page, gradesPage.getTotalPages(), getStudentGroupGradeDTOS(gradesPage.getContent()), gradesPage.getTotalElements());
     }
 
     @Override
@@ -75,20 +86,6 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
                 .collect(Collectors.toList());
     }
 
-    private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimitedTeacher> gradesProjection) {
-        Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
-        for (StudentGradeLimitedTeacher grade : gradesProjection) {
-            StudentGroupGradeDTO studentGrade = new StudentGroupGradeDTO.Builder(grade.getId())
-                    .withStudent(new StudentDTO(grade.getStudent()))
-                    .withGrade(grade.getGrade())
-                    .build();
-            grades.add(studentGrade);
-        }
-        return grades.stream().
-                sorted()
-                .collect(Collectors.toList());
-    }
-
     @Override
     public double findGradeForStudentBySubject(long groupId, long studentId, long subjectId, long semesterId) {
         return studentGroupGradeRepository.findGradeForStudentBySubject(groupId, subjectId, studentId, semesterId)
@@ -105,5 +102,24 @@ public class StudentGroupGradeServiceImpl implements StudentGroupGradeService {
         return ExportDataToPdf.exportGradesForStudent(student, grades);
     }
 
+    @Override
+    public Collection<StudentGroupGradeDTO> findStudentGradesBySubjectAndGroupForTeacher(long teacherId, long groupId, long subjectId, long semesterId) {
+        Collection<StudentGradeLimitedTeacher> grades = studentGroupGradeRepository.findStudentGradesForGroupAndSubjectByTeacher(groupId, subjectId, semesterId, teacherId);
+        return getStudentGroupGradeDTOS(grades);
+    }
+
+    private Collection<StudentGroupGradeDTO> getStudentGroupGradeDTOS(Collection<StudentGradeLimitedTeacher> gradesProjection) {
+        Collection<StudentGroupGradeDTO> grades = new ArrayList<>();
+        for (StudentGradeLimitedTeacher grade : gradesProjection) {
+            StudentGroupGradeDTO studentGrade = new StudentGroupGradeDTO.Builder(grade.getId())
+                    .withStudent(new StudentDTO(grade.getStudent()))
+                    .withGrade(grade.getGrade())
+                    .build();
+            grades.add(studentGrade);
+        }
+        return grades.stream().
+                sorted()
+                .collect(Collectors.toList());
+    }
 
 }

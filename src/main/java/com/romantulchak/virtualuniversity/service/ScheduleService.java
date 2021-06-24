@@ -14,6 +14,8 @@ public interface ScheduleService {
 
     ScheduleDTO findScheduleForTeacherByGroup(long teacherId, long groupId, long semesterId);
 
+    ScheduleDTO findScheduleForTeacherByWeek(long teacherId, long groupId, long semesterId);
+
     byte[] exportFullScheduleAsPDF(long scheduleId, long semesterId);
 
     byte[] exportScheduleForWeekPDF(long scheduleId, long semesterId);

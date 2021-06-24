@@ -107,7 +107,7 @@ public class LessonServiceImpl implements LessonService{
                         request.getPreviousStatus(),
                         request.getInfo(),
                         request.getSemesterId())).collect(Collectors.toList());
-        return new PageableDTO<>(currentPage, page.getTotalPages(), requests);
+        return new PageableDTO<>(currentPage, page.getTotalPages(), requests, page.getTotalElements());
 
 
     }

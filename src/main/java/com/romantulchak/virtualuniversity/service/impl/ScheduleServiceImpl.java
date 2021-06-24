@@ -47,7 +47,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void create(Schedule schedule) {
         if (schedule != null) {
             Schedule scheduleFromDb = checkIfScheduleExists(schedule);
-            if (schedule.getDays() != null && schedule.getDays().size() > 0) {
+            if (schedule.getDays() != null && !schedule.getDays().isEmpty()) {
                 saveDays(scheduleFromDb);
             }
         } else {
@@ -100,18 +100,31 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleDTO findScheduleForTeacherByGroup(long teacherId, long groupId, long semesterId) {
         if (teacherRepository.existsById(teacherId)) {
-            long scheduleId = scheduleRepository.findScheduleIdBySemesterId(semesterId).orElseThrow(ScheduleNotFoundException::new);
-            StudentGroup studentGroup = studentGroupRepository.findById(groupId).orElseThrow(GroupNotFoundException::new);
-            Collection<ScheduleDay> days = getDaysWithLessonsForTeacher(teacherId, semesterId)
+            Collection<ScheduleDay> days = getAllDaysWithLessonsForTeacher(teacherId, semesterId)
                     .stream()
                     .distinct()
                     .collect(Collectors.toList());
-            StudentGroupDTO studentGroupDTO = new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName())
-                    .withSemester(studentGroup.getSemester())
-                    .build();
-            return new ScheduleDTO(scheduleId, convertScheduleDayToDTO(days), studentGroupDTO);
+            return scheduleDTOForTeacher(days, semesterId, groupId);
         }
         throw new TeacherNotFoundException(teacherId);
+    }
+
+    @Override
+    public ScheduleDTO findScheduleForTeacherByWeek(long teacherId, long groupId, long semesterId) {
+        if (teacherRepository.existsById(teacherId)){
+            Collection<ScheduleDay> days = getDaysWithLessonsForTeacherByWeek(teacherId, semesterId);
+            return scheduleDTOForTeacher(days, semesterId, groupId);
+        }
+        throw new TeacherNotFoundException(teacherId);
+    }
+
+    private ScheduleDTO scheduleDTOForTeacher(Collection<ScheduleDay> days, long semesterId, long groupId){
+        long scheduleId = scheduleRepository.findScheduleIdBySemesterId(semesterId).orElseThrow(ScheduleNotFoundException::new);
+        StudentGroup studentGroup = studentGroupRepository.findById(groupId).orElseThrow(GroupNotFoundException::new);
+        StudentGroupDTO studentGroupDTO = new StudentGroupDTO.Builder(studentGroup.getId(), studentGroup.getName())
+                .withSemester(studentGroup.getSemester())
+                .build();
+        return new ScheduleDTO(scheduleId, convertScheduleDayToDTO(days), studentGroupDTO);
     }
 
     @Override
@@ -119,7 +132,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (scheduleRepository.existsByIdAndSemester(scheduleId, semesterId)) {
             Collection<ScheduleDay> days = scheduleDayRepository.findAllDaysForScheduleAndSemester(scheduleId, semesterId);
             try {
-                if (days != null && days.size() > 0) {
+                if (days != null && !days.isEmpty()) {
                     return ExportDataToPdf.exportSchedule(convertScheduleDayToDTO(days));
                 }
             } catch (IOException e) {
@@ -145,11 +158,21 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    private Collection<ScheduleDay> getDaysWithLessonsForTeacher(long teacherId, long semesterId) {
-        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacher(teacherId, semesterId);
+    private Collection<ScheduleDay> getAllDaysWithLessonsForTeacher(long teacherId, long semesterId) {
+        Collection<ScheduleDay> days = scheduleDayRepository.findAllScheduleDayForTeacher(teacherId, semesterId);
+        setTeacherLessonsToDay(teacherId, days);
+        return days;
+    }
+    private Collection<ScheduleDay> getDaysWithLessonsForTeacherByWeek(long teacherId, long semesterId) {
+        Collection<ScheduleDay> days = scheduleDayRepository.findScheduleDayForTeacherByWeek(teacherId, semesterId, LocalDate.now(), LocalDate.now().plusWeeks(1));
+        setTeacherLessonsToDay(teacherId, days);
+        return days;
+    }
+
+    private void setTeacherLessonsToDay(long teacherId, Collection<ScheduleDay> days) {
         for (ScheduleDay day : days) {
             day.setLessons(lessonRepository.findLessonsForTeacherByDay(day.getId(), teacherId));
         }
-        return days;
     }
+
 }
