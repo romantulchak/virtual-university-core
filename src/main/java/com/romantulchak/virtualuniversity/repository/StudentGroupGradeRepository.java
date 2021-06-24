@@ -4,6 +4,8 @@ import com.romantulchak.virtualuniversity.model.StudentGroupGrade;
 import com.romantulchak.virtualuniversity.model.enumes.GradeStatus;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedStudent;
 import com.romantulchak.virtualuniversity.projection.StudentGradeLimitedTeacher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,8 +35,13 @@ public interface StudentGroupGradeRepository extends JpaRepository<StudentGroupG
 
     @Query(value = "SELECT DISTINCT sgg.id as id, sgg.student as student, sgg.grade as grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.studentGroup sg" +
                     " LEFT JOIN sgg.subjectTeacherGroup sst LEFT JOIN sst.subject" +
-                    " WHERE sg.id = :groupId AND sst.subject.id = :subjectId AND sgg.semester.id = :semesterId")
-    Collection<StudentGradeLimitedTeacher> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("semesterId") long semesterId);
+                    " WHERE sg.id = :groupId AND sst.subject.id = :subjectId AND sgg.semester.id = :semesterId AND sst.teacher.id = :teacherId")
+    Page<StudentGradeLimitedTeacher> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("semesterId") long semesterId, @Param("teacherId") long teacherId, Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT sgg.id as id, sgg.student as student, sgg.grade as grade FROM StudentGroupGrade sgg LEFT OUTER JOIN sgg.studentGroup sg" +
+                    " LEFT JOIN sgg.subjectTeacherGroup sst LEFT JOIN sst.subject" +
+                    " WHERE sg.id = :groupId AND sst.subject.id = :subjectId AND sgg.semester.id = :semesterId AND sst.teacher.id = :teacherId")
+    Collection<StudentGradeLimitedTeacher> findStudentGradesForGroupAndSubjectByTeacher(@Param("groupId") long groupId, @Param("subjectId") long subjectId, @Param("semesterId") long semesterId, @Param("teacherId") long teacherId);
 
 
     @Query(value = "SELECT sgg.id as id, sgg.subjectTeacherGroup as subjectTeacherGroup, sgg.grade as grade  FROM StudentGroupGrade sgg LEFT JOIN sgg.studentGroup sg WHERE sgg.student.id = :studentId AND sgg.student.studentGroup.id = sg.id")
