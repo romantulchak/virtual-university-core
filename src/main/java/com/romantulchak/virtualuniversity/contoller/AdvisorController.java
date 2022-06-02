@@ -1,12 +1,18 @@
 package com.romantulchak.virtualuniversity.contoller;
 
 import com.romantulchak.virtualuniversity.exception.*;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -15,9 +21,27 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
+@RequiredArgsConstructor
 public class AdvisorController extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        BindingResult result = ex.getBindingResult();
+        String message = result.getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .map(value -> messageSource.getMessage(value, null, request.getLocale()))
+                .collect(Collectors.joining("\n"));
+        return handleExceptionInternal(ex, message, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
     @ExceptionHandler(StudentWithSameLoginAlreadyExistsException.class)
     public ResponseEntity<?> handleStudentWithSameLoginAlreadyExists(StudentWithSameLoginAlreadyExistsException ex, WebRequest webRequest){
         Map<String, Object> body = getBody(ex);
@@ -68,8 +92,8 @@ public class AdvisorController extends ResponseEntityExceptionHandler {
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(CourseWithNameAlreadyExists.class)
-    public ResponseEntity<?> handleCourseWithNameAlreadyExists(CourseWithNameAlreadyExists ex, WebRequest webRequest){
+    @ExceptionHandler(CourseWithNameAlreadyExistsException.class)
+    public ResponseEntity<?> handleCourseWithNameAlreadyExists(CourseWithNameAlreadyExistsException ex, WebRequest webRequest){
         Map<String ,Object> body = getBody(ex);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
