@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.romantulchak.virtualuniversity.components.Transformer;
 import com.romantulchak.virtualuniversity.dto.CourseDTO;
 import com.romantulchak.virtualuniversity.exception.CourseWithNameAlreadyExistsException;
 import com.romantulchak.virtualuniversity.model.Course;
@@ -19,15 +20,16 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final MessageSource messageSource;
+    private final Transformer transformer;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Collection<CourseDTO> findAllCourses() {
-        return courseRepository.findCoursesWithSemesters()
+        return courseRepository.findAll()
                 .stream()
-                .map(this::convertToDTO)
+                .map(transformer::convertToCourseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -42,9 +44,5 @@ public class CourseServiceImpl implements CourseService {
         } else {
             throw new CourseWithNameAlreadyExistsException(createCourseRequest.getName(), messageSource);
         }
-    }
-
-    private CourseDTO convertToDTO(Course course) {
-        return new CourseDTO(course);
     }
 }

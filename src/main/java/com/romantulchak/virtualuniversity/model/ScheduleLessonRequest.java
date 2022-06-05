@@ -2,10 +2,16 @@ package com.romantulchak.virtualuniversity.model;
 
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
 @Entity
+@Accessors(chain = true)
+@Getter
+@Setter
 public class ScheduleLessonRequest {
 
     @Id
@@ -30,68 +36,4 @@ public class ScheduleLessonRequest {
     private Request info;
 
     private long semesterId;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public LessonStatus getPreviousStatus() {
-        return previousStatus;
-    }
-
-    public void setPreviousStatus(LessonStatus previousStatus) {
-        this.previousStatus = previousStatus;
-    }
-
-    public LessonStatus getActualStatus() {
-        return actualStatus;
-    }
-
-    public void setActualStatus(LessonStatus actualStatus) {
-        this.actualStatus = actualStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
-    }
-
-    public RequestDecision getDecision() {
-        return decision;
-    }
-
-    public void setDecision(RequestDecision decision) {
-        this.decision = decision;
-    }
-
-    public Request getInfo() {
-        return info;
-    }
-
-    public void setInfo(Request request) {
-        this.info = request;
-    }
-
-    public long getSemesterId() {
-        return semesterId;
-    }
-
-    public void setSemesterId(long semesterId) {
-        this.semesterId = semesterId;
-    }
 }

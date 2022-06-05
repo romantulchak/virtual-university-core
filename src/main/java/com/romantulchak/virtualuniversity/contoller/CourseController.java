@@ -1,6 +1,8 @@
 package com.romantulchak.virtualuniversity.contoller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.CourseDTO;
+import com.romantulchak.virtualuniversity.model.Views;
 import com.romantulchak.virtualuniversity.payload.request.CreateCourseRequest;
 import com.romantulchak.virtualuniversity.service.impl.CourseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ public class CourseController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @JsonView(Views.CourseView.class)
     public Collection<CourseDTO> findAllCourses(){
         return courseService.findAllCourses();
     }

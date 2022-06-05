@@ -1,47 +1,30 @@
 package com.romantulchak.virtualuniversity.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Course;
-import com.romantulchak.virtualuniversity.model.Specialization;
+import com.romantulchak.virtualuniversity.model.Views;
+import lombok.Data;
 
-import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Data
 public class CourseDTO {
 
+    @JsonView(Views.CourseView.class)
     private long id;
 
+    @JsonView(Views.CourseView.class)
     private String name;
 
     private Collection<SpecializationDTO> specializationDTO;
+
+    public CourseDTO() {
+    }
 
     public CourseDTO(Course course) {
         this.id = course.getId();
         this.name = course.getName();
         this.specializationDTO = course.getSpecialization().stream().map(SpecializationDTO::new).collect(Collectors.toList());
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Collection<SpecializationDTO> getSpecializationDTO() {
-        return specializationDTO;
-    }
-
-    public void setSpecializationDTO(Collection<SpecializationDTO> specializationDTO) {
-        this.specializationDTO = specializationDTO;
     }
 }

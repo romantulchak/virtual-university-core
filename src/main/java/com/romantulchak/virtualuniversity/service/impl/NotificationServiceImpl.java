@@ -1,11 +1,10 @@
 package com.romantulchak.virtualuniversity.service.impl;
 
+import com.romantulchak.virtualuniversity.constant.Resource;
 import com.romantulchak.virtualuniversity.dto.NotificationDTO;
-import com.romantulchak.virtualuniversity.exception.NotificationNotFound;
 import com.romantulchak.virtualuniversity.exception.UserIsNullException;
 import com.romantulchak.virtualuniversity.model.Notification;
 import com.romantulchak.virtualuniversity.model.NotificationBox;
-import com.romantulchak.virtualuniversity.model.Resource;
 import com.romantulchak.virtualuniversity.model.UserAbstract;
 import com.romantulchak.virtualuniversity.payload.request.NotificationRequest;
 import com.romantulchak.virtualuniversity.repository.NotificationRepository;
@@ -97,7 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
                 if (data != null) {
                     send(user.getLogin(), data, destination);
                 }
-                send(user.getLogin(),getNotificationCounter(user.getNotificationBox().getId()), Resource.NOTIFICATION_COUNTER_DESTINATION);
+                send(user.getLogin(), getNotificationCounter(user.getNotificationBox().getId()), Resource.NOTIFICATION_COUNTER_DESTINATION);
             }
         }
     }
@@ -120,11 +119,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void readNotification(NotificationRequest notificationRequest) {
-        if (notificationRequest != null) {
-            if (notificationRepository.existsByIdAndReadIsFalse(notificationRequest.getNotificationId())) {
-                notificationRepository.readNotification(notificationRequest.getNotificationId());
-                send(notificationRequest.getUsername(), "true", Resource.NOTIFICATION_READ_TOPIC);
-            }
+        if (notificationRequest != null && notificationRepository.existsByIdAndReadIsFalse(notificationRequest.getNotificationId())) {
+            notificationRepository.readNotification(notificationRequest.getNotificationId());
+            send(notificationRequest.getUsername(), "true", Resource.NOTIFICATION_READ_TOPIC);
         }
     }
 

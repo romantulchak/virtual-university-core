@@ -33,6 +33,9 @@ public class ScheduleLessonRequestDTO {
     @JsonView(Views.LessonStatusRequestView.class)
     private long semester;
 
+    public ScheduleLessonRequestDTO() {
+    }
+
     public ScheduleLessonRequestDTO(long id, LessonStatus actualStatus, String message, LessonDTO lesson, RequestDecision decision, LessonStatus previousStatus, Request info, long semester) {
         this.id = id;
         this.actualStatus = actualStatus;

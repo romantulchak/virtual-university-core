@@ -1,4 +1,4 @@
-package com.romantulchak.virtualuniversity.model;
+package com.romantulchak.virtualuniversity.constant;
 
 public interface Resource {
 

@@ -4,17 +4,16 @@ import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.model.Lesson;
-import com.romantulchak.virtualuniversity.model.ScheduleLessonRequest;
-import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
+import com.romantulchak.virtualuniversity.payload.request.AddLessonToDayRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
+import com.romantulchak.virtualuniversity.payload.request.ChangeLessonStatus;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
-import com.romantulchak.virtualuniversity.service.impl.UserDetailsImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,8 +29,8 @@ public class LessonController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
-    public LessonDTO createLessonForDay(@RequestBody Lesson lesson){
-       return lessonService.addLessonToDay(lesson);
+    public LessonDTO createLessonForDay(@Valid @RequestBody AddLessonToDayRequest addLessonToDayRequest){
+       return lessonService.addLessonToDay(addLessonToDayRequest);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -45,10 +44,10 @@ public class LessonController {
         return lessonService.updateLesson(lesson);
     }
 
-    @PostMapping("/change-status-request/{lessonId}/{teacherId}")
-    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TEACHER') AND @accessToLesson.checkAccess(#lessonId, #teacherId)")
-    public void changeStatusRequest(@PathVariable("lessonId") long lessonId, @PathVariable("teacherId") long teacherId, @RequestBody ScheduleLessonRequest scheduleLessonRequest){
-        lessonService.changeLessonStatus(scheduleLessonRequest);
+    @PostMapping("/change-status-request")
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER') OR hasRole('TEACHER') AND @accessToLesson.checkAccess(#changeLessonStatus.lessonId, #changeLessonStatus.teacherId)")
+    public void changeStatusRequest(@RequestBody ChangeLessonStatus changeLessonStatus){
+        lessonService.changeLessonStatus(changeLessonStatus);
     }
     
     @GetMapping("/getLessonRequests")
