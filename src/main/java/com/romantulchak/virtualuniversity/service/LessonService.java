@@ -6,11 +6,11 @@ import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
 import com.romantulchak.virtualuniversity.exception.LessonAtThatTimeAlreadyExistsException;
 import com.romantulchak.virtualuniversity.exception.LessonStatusNotChangedException;
 import com.romantulchak.virtualuniversity.exception.TimeNotCorrectException;
-import com.romantulchak.virtualuniversity.model.Lesson;
-import com.romantulchak.virtualuniversity.payload.request.AddLessonToDayRequest;
+import com.romantulchak.virtualuniversity.payload.request.lesson.AddLessonToDayRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeLessonStatus;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
+import com.romantulchak.virtualuniversity.payload.request.lesson.EditLessonRequest;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -41,10 +41,10 @@ public interface LessonService {
      * throw {@link com.romantulchak.virtualuniversity.exception.LessonNotFoundException}
      * otherwise updates lesson fields
      *
-     * @param lesson with updated fields
+     * @param editLessonRequest contains updated fields
      * @return {@link LessonDTO} with updated fields
      */
-    LessonDTO updateLesson(Lesson lesson);
+    LessonDTO updateLesson(EditLessonRequest editLessonRequest);
 
     /**
      * Checks if current lesson status isn't equal to

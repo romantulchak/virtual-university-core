@@ -12,13 +12,15 @@ import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RequestDecision;
 import com.romantulchak.virtualuniversity.model.enumes.RequestStatus;
 import com.romantulchak.virtualuniversity.model.enumes.RoleType;
-import com.romantulchak.virtualuniversity.payload.request.AddLessonToDayRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeLessonStatus;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
+import com.romantulchak.virtualuniversity.payload.request.lesson.AddLessonToDayRequest;
+import com.romantulchak.virtualuniversity.payload.request.lesson.EditLessonRequest;
 import com.romantulchak.virtualuniversity.payload.response.ChangeStatusResponse;
 import com.romantulchak.virtualuniversity.repository.LessonRepository;
 import com.romantulchak.virtualuniversity.repository.ScheduleLessonRequestRepository;
+import com.romantulchak.virtualuniversity.repository.SubjectTeacherRepository;
 import com.romantulchak.virtualuniversity.repository.TeacherRepository;
 import com.romantulchak.virtualuniversity.service.LessonService;
 import com.romantulchak.virtualuniversity.utils.RequestUtility;
@@ -46,6 +48,7 @@ public class LessonServiceImpl implements LessonService {
     private final TeacherRepository teacherRepository;
     private final NotificationServiceImpl notificationService;
     private final MessageSource messageSource;
+    private final SubjectTeacherRepository subjectTeacherRepository;
     private final Transformer transformer;
 
 
@@ -54,7 +57,7 @@ public class LessonServiceImpl implements LessonService {
      */
     @Override
     public LessonDTO addLessonToDay(AddLessonToDayRequest addLessonToDayRequest) {
-        if (!lessonRepository.existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqual(addLessonToDayRequest.getDateStart(), addLessonToDayRequest.getDateEnd())) {
+        if (!lessonRepository.existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqualAndScheduleDayId(addLessonToDayRequest.getDateStart(), addLessonToDayRequest.getDateEnd(), addLessonToDayRequest.getScheduleDay().getId())) {
             if (!addLessonToDayRequest.getDateEnd().isBefore(addLessonToDayRequest.getDateStart())) {
                 Lesson lesson = new Lesson()
                         .setDateStart(addLessonToDayRequest.getDateStart())
@@ -68,17 +71,27 @@ public class LessonServiceImpl implements LessonService {
             } else {
                 throw new TimeNotCorrectException(messageSource);
             }
-        } else {
-            throw new LessonAtThatTimeAlreadyExistsException(addLessonToDayRequest.getDateStart(), addLessonToDayRequest.getDateEnd(), messageSource);
         }
+        throw new LessonAtThatTimeAlreadyExistsException(addLessonToDayRequest.getDateStart(), addLessonToDayRequest.getDateEnd(), messageSource);
     }
 
     @Override
-    public LessonDTO updateLesson(Lesson lesson) {
-        if (lessonRepository.existsById(lesson.getId())) {
-            return new LessonDTO(lessonRepository.save(lesson));
+    @Transactional
+    public LessonDTO updateLesson(EditLessonRequest editLessonRequest) {
+        if (!lessonRepository.existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqualAndScheduleDayIdAndIdNot(editLessonRequest.getDateStart(), editLessonRequest.getDateEnd(), editLessonRequest.getDayId(), editLessonRequest.getLessonId())) {
+            SubjectTeacherGroup subjectTeacherGroup = subjectTeacherRepository.findById(editLessonRequest.getSubjectTeacherId())
+                    .orElseThrow(() -> new SubjectTeacherGroupNotFoundException(messageSource));
+            Lesson lesson = lessonRepository.findById(editLessonRequest.getLessonId())
+                    .orElseThrow(() -> new LessonNotFoundException(editLessonRequest.getLessonId(), messageSource))
+                    .setDateStart(editLessonRequest.getDateStart())
+                    .setDateEnd(editLessonRequest.getDateEnd())
+                    .setRoomNumber(editLessonRequest.getRoomNumber())
+                    .setSubjectTeacher(subjectTeacherGroup);
+            Lesson lessonAfterSave = lessonRepository.save(lesson);
+            return transformer.convertToLessonDTO(lessonAfterSave);
+        } else {
+            throw new LessonAtThatTimeAlreadyExistsException(editLessonRequest.getDateStart(), editLessonRequest.getDateEnd(), messageSource);
         }
-        throw new LessonNotFoundException(lesson.getId(), messageSource);
     }
 
     /**

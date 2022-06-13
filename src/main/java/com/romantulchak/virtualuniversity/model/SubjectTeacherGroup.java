@@ -1,14 +1,16 @@
 package com.romantulchak.virtualuniversity.model;
 
-import com.romantulchak.virtualuniversity.dto.SubjectTeacherGroupDTO;
-import com.romantulchak.virtualuniversity.model.enumes.SubjectType;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
+@Getter
+@Setter
+@Accessors(chain = true)
 public class SubjectTeacherGroup {
 
     @Id
@@ -45,61 +47,5 @@ public class SubjectTeacherGroup {
         this.id = id;
         this.subject = subject;
         this.teacher = teacher;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public StudentGroup getStudentGroup() {
-        return studentGroup;
-    }
-
-    public void setStudentGroup(StudentGroup studentGroup) {
-        this.studentGroup = studentGroup;
-    }
-
-    public Collection<StudentGroupGrade> getStudentGrades() {
-        return studentGrades;
-    }
-
-    public void setStudentGrades(Collection<StudentGroupGrade> studentGrades) {
-        this.studentGrades = studentGrades;
-    }
-
-    public Collection<Lesson> getLessons() {
-        return lessons;
-    }
-
-    public void setLessons(Collection<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
-    public Semester getSemester() {
-        return semester;
-    }
-
-    public void setSemester(Semester semester) {
-        this.semester = semester;
     }
 }

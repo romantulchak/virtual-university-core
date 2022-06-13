@@ -23,18 +23,18 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @PostMapping("/createTeacher")
+    @PostMapping("/create-teacher")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public void createTeacher(@RequestBody Teacher teacher){
         teacherService.create(teacher);
     }
 
-    @PutMapping("/resetPassword")
+    @PutMapping("/reset-password")
     @PreAuthorize("hasRole('TEACHER') and @authComponent.hasPermission(authentication, #resetPasswordRequest.userId)")
-    public void ResetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
         teacherService.resetPassword(resetPasswordRequest);
     }
-    @GetMapping("/findTeacherById/{id}")
+    @GetMapping("/find-teacher/{id}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('TEACHER') AND @authComponent.hasPermission(authentication, #id)")
     public TeacherDTO findTeacherById(@PathVariable("id") long id){
         return teacherService.findTeacherById(id);
@@ -47,13 +47,13 @@ public class TeacherController {
         return teacherService.findAllTeachers();
     }
 
-    @PutMapping("/addSubjectsToTeacher/{id}")
+    @PutMapping("/add-subjects-to-teacher/{id}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public void addSubjectsToTeacher(@RequestBody Collection<Subject> subjects, @PathVariable("id") long id){
         teacherService.addSubjectsToTeacher(id, subjects);
     }
 
-    @GetMapping("/findTeachersForSubject/{subjectId}")
+    @GetMapping("/find-teachers-for-subject/{subjectId}")
     @PreAuthorize("hasRole('ADMIN') OR hasRole('MANAGER')")
     public Collection<TeacherDTO> findTeachersForSubject(@PathVariable("subjectId") long id){
        return teacherService.findTeachersBySubject(id);

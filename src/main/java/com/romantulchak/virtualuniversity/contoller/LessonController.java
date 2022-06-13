@@ -1,13 +1,15 @@
 package com.romantulchak.virtualuniversity.contoller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.dto.ScheduleLessonRequestDTO;
 import com.romantulchak.virtualuniversity.dto.pageable.PageableDTO;
-import com.romantulchak.virtualuniversity.model.Lesson;
-import com.romantulchak.virtualuniversity.payload.request.AddLessonToDayRequest;
+import com.romantulchak.virtualuniversity.model.Views;
+import com.romantulchak.virtualuniversity.payload.request.lesson.AddLessonToDayRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeDecisionRequest;
 import com.romantulchak.virtualuniversity.payload.request.ChangeLessonStatus;
 import com.romantulchak.virtualuniversity.payload.request.ChangeStatusRequest;
+import com.romantulchak.virtualuniversity.payload.request.lesson.EditLessonRequest;
 import com.romantulchak.virtualuniversity.service.impl.LessonServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -40,8 +42,9 @@ public class LessonController {
     }
 
     @PutMapping("/update")
-    public LessonDTO updateLesson(@RequestBody Lesson lesson){
-        return lessonService.updateLesson(lesson);
+    @JsonView(Views.ScheduleView.class)
+    public LessonDTO updateLesson(@Valid @RequestBody EditLessonRequest editLessonRequest){
+       return lessonService.updateLesson(editLessonRequest);
     }
 
     @PostMapping("/change-status-request")

@@ -36,7 +36,6 @@ public class SubjectTeacherServiceImpl implements SubjectTeacherService {
     }
     @Override
     public Collection<SubjectTeacherGroupDTO> findSubjectsForGroupBySemester(long semesterId, long groupId) {
-        Collection<SubjectTeacherGroup> subjectsForGroupBySemester = subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId);
         return subjectTeacherRepository.findSubjectsForGroupBySemester(groupId, semesterId).stream()
                 .map(SubjectTeacherGroupDTO::new)
                 .collect(Collectors.toList());

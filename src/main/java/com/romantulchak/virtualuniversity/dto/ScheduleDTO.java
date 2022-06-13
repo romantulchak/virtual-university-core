@@ -1,14 +1,9 @@
 package com.romantulchak.virtualuniversity.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.romantulchak.virtualuniversity.model.Schedule;
-import com.romantulchak.virtualuniversity.model.ScheduleDay;
-import com.romantulchak.virtualuniversity.model.StudentGroup;
 import com.romantulchak.virtualuniversity.model.Views;
 
-import javax.persistence.*;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class ScheduleDTO {
 
@@ -19,10 +14,10 @@ public class ScheduleDTO {
     private StudentGroupDTO studentGroup;
 
     @JsonView(Views.ScheduleView.class)
-    private SemesterDTO semesterDTO;
-
-    @JsonView(Views.ScheduleView.class)
     private Collection<ScheduleDayDTO> days;
+
+    public ScheduleDTO() {
+    }
 
     public ScheduleDTO(long id ){
         this.id = id;

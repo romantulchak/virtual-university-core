@@ -1,4 +1,4 @@
-package com.romantulchak.virtualuniversity.payload.request;
+package com.romantulchak.virtualuniversity.payload.request.lesson;
 
 import com.romantulchak.virtualuniversity.model.ScheduleDay;
 import com.romantulchak.virtualuniversity.model.SubjectTeacherGroup;

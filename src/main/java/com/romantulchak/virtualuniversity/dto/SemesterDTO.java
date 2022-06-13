@@ -2,12 +2,9 @@ package com.romantulchak.virtualuniversity.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.romantulchak.virtualuniversity.model.Semester;
-import com.romantulchak.virtualuniversity.model.Subject;
 import com.romantulchak.virtualuniversity.model.Views;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class SemesterDTO {
 
@@ -26,6 +23,9 @@ public class SemesterDTO {
 
     @JsonView({Views.SemesterView.class,Views.SpecializationView.class,Views.TeacherStudentGrades.class, Views.StudentGrades.class, Views.StudentGroupView.class})
     private LocalDate endDate;
+
+    public SemesterDTO() {
+    }
 
     public SemesterDTO(Semester semester) {
         this.id = semester.getId();

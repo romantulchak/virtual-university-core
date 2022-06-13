@@ -1,7 +1,5 @@
 package com.romantulchak.virtualuniversity.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.romantulchak.virtualuniversity.dto.LessonDTO;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -60,5 +59,18 @@ public class Lesson implements Comparable<Lesson>{
         return Comparator.comparing(Lesson::getDateStart)
                 .thenComparing(Lesson::getDateEnd)
                 .compare(this, o);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lesson lesson = (Lesson) o;
+        return id == lesson.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

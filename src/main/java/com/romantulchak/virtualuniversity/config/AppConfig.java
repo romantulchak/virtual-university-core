@@ -1,5 +1,6 @@
 package com.romantulchak.virtualuniversity.config;
 
+import org.hibernate.collection.spi.PersistentCollection;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,9 @@ public class AppConfig {
 
     @Bean
     public ModelMapper modelMapper(){
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setPropertyCondition(context -> (!(context.getSource() instanceof PersistentCollection)
+                || ((PersistentCollection) context.getSource()).wasInitialized()));
+        return modelMapper;
     }
 }

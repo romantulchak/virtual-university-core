@@ -1,6 +1,7 @@
 package com.romantulchak.virtualuniversity.repository;
 
 import com.romantulchak.virtualuniversity.model.Lesson;
+import com.romantulchak.virtualuniversity.model.SubjectTeacherGroup;
 import com.romantulchak.virtualuniversity.model.enumes.LessonStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,9 +24,15 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     @Query(value = "SELECT l.status FROM Lesson l WHERE l.id = :lessonId")
     Optional<LessonStatus> findLessonActualStatus(@Param("lessonId") long lessonId);
 
-    boolean existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqual(LocalDateTime dateStart, LocalDateTime dateEnd);
+    boolean existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqualAndScheduleDayId(LocalDateTime dateStart, LocalDateTime dateEnd, long scheduleDayId);
+
+    boolean existsLessonByDateStartLessThanEqualAndDateEndGreaterThanEqualAndScheduleDayIdAndIdNot(LocalDateTime dateStart, LocalDateTime dateEnd, long scheduleDayId, long id);
 
     boolean existsById(long id);
 
-    boolean existsByIdAndSubjectTeacher_Teacher_Id(long id, long teacherId);
+    boolean existsByIdAndSubjectTeacherTeacherId(long id, long teacherId);
+
+    @Modifying
+    @Query(value = "UPDATE Lesson l SET l.dateStart = :dateStart, l.dateEnd = :dateEnd, l.roomNumber = :roomNumber, l.subjectTeacher = :subjectTeacherGroup WHERE l.id = :lessonId")
+    void updateLessonAfterEdit(@Param("dateStart") LocalDateTime dateStart, @Param("dateEnd") LocalDateTime dateEnd, @Param("roomNumber") String roomNumber, @Param("subjectTeacherGroup") SubjectTeacherGroup subjectTeacherGroup, @Param("lessonId") long id);
 }
